@@ -15,10 +15,9 @@ class Newsblur_fetcher(object):
   performs a log-in action to initiate a session with the s
   '''
   base_url = self.config['']
-  username = self.config['']
-  password = self.config['']
+ 
   extended_url = '/api/login'  
-  payload = {'username': self.config[''],'password' : self.config['']}
+  payload = {'username': self.config['user_name'],'password' : self.config['password'].encode('utf-8')}
   response = requests.post(self.config['URL']+extended_url, data=payload,verify=False)
   if response.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
    return True

@@ -27,6 +27,7 @@ class Newsblur_fetcher(object):
   
  def get_saved_stories(self):
   extended_url='reader/starred_stories?page='
+  stories_list =list()
   page_index = 1
   stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
   while len(stories_page.content.decode('utf-8').replace("'", '"'))['stories'])>0:
@@ -35,7 +36,10 @@ class Newsblur_fetcher(object):
     return("Bad response")
    if stories_page.content.decode('utf-8').replace("'", '"'))['stories'] is None:
     return("Page : " + str(page_index) + " returned no stories")
-   #TODO parse the stories and write them to a CSV file
+   stories_list.append(stories_page.content.decode('utf-8').replace("'", '"'))['stories'])
    page_index+=1
+  return stories_list
+ 
+ #TODO parse the stories and write them to a good format for a file
    
 

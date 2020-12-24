@@ -34,7 +34,7 @@ class Newsblur_fetcher(object):
    stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
    if stories_page.status_code!=200:
     return("Bad response")
-   if stories_page.content.decode('utf-8').replace("'", '"'))['stories'] is None:
+   if stories_page.content.decode('utf-8').replace("'", '"')['stories'] is None:
     return("Page : " + str(page_index) + " returned no stories")
    stories_list.append(stories_page.content.decode('utf-8').replace("'", '"'))['stories'])
    page_index+=1

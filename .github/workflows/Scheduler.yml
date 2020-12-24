@@ -59,8 +59,8 @@ jobs:
       - name: Hello world
         run: echo Hello world $USER
         env: 
-          USER: ${{ ubuntu.secrets.USER }}
-          PASS: ${{ ubuntu.secrets.PASS }}
+          USER: ${{ secrets.USER }}
+          PASS: ${{ secrets.PASS }}
 #   build_win:
 #     # The type of runner that the job will run on
 

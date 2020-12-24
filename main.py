@@ -1,4 +1,5 @@
 import time
+import api_calls
 def test_module():
     print("This is a Test.")
     print("waiting...")

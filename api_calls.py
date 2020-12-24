@@ -30,7 +30,7 @@ class Newsblur_fetcher(object):
   stories_list =list()
   page_index = 1
   stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
-  while len(stories_page.content.decode('utf-8').replace("'", '"'))['stories'])>0:
+  while len(stories_page.content.decode('utf-8').replace("'", '"')['stories'])>0:
    stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
    if stories_page.status_code!=200:
     return("Bad response")

@@ -55,9 +55,9 @@ jobs:
       # Test env vars
       - name: Hello world
         run: echo Hello world $USER
-        env:
-          USER: ${{ secrets.USER }}
-          PASS: ${{ secrets.PASS }}
+        env: 
+          USER: ${{ ubuntu.secrets.USER }}
+          PASS: ${{ ubuntu.secrets.PASS }}
 #   build_win:
 #     # The type of runner that the job will run on
 

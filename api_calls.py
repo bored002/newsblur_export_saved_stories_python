@@ -36,7 +36,7 @@ class Newsblur_fetcher(object):
     return("Bad response")
    if stories_page.content.decode('utf-8').replace("'", '"')['stories'] is None:
     return("Page : " + str(page_index) + " returned no stories")
-   stories_list.append(stories_page.content.decode('utf-8').replace("'", '"'))['stories'])
+   stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
    page_index+=1
   return stories_list
  

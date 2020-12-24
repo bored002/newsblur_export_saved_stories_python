@@ -31,11 +31,6 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v2
         
-      - name: Set env
-        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Test Env
-        run: echo $GITHUB_SHA_SHORT
-        
       # Setups python script
       - name: setup python
         uses: actions/setup-python@v2
@@ -59,7 +54,7 @@ jobs:
 #           password: ${{ secrets.PASS }}
       # Test env vars
       - name: Hello world
-        run: echo Hello world $USER
+        run: echo Hello world $USER and $PASS
         env: 
           USER: ${{ secrets.USER }}
           PASS: ${{ secrets.PASS }}

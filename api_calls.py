@@ -1,5 +1,6 @@
 import requests
 import json
+import yaml
 
 config_path = "config.yaml" 
 
@@ -16,11 +17,11 @@ class Newsblur_fetcher(object):
   performs a log-in action to initiate a session with the s
   '''
   extended_url = '/api/login'  
-  payload = {'username': self.config['user_name'],'password' : self.config['password'].encode('utf-8')}
-  response = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)
-  if response.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
+  payload = {'username': self.config['user_name'],'password' : self.config['password']}
+  newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)
+  if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
    return True
-  elif esponse.status_code!=200:
+  elif newblur_login.status_code!=200:
    return('Response code is not 200')
   elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
@@ -43,3 +44,6 @@ class Newsblur_fetcher(object):
  #TODO parse the stories and write them to a good format for a file
    
 
+if __name__ == "__main__":
+  newsblur_object = Newsblur_fetcher()
+  login_result = newsblur_object.login()

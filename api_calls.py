@@ -27,18 +27,19 @@ class Newsblur_fetcher(object):
    return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
   
  def get_saved_stories(self):
-  extended_url='reader/starred_stories?page='
+  extended_url=r'/reader/starred_stories?page='
   stories_list =list()
   page_index = 1
-  stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
-  while len(stories_page.content.decode('utf-8').replace("'", '"')['stories'])>0:
-   stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
-   if stories_page.status_code!=200:
-    return("Bad response")
-   if stories_page.content.decode('utf-8').replace("'", '"')['stories'] is None:
-    return("Page : " + str(page_index) + " returned no stories")
-   stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
-   page_index+=1
+  stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
+        #TODO : Handle the stories better
+        stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
+        if stories_page.status_code!=200:
+          return("Bad response")
+        if stories_page.content.decode('utf-8').replace("'", '"')['stories'] is None:
+          return("Page : " + str(page_index) + " returned no stories")
+        stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
+        page_index+=1
   return stories_list
  
  #TODO parse the stories and write them to a good format for a file
@@ -46,4 +47,5 @@ class Newsblur_fetcher(object):
 
 if __name__ == "__main__":
   newsblur_object = Newsblur_fetcher()
-  login_result = newsblur_object.login()
+  if newsblur_object.login() == True:
+    x = newsblur_object.get_saved_stories()

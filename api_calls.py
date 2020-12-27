@@ -74,20 +74,6 @@ class Newsblur_fetcher(object):
         page_index+=1
   return stories_list
 
- def parse_stories(self, fresh_story_list):
-
-  '''
-  Parse stories froma pulled page 
-  from each story exctract the following:
-  1. Origin : [Lifehacker]
-  2. Title: 
-  3. Date
-  4. Link to story
-
-  each story will be a dict : {origin: , title, link, date , tags}
-  #TODO : move this method to a separate module named parser
-  '''
-
  def validate_stories_page(self, response):
   '''
   Validates that no errors were returned
@@ -101,6 +87,12 @@ class Newsblur_fetcher(object):
   return True
  
  #TODO parse the stories and write them to a good format for a file
+
+ @classmethod
+ def teardown(cls):
+  '''
+  Best practices
+  '''
    
 
 if __name__ == "__main__":

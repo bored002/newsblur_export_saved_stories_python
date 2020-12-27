@@ -44,24 +44,51 @@ class Newsblur_fetcher(object):
   extended_url=r'/reader/starred_stories?page='
   stories_list =list()
   page_index = 1
-  stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  
+  try:
+    stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  except requests.exceptions.RequestException as e:
+    # logging.error("Loging API Call threw an exception: " + str(e))
+    print(str(e))
+    return False
+
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         #TODO : Handle the stories better
-        stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
+        try:
+          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+        except requests.exceptions.RequestException as e:
+          # logging.error("Loging API Call threw an exception: " + str(e))
+          print(str(e))
         story_validation =self.validate_stories_page(stories_page)
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))
+        
         # if stories_page.status_code!=200:
         #   print("Response code is not 200")
         #   return("Response code is not 200")
         # if json.loads(stories_page.content.decode('utf-8'))['stories'] is None:
         #   print("Page # " + str(page_index) + " returned no stories")
         #   return("Page # " + str(page_index) + " returned no stories")
-        stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
+        
+        #stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
         page_index+=1
   return stories_list
 
-def validate_stories_page(self, response):
+ def parse_stories(self, fresh_story_list):
+
+  '''
+  Parse stories froma pulled page 
+  from each story exctract the following:
+  1. Origin : [Lifehacker]
+  2. Title: 
+  3. Date
+  4. Link to story
+
+  each story will be a dict : {origin: , title, link, date , tags}
+  #TODO : move this method to a separate module named parser
+  '''
+
+ def validate_stories_page(self, response):
   '''
   Validates that no errors were returned
   '''

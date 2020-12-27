@@ -77,16 +77,15 @@ class Newsblur_fetcher(object):
       '''
       url_extention =r'/reader/feeds'
       try:
-          feeds=self.connection_session.get(self.config['URL'] + url_extention , verify=True)
+          feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
         print(str(e))
       if feeds.status_code!=200:
             print("Status code is : " + str(feeds.status_code))
-      feeds_dict=dict()
+      feeds_dict = dict()
       active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-      for feed_id in active_feeds.keys():
-            feed_id[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
+      feed_dict = self.parser_object.parse_feeds(active_feeds)
       # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
       return feeds_dict      
 

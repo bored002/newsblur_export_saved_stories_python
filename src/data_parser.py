@@ -1,5 +1,4 @@
 import json
-
 import logging
 
 config_path = "config.yaml" 
@@ -22,6 +21,15 @@ class Story_Parser(object):
 
     each story will be a dict : {origin: , title, link, date , tags}
     '''
+  
+  def parse_feeds(self,feeds):
+      '''
+      Parsing Feeds matching ID and name
+      '''
+      feed_dict = dict()
+      for feed_id in feeds.keys():
+          feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
+      return feed_dict
     
   @classmethod
   def teardown(cls):

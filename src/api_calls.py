@@ -1,8 +1,9 @@
+import src
 import requests
 import json
 import yaml
 import logging
-import data_parser
+from src import data_parser
 
 config_path = "config.yaml" 
 

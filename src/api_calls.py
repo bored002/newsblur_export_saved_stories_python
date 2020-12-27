@@ -2,6 +2,7 @@ import requests
 import json
 import yaml
 import logging
+import data_parser
 
 config_path = "config.yaml" 
 
@@ -15,6 +16,7 @@ class Newsblur_fetcher(object):
   else:
      cls.config=dict()
      cls.config ={'user_name':user_name, 'password': password}
+  cls.parser_object = data_parser.Story_Parser()
   cls.connection_session = requests.Session()
      
  def login(self):
@@ -59,22 +61,36 @@ class Newsblur_fetcher(object):
         except requests.exceptions.RequestException as e:
           # logging.error("Loging API Call threw an exception: " + str(e))
           print(str(e))
-        story_validation =self.validate_stories_page(stories_page)
+        story_validation =self.validate_stories_page(stories_page, page_index)
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))
-        
-        # if stories_page.status_code!=200:
-        #   print("Response code is not 200")
-        #   return("Response code is not 200")
-        # if json.loads(stories_page.content.decode('utf-8'))['stories'] is None:
-        #   print("Page # " + str(page_index) + " returned no stories")
-        #   return("Page # " + str(page_index) + " returned no stories")
-        
+        stories = json.loads(stories_page.content.decode('utf-8'))['stories']
+        self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])        
         #stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
         page_index+=1
   return stories_list
 
- def validate_stories_page(self, response):
+ def get_feeds(self):
+      '''
+      Retrieves all the subscribed Feeds
+      '''
+      url_extention =r'/reader/feeds'
+      try:
+          feeds=self.connection_session.get(self.config['URL'] + url_extention , verify=True)
+      except requests.exceptions.RequestException as e:
+        # logging.error("Loging API Call threw an exception: " + str(e))
+        print(str(e))
+      if feeds.status_code!=200:
+            print("Status code is : " + str(feeds.status_code))
+      feeds_dict=dict()
+      active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
+      for feed_id in active_feeds.keys():
+            feed_id[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
+      # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
+      return feeds_dict
+      
+
+ def validate_stories_page(self, response, index):
   '''
   Validates that no errors were returned
   '''
@@ -82,8 +98,8 @@ class Newsblur_fetcher(object):
           print("Response code is not 200")
           return("Response code is not 200")
   if json.loads(response.content.decode('utf-8'))['stories'] is None:
-    print("Page # " + str(page_index) + " returned no stories")
-    return("Page # " + str(page_index) + " returned no stories")
+    print("Page # " + str(index) + " returned no stories")
+    return("Page # " + str(index) + " returned no stories")
   return True
  
  #TODO parse the stories and write them to a good format for a file
@@ -93,9 +109,11 @@ class Newsblur_fetcher(object):
   '''
   Best practices
   '''
+ 
+  
    
 
 if __name__ == "__main__":
-  newsblur_object = Newsblur_fetcher()
+  newsblur_object = Newsblur_fetcher(None,None)
   if newsblur_object.login() == True:
-    x = newsblur_object.get_saved_stories()
+    x = newsblur_object.get_feeds()

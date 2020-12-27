@@ -1,5 +1,5 @@
 import time
-import api_calls
+from src import api_calls
 def test_module():
     print("This is a Test.")
     print("waiting...")
@@ -11,5 +11,6 @@ def test_module():
     print("Done waiting.")
 	
 if __name__ == "__main__":
-	test_module()
+    a = api_calls.Newsblur_fetcher(None,None)
+    test_module()
  #Place Holder

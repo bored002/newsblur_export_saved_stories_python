@@ -88,8 +88,7 @@ class Newsblur_fetcher(object):
       for feed_id in active_feeds.keys():
             feed_id[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
       # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
-      return feeds_dict
-      
+      return feeds_dict      
 
  def validate_stories_page(self, response, index):
   '''
@@ -110,9 +109,7 @@ class Newsblur_fetcher(object):
   '''
   Best practices
   '''
- 
-  
-   
+
 
 if __name__ == "__main__":
   newsblur_object = Newsblur_fetcher(None,None)

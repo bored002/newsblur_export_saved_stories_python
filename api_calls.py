@@ -1,16 +1,21 @@
 import requests
 import json
 import yaml
+import logging
 
 config_path = "config.yaml" 
 
 class Newsblur_fetcher(object):
  
  @classmethod
- def __init__(cls):
-    with open(config_path) as ymlfile:
-        cls.config = yaml.load(ymlfile)
-    cls.connection_session = requests.Session()
+ def __init__(cls, user_name, password):
+  if user_name is None and password is None:
+     with open(config_path) as ymlfile:
+         cls.config = yaml.load(ymlfile)
+  else:
+     cls.config=dict()
+     cls.config ={'user_name':user_name, 'password': password}
+  cls.connection_session = requests.Session()
      
  def login(self):
   '''
@@ -18,7 +23,12 @@ class Newsblur_fetcher(object):
   '''
   extended_url = '/api/login'  
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
-  newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)
+  try:
+      newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)
+  except requests.exceptions.RequestException as e:
+#    logging.error("Loging API Call threw an exception: " + str(e))
+   print(str(e))
+   return False
   if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
    return True
   elif newblur_login.status_code!=200:

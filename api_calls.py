@@ -29,6 +29,7 @@ class Newsblur_fetcher(object):
 #    logging.error("Loging API Call threw an exception: " + str(e))
    print(str(e))
    return False
+  
   if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
    return True
   elif newblur_login.status_code!=200:
@@ -37,6 +38,9 @@ class Newsblur_fetcher(object):
    return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
   
  def get_saved_stories(self):
+  '''
+  Pulls all the saved stories page by page and returns an object with all the stories
+  '''
   extended_url=r'/reader/starred_stories?page='
   stories_list =list()
   page_index = 1
@@ -44,13 +48,30 @@ class Newsblur_fetcher(object):
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         #TODO : Handle the stories better
         stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=False)
-        if stories_page.status_code!=200:
-          return("Bad response")
-        if stories_page.content.decode('utf-8').replace("'", '"')['stories'] is None:
-          return("Page : " + str(page_index) + " returned no stories")
+        story_validation =self.validate_stories_page(stories_page)
+        if story_validation!=True:
+          print("Validation of stories page failed error: " + str(story_validation))
+        # if stories_page.status_code!=200:
+        #   print("Response code is not 200")
+        #   return("Response code is not 200")
+        # if json.loads(stories_page.content.decode('utf-8'))['stories'] is None:
+        #   print("Page # " + str(page_index) + " returned no stories")
+        #   return("Page # " + str(page_index) + " returned no stories")
         stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
         page_index+=1
   return stories_list
+
+def validate_stories_page(self, response):
+  '''
+  Validates that no errors were returned
+  '''
+  if response.status_code!=200:
+          print("Response code is not 200")
+          return("Response code is not 200")
+  if json.loads(response.content.decode('utf-8'))['stories'] is None:
+    print("Page # " + str(page_index) + " returned no stories")
+    return("Page # " + str(page_index) + " returned no stories")
+  return True
  
  #TODO parse the stories and write them to a good format for a file
    

@@ -3,7 +3,10 @@ import requests
 import json
 import yaml
 import logging
-import data_parser
+try:
+  import data_parser # if executing just this script use this line
+except ModuleNotFoundError:
+  from src import data_parser # if executing main.py use this line
 
 config_path = "./configs/config.yaml" 
 

@@ -1,11 +1,11 @@
-import src
+# import src
 import requests
 import json
 import yaml
 import logging
-from src import data_parser
+import data_parser
 
-config_path = "config.yaml" 
+config_path = "./configs/config.yaml" 
 
 class Newsblur_fetcher(object):
  
@@ -36,7 +36,7 @@ class Newsblur_fetcher(object):
   if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
    return True
   elif newblur_login.status_code!=200:
-   return('Response code is not 200')
+   return('Error: Response code is ' + str(newblur_login.status_code))
   elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
   

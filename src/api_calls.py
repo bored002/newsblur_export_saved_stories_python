@@ -59,7 +59,6 @@ class Newsblur_fetcher(object):
     return False
 
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-        #TODO : Handle the stories better
         try:
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
@@ -69,9 +68,10 @@ class Newsblur_fetcher(object):
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))
         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-        self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])        
-        #stories_list.append(stories_page.content.decode('utf-8').replace("'", '"')['stories'])
+        parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
+        stories_list.extend(parsed_stories)
         page_index+=1
+        
   return stories_list
 
  def get_feeds(self):

@@ -1,5 +1,6 @@
 import json
 import logging
+import pandas
 
 config_path = "config.yaml" 
 
@@ -49,6 +50,14 @@ class Story_Parser(object):
       for feed_id in feeds.keys():
           self.feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
       return self.feed_dict
+  
+  def build_bakcup_dataframe(self, stories_list):
+    '''
+    Converts the list of stories (each story is a dict) to a dataframe object
+    '''
+    #TODO parse the stories and write them to a good format for a file
+    # https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
+
     
   @classmethod
   def teardown(cls):

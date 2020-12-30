@@ -22,6 +22,25 @@ class Story_Parser(object):
 
     each story will be a dict : {origin: , title, link, date , tags}
     '''
+    
+    story_object_list = list()
+    for story in story_list:
+    	story_object = dict()
+    	story_object['origin'] = self.feed_dict[story['story_feed_id']]
+    	story_object['title'] = story['story_title']
+    	story_object['link'] = story['id']
+    	story_object['date'] = story['starred_date']
+    	story_object['tags'] = story['story_tags']
+
+    	story_object_list.append(story_object)
+
+    return story_object_list
+  
+  def remove_duplicates(self, full_list):
+    '''
+    Removes duplicate stories from the list
+    '''
+    #TODO need to decide what is the duplicates criteria
   
   def parse_feeds(self,feeds):
       '''

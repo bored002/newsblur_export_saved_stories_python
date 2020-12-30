@@ -104,8 +104,6 @@ class Newsblur_fetcher(object):
     return("Page # " + str(index) + " returned no stories")
   return True
  
- #TODO parse the stories and write them to a good format for a file
-
  @classmethod
  def teardown(cls):
   '''

@@ -11,6 +11,9 @@ def test_module():
     print("Done waiting.")
 	
 if __name__ == "__main__":
-    a = api_calls.Newsblur_fetcher(None,None)
+    newsblur_object = api_caller(None,None)
+    if newsblur_object.login_newsblur() == True:
+      x = newsblur_object.get_feeds()
+      y = newsblur_object.get_saved_stories()
     test_module()
  #Place Holder

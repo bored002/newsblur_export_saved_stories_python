@@ -9,8 +9,9 @@ class Story_Parser(object):
     '''
     Place Holder
     '''
+    cls.feed_dict = dict()
  
-  def parse_stories(self, fresh_story_list):
+  def parse_stories(self, story_list):
     '''
     Parse stories froma pulled page 
     from each story exctract the following:
@@ -26,13 +27,12 @@ class Story_Parser(object):
       '''
       Parsing Feeds matching ID and name
       '''
-      feed_dict = dict()
       for feed_id in feeds.keys():
-          feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
-      return feed_dict
+          self.feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
+      return self.feed_dict
     
   @classmethod
   def teardown(cls):
     '''
-    Best practices
+    Best practice
     '''

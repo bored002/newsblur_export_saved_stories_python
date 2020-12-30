@@ -51,12 +51,14 @@ class Story_Parser(object):
           self.feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
       return self.feed_dict
   
-  def build_bakcup_dataframe(self, stories_list):
+  def build_dataframe(self, stories_list):
     '''
     Converts the list of stories (each story is a dict) to a dataframe object
     '''
     #TODO parse the stories and write them to a good format for a file
     # https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
+    stories_dataframe = pandas.DataFrame(stories_list)
+    return stories_dataframe
 
     
   @classmethod

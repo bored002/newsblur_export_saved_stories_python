@@ -10,7 +10,7 @@ except ModuleNotFoundError:
 
 config_path = "./configs/config.yaml" 
 
-class Newsblur_fetcher(object):
+class api_caller(object):
  
  @classmethod
  def __init__(cls, user_name, password):
@@ -23,7 +23,7 @@ class Newsblur_fetcher(object):
   cls.parser_object = data_parser.Story_Parser()
   cls.connection_session = requests.Session()
      
- def login(self):
+ def login_newsblur(self):
   '''
   performs a log-in action to initiate a session with the s
   '''
@@ -112,6 +112,7 @@ class Newsblur_fetcher(object):
 
 
 if __name__ == "__main__":
-  newsblur_object = Newsblur_fetcher(None,None)
-  if newsblur_object.login() == True:
+  newsblur_object = api_caller(None,None)
+  if newsblur_object.login_newsblur() == True:
     x = newsblur_object.get_feeds()
+    y = newsblur_object.get_saved_stories()

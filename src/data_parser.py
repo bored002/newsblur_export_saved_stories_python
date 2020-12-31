@@ -16,25 +16,24 @@ class Story_Parser(object):
     '''
     Parse stories froma pulled page 
     from each story exctract the following:
-    1. Origin : [Lifehacker]
-    2. Title: 
-    3. Date
-    4. Link to story
-
     each story will be a dict : {origin: , title, link, date , tags}
     '''
     
     story_object_list = list()
+    print("Parsing Story List")
     for story in story_list:
-    	story_object = dict()
-    	story_object['origin'] = self.feed_dict[story['story_feed_id']]
-    	story_object['title'] = story['story_title']
-    	story_object['link'] = story['id']
-    	story_object['date'] = story['starred_date']
-    	story_object['tags'] = story['story_tags']
-
-    	story_object_list.append(story_object)
-
+      story_object = dict()
+      try:
+          story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
+      except KeyError:
+          story_object['origin'] = 'Unknown'
+      story_object['title'] = story['story_title']
+      story_object['link'] = story['id']
+      story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
+      story_object['tags'] = story['story_tags']
+      print("Story Parsed: Adding to list")
+      story_object_list.append(story_object)
+    #  story_object = dict()
     return story_object_list
   
   def remove_duplicates(self, full_list):
@@ -48,7 +47,7 @@ class Story_Parser(object):
       Parsing Feeds matching ID and name
       '''
       for feed_id in feeds.keys():
-          self.feed_dict[feed_id] = json.loads(feeds.content.decode('utf-8'))['feeds'][feed_id]['feed_title']
+          self.feed_dict[feed_id] = feeds[feed_id]['feed_title']
       return self.feed_dict
   
   def build_dataframe(self, stories_list):

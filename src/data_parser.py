@@ -1,6 +1,7 @@
 import json
 import logging
 import pandas
+from collections import OrderedDict
 
 config_path = "config.yaml" 
 
@@ -22,18 +23,18 @@ class Story_Parser(object):
     story_object_list = list()
     print("Parsing Story List")
     for story in story_list:
-      story_object = dict()
+      story_object = OrderedDict()
       try:
           story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
       except KeyError:
           story_object['origin'] = 'Unknown'
       story_object['title'] = story['story_title']
       story_object['link'] = story['id']
-      story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       story_object['tags'] = story['story_tags']
+      story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
+      
       print("Story Parsed: Adding to list")
       story_object_list.append(story_object)
-    #  story_object = dict()
     return story_object_list
   
   def remove_duplicates(self, full_list):

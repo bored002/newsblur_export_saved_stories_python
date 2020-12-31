@@ -1,4 +1,5 @@
 import time
+import sys
 from src import api_calls
 def test_module():
     print("This is a Test.")
@@ -11,6 +12,9 @@ def test_module():
     print("Done waiting.")
 	
 if __name__ == "__main__":
+    print(f"Arguments count: {len(sys.argv)}")
+    for i, arg in enumerate(sys.argv):
+        print(f"Argument {i:>6}: {arg}")
     newsblur_object = api_calls.api_caller(None,None)
     if newsblur_object.login_newsblur() == True:
       x = newsblur_object.get_feeds()

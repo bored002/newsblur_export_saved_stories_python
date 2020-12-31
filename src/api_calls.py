@@ -1,5 +1,8 @@
 # import src
 import requests
+from urllib3.exceptions import InsecureRequestWarning
+# Suppress only the single warning from urllib3 needed.
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 import json
 import yaml
 import logging
@@ -14,12 +17,14 @@ class api_caller(object):
  
  @classmethod
  def __init__(cls, user_name, password):
-  if user_name is None and password is None:
-     with open(config_path) as ymlfile:
-         cls.config = yaml.load(ymlfile)
-  else:
-     cls.config=dict()
-     cls.config ={'user_name':user_name, 'password': password}
+  '''
+  initialiaze class
+  '''
+  with open(config_path) as ymlfile:
+      cls.config = yaml.load(ymlfile)
+  if user_name is not None and password is not None:
+    cls.config['user_name'] = user_name
+    cls.config['password'] = password
   cls.parser_object = data_parser.Story_Parser()
   cls.connection_session = requests.Session()
      
@@ -59,6 +64,7 @@ class api_caller(object):
     return False
 
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
+        print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
@@ -70,6 +76,7 @@ class api_caller(object):
         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
         stories_list.extend(parsed_stories)
+        print("Total stories retrieved and processed : " + len(stories_list))
         page_index+=1
         
   return stories_list
@@ -88,7 +95,7 @@ class api_caller(object):
             print("Status code is : " + str(feeds.status_code))
       feeds_dict = dict()
       active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-      feed_dict = self.parser_object.parse_feeds(active_feeds)
+      feeds_dict = self.parser_object.parse_feeds(active_feeds)
       # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
       return feeds_dict      
 

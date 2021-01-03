@@ -1,6 +1,7 @@
 import time
 import sys
 from src import api_calls
+from src import data_parser
 def test_module():
     print("This is a Test.")
     print("waiting...")
@@ -19,5 +20,7 @@ if __name__ == "__main__":
     if newsblur_object.login_newsblur() == True:
       x = newsblur_object.get_feeds()
       y = newsblur_object.get_saved_stories()
+      data_parser_object  = data_parser.Data_Parser() 
+      df = data_parser_object.convert_to_dataframe(y)
     test_module()
  #Place Holder

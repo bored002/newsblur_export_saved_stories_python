@@ -5,7 +5,8 @@ from collections import OrderedDict
 
 config_path = "config.yaml" 
 
-class Story_Parser(object):
+class Data_Parser(object):
+      
   @classmethod
   def __init__(cls):
     '''
@@ -21,7 +22,7 @@ class Story_Parser(object):
     '''
     
     story_object_list = list()
-    print("Parsing Story List")
+    # print("Parsing Story List")
     for story in story_list:
       story_object = OrderedDict()
       try:
@@ -33,7 +34,7 @@ class Story_Parser(object):
       story_object['tags'] = story['story_tags']
       story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       
-      print("Story Parsed: Adding to list")
+      # print("Story Parsed: Adding to list")
       story_object_list.append(story_object)
     return story_object_list
   
@@ -51,7 +52,7 @@ class Story_Parser(object):
           self.feed_dict[feed_id] = feeds[feed_id]['feed_title']
       return self.feed_dict
   
-  def build_dataframe(self, stories_list):
+  def convert_to_dataframe(self, stories_list):
     '''
     Converts the list of stories (each story is a dict) to a dataframe object
     '''

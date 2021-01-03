@@ -25,7 +25,7 @@ class api_caller(object):
   if user_name is not None and password is not None:
     cls.config['user_name'] = user_name
     cls.config['password'] = password
-  cls.parser_object = data_parser.Story_Parser()
+  cls.parser_object = data_parser.Data_Parser()
   cls.connection_session = requests.Session()
      
  def login_newsblur(self):
@@ -64,7 +64,7 @@ class api_caller(object):
     return False
 
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-        print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
+        # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
@@ -76,7 +76,7 @@ class api_caller(object):
         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
         stories_list.extend(parsed_stories)
-        print("Total stories retrieved and processed : " + len(stories_list))
+        print("Total stories retrieved and processed : " + str(len(stories_list)))
         page_index+=1
         
   return stories_list

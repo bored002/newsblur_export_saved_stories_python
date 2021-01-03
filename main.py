@@ -2,6 +2,7 @@ import time
 import sys
 from src import api_calls
 from src import data_parser
+from src import email_client
 def test_module():
     print("This is a Test.")
     print("waiting...")
@@ -22,5 +23,8 @@ if __name__ == "__main__":
       y = newsblur_object.get_saved_stories()
       data_parser_object  = data_parser.Data_Parser() 
       df = data_parser_object.convert_to_dataframe(y)
+      csv_file = data_parser_object.data_frame_to_csv(df)
+      emailer = email_client.Emailer()
+      sent_mail = emailer.email_csv(csv_file)
     test_module()
  #Place Holder

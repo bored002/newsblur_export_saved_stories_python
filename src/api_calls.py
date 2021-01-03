@@ -5,6 +5,7 @@ from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 import json
 import yaml
+import gspread
 import logging
 try:
   import data_parser # if executing just this script use this line

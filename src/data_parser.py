@@ -2,7 +2,7 @@ import json
 import logging
 import pandas
 from collections import OrderedDict
-
+import time
 config_path = "config.yaml" 
 
 class Data_Parser(object):
@@ -60,6 +60,15 @@ class Data_Parser(object):
     # https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
     stories_dataframe = pandas.DataFrame(stories_list)
     return stories_dataframe
+
+  def data_frame_to_csv(self, data_frame):
+    '''
+    Converts a pandas Data frame structure to a CSV format to send as email
+    temporary solution
+    '''
+    file_name = 'saved_stories'+"_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv"
+    csv_file = pandas.DataFrame.to_csv(file_name, sep='\t')
+    return csv_file
 
     
   @classmethod

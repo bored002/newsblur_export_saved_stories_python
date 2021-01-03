@@ -89,17 +89,17 @@ class api_caller(object):
       url_extention =r'/reader/feeds'
       try:
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
+          if feeds.status_code!=200:
+                print("Status code is : " + str(feeds.status_code))
+                feeds_dict = dict()
+                active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
+                feeds_dict = self.parser_object.parse_feeds(active_feeds)
+                return feeds_dict
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
         print(str(e))
-      if feeds.status_code!=200:
-            print("Status code is : " + str(feeds.status_code))
-      feeds_dict = dict()
-      active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-      feeds_dict = self.parser_object.parse_feeds(active_feeds)
-      # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
-      return feeds_dict      
-
+        return None      
+         
  def validate_stories_page(self, response, index):
   '''
   Validates that no errors were returned

@@ -52,6 +52,16 @@ jobs:
         env:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
+      
+      # Upload execution results
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: upload-csv
+          path: output/*.csv
+          if-no-files-found: warn
+          retention-days: 5
+      
       # Test env vars
 #       - name: Hello world
 #         run: echo Hello world $USER and $PASS

@@ -26,9 +26,10 @@ class Data_Parser(object):
     for story in story_list:
       story_object = OrderedDict()
       try:
-          story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
+        story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
       except KeyError:
-          story_object['origin'] = 'Unknown'
+        story_object['origin'] = self.extract_origin_from_url(story)
+          # story_object['origin'] = 'Unknown'
       story_object['title'] = story['story_title']
       story_object['link'] = story['id']
       story_object['tags'] = story['story_tags']
@@ -37,6 +38,18 @@ class Data_Parser(object):
       # print("Story Parsed: Adding to list")
       story_object_list.append(story_object)
     return story_object_list
+  
+  def extract_origin_from_url(self, story):
+        '''
+        In case there is no specific origin the origin will be extraced from the link URL
+        '''
+        url = story['id']
+        domain_name = story['id'].split("//")[1].split("/")[0].split(".").lower()
+        for feed_name in self.feed_dict.values():
+              if domain_name == feed_name.lower():
+                    return feed_name
+        return 'Unkown'
+
   
   def remove_duplicates(self, full_list):
     '''

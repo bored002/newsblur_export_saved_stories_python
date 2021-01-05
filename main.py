@@ -25,6 +25,5 @@ if __name__ == "__main__":
       df = data_parser_object.convert_to_dataframe(y)
       csv_file = data_parser_object.data_frame_to_csv(df)
       emailer = email_client.Emailer()
-      sent_mail = emailer.email_csv(csv_file)
-    test_module()
- #Place Holder
+      mail_sender = emailer.email_csv(csv_file)
+#   test_module()

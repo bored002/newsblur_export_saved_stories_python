@@ -111,6 +111,15 @@ class api_caller(object):
     print("Page # " + str(index) + " returned no stories")
     return("Page # " + str(index) + " returned no stories")
   return True
+
+ def push_to_google_sheet(self, data_frame, sheet_id):
+      '''
+      Pushing the Data Frame to a google sheet worksheet.
+      '''
+      #TODO:
+      # 1. If an older backup sheet exists delete it 
+      # 2. Generate a timestamp --> figure out where to add it 
+      # 3. Write to a new sheet.
  
  @classmethod
  def teardown(cls):

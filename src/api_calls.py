@@ -11,6 +11,7 @@ try:
   import data_parser # if executing just this script use this line
 except ModuleNotFoundError:
   from src import data_parser # if executing main.py use this line
+from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
 
@@ -120,6 +121,7 @@ class api_caller(object):
       # 1. If an older backup sheet exists delete it 
       # 2. Generate a timestamp --> figure out where to add it 
       # 3. Write to a new sheet.
+      ServiceAccountCredentials.from_json()
  
  @classmethod
  def teardown(cls):

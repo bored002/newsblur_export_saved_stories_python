@@ -18,6 +18,8 @@ class data_science(object):
         '''
         Generates a Data Frame which conaints the story distribution per origin website (feed)
         '''
+        distribution_frame = pandas.DataFrame()
+        #TODO : Colums: A) Origin , B) # of Stories
 
     def analyze_trends():
         '''

@@ -13,7 +13,7 @@ class Data_Parser(object):
     Place Holder
     '''
     cls.feed_dict = dict()
- 
+    cls.stories_dataframe = None
   def parse_stories(self, story_list):
     '''
     Parse stories froma pulled page 
@@ -71,8 +71,8 @@ class Data_Parser(object):
     '''
     #TODO parse the stories and write them to a good format for a file
     # https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
-    stories_dataframe = pandas.DataFrame(stories_list)
-    return stories_dataframe
+    self.stories_dataframe = pandas.DataFrame(stories_list)
+    return self.stories_dataframe
 
   def data_frame_to_csv(self, data_frame):
     '''

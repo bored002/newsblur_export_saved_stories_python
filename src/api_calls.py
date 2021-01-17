@@ -55,7 +55,7 @@ class api_caller(object):
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
   extended_url=r'/reader/starred_stories?page='
-  stories_list =list()
+  self.stories_list =list()
   page_index = 1
   
   try:
@@ -77,11 +77,11 @@ class api_caller(object):
           print("Validation of stories page failed error: " + str(story_validation))
         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-        stories_list.extend(parsed_stories)
-        print("Total stories retrieved and processed : " + str(len(stories_list)))
+        self.stories_list.extend(parsed_stories)
+        print("Total stories retrieved and processed : " + str(len(self.stories_list)))
         page_index+=1
         
-  return stories_list
+  return self.stories_list
 
  def get_feeds(self):
       '''
@@ -92,10 +92,10 @@ class api_caller(object):
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code!=200:
                 print("Status code is : " + str(feeds.status_code))
-                feeds_dict = dict()
+                self.feeds_dict = dict()
                 active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
                 feeds_dict = self.parser_object.parse_feeds(active_feeds)
-                return feeds_dict
+                return self.feeds_dict
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
         print(str(e))

@@ -122,6 +122,12 @@ class api_caller(object):
       # 2. Generate a timestamp --> figure out where to add it 
       # 3. Write to a new sheet.
       ServiceAccountCredentials.from_json()
+
+ def pull_from_google_sheet(self,sheet_id):
+        '''
+        Pulls latest backup sheet 
+        '''
+        #TODO possibly latest Trend page and the
  
  @classmethod
  def teardown(cls):

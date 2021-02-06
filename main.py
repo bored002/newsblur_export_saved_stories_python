@@ -17,9 +17,9 @@ if __name__ == "__main__":
     print(f"Arguments count: {len(sys.argv)}")
     for i, arg in enumerate(sys.argv):
         print(f"Argument {i:>6}: {arg}") # should pass newsblur user,password and google api key
-    newsblur_object = api_calls.api_caller(None,None)
+    newsblur_object = api_calls.api_caller('alwaysgood1','Mfeed20')
     if newsblur_object.login_newsblur() == True:
-      rss_feeds = newsblur_object.get_feeds()
+    #   rss_feeds = newsblur_object.get_feeds()
       data_parser_object  = data_parser.Data_Parser() 
       #   saved_stories = newsblur_object.get_saved_stories() # returns aggregated list of stories
       saved_stories_dataframe = data_parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())

@@ -44,7 +44,10 @@ class Data_Parser(object):
         In case there is no specific origin the origin will be extraced from the link URL
         '''
         url = story['id']
-        domain_name = story['id'].split("//")[1].split("/")[0].split(".").lower()
+        try:
+          domain_name = story['id'].split("//")[1].split("/")[0].split(".")[0].lower()
+        except IndexError:
+          domain_name = story['story_permalink'].split("//")[1].split("/")[0].split(".")[0].lower()
         for feed_name in self.feed_dict.values():
               if domain_name == feed_name.lower():
                     return feed_name

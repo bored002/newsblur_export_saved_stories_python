@@ -83,7 +83,7 @@ class Data_Parser(object):
     temporary solution
     '''
     file_name = 'saved_stories'+"_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv"
-    csv_file = pandas.DataFrame.to_csv(file_name, encoding='utf-8', index=False) #df.to_csv(file_name, sep='\t', encoding='utf-8')
+    csv_file = data_frame.to_csv(file_name, encoding='utf-8', index=False) #df.to_csv(file_name, sep='\t', encoding='utf-8')
     return csv_file
 
     

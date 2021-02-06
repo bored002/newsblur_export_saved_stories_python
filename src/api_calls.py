@@ -1,15 +1,17 @@
 # import src
 import requests
 from urllib3.exceptions import InsecureRequestWarning
-# Suppress only the single warning from urllib3 needed.
-requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning) # Suppress only the single warning from urllib3 needed.
 import json
 import yaml
+# import gspread #TODO add to reqruirments txt and install
+import time
 import logging
 try:
   import data_parser # if executing just this script use this line
 except ModuleNotFoundError:
   from src import data_parser # if executing main.py use this line
+from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
 
@@ -25,8 +27,10 @@ class api_caller(object):
   if user_name is not None and password is not None:
     cls.config['user_name'] = user_name
     cls.config['password'] = password
-  cls.parser_object = data_parser.Story_Parser()
+  cls.feeds_dict = dict()
+  cls.parser_object = data_parser.Data_Parser()
   cls.connection_session = requests.Session()
+  
      
  def login_newsblur(self):
   '''
@@ -52,19 +56,22 @@ class api_caller(object):
   '''
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
+  self.get_feeds()
   extended_url=r'/reader/starred_stories?page='
-  stories_list =list()
+  self.stories_list =list()
   page_index = 1
-  
+  print("Starting to read Saved Stories Feed.")
+  start_time =time.perf_counter()
   try:
     stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
   except requests.exceptions.RequestException as e:
     # logging.error("Loging API Call threw an exception: " + str(e))
     print(str(e))
     return False
-
+  #TODO : Add time to run during execution and return data pull duratoin
+  #TODO : improve to run asynch : Challenge
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-        print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
+        # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
@@ -75,11 +82,11 @@ class api_caller(object):
           print("Validation of stories page failed error: " + str(story_validation))
         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-        stories_list.extend(parsed_stories)
-        print("Total stories retrieved and processed : " + len(stories_list))
+        self.stories_list.extend(parsed_stories)
+        print("Total stories retrieved and processed : " + str(len(self.stories_list))) #debug printout
         page_index+=1
-        
-  return stories_list
+  print("All Saved stories Aggregated in : " +str(time.perf_counter()-start_time)+ " seconds")   
+  return self.stories_list
 
  def get_feeds(self):
       '''
@@ -88,17 +95,21 @@ class api_caller(object):
       url_extention =r'/reader/feeds'
       try:
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
+          if feeds.status_code==200:
+                print("Status code is : " + str(feeds.status_code))
+                # self.feeds_dict = dict()
+                active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
+                self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
+                # return self.feeds_dict
+          else:
+                print("Status code is : " + str(feeds.status_code))
+                print('Content: ' + str(feeds.content))
+                # return None
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
         print(str(e))
-      if feeds.status_code!=200:
-            print("Status code is : " + str(feeds.status_code))
-      feeds_dict = dict()
-      active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-      feeds_dict = self.parser_object.parse_feeds(active_feeds)
-      # json.loads(feeds.content.decode('utf-8'))['feeds']['6247287']['feed_title']
-      return feeds_dict      
-
+        # return None      
+         
  def validate_stories_page(self, response, index):
   '''
   Validates that no errors were returned

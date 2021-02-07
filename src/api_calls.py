@@ -8,9 +8,9 @@ import yaml
 import time
 import logging
 try:
-  import data_parser # if executing just this script use this line
+  import data_parser 
 except ModuleNotFoundError:
-  from src import data_parser # if executing main.py use this line
+  from src import data_parser
 from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
@@ -46,8 +46,10 @@ class api_caller(object):
    return False
   
   if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
+   print("Authentication: Succesfull")
    return True
   elif newblur_login.status_code!=200:
+   print('Error Content:' + str(newblur_login.content))
    return('Error: Response code is ' + str(newblur_login.status_code))
   elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
@@ -68,7 +70,6 @@ class api_caller(object):
     # logging.error("Loging API Call threw an exception: " + str(e))
     print(str(e))
     return False
-  #TODO : Add time to run during execution and return data pull duratoin
   #TODO : improve to run asynch : Challenge
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
@@ -97,7 +98,6 @@ class api_caller(object):
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
                 print("Status code is : " + str(feeds.status_code))
-                # self.feeds_dict = dict()
                 active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
                 self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
                 # return self.feeds_dict

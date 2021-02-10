@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.9] #[3.6, 3.7, 3.8, 3.9]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -47,14 +47,14 @@ jobs:
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       # Runs a set of commands using the runners shell
-      - name: Execute py script # run the run.py to get the latest data
+      - name: Execute python script script # run the run.py to get the latest data
         run: python main.py
         env:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
       
       # Upload execution results
-      - name: Upload csv artifact
+      - name: Upload CSV artifact
         uses: actions/upload-artifact@v2
         with:
           name: upload-csv

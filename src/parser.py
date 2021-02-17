@@ -13,10 +13,11 @@ class parser(object):
   @classmethod
   def __init__(cls):
     '''
-    Place Holder
+    Initialize class
     '''
     cls.feed_dict = dict()
     cls.stories_dataframe = None
+
   def parse_stories(self, story_list):
     '''
     Parse stories froma pulled page 

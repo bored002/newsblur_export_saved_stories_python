@@ -11,7 +11,7 @@ class data_science(object):
     @classmethod
     def __init__(cls):
         '''
-        Template
+        Initialize class
         '''
 
     def get_origin_distribution(self, raw_data_frame):

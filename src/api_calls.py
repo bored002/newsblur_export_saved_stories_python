@@ -8,9 +8,9 @@ import yaml
 import time
 import logging
 try:
-  import data_parser 
+  import parser 
 except ModuleNotFoundError:
-  from src import data_parser
+  from src import parser
 from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
@@ -28,7 +28,7 @@ class api_caller(object):
     cls.config['user_name'] = user_name
     cls.config['password'] = password
   cls.feeds_dict = dict()
-  cls.parser_object = data_parser.Data_Parser()
+  cls.parser_object = parser.parser()
   cls.connection_session = requests.Session()
   
      

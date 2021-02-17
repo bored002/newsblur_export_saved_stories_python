@@ -8,7 +8,7 @@ import os
 import inspect
 config_path = "config.yaml" 
 
-class Data_Parser(object):
+class parser(object):
       
   @classmethod
   def __init__(cls):

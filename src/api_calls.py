@@ -23,7 +23,7 @@ class api_caller(object):
   initialiaze class
   '''
   with open(config_path) as ymlfile:
-      cls.config = yaml.load(ymlfile)
+      cls.config = yaml.load(ymlfile, Loader=yaml.FullLoader) #yaml.load(input, Loader=yaml.FullLoader)
   if user_name is not None and password is not None:
     cls.config['user_name'] = user_name
     cls.config['password'] = password

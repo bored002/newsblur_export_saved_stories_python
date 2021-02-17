@@ -1,5 +1,6 @@
 import json
 import logging
+from os.path import abspath
 import pandas
 from collections import OrderedDict
 import time
@@ -91,7 +92,11 @@ class Data_Parser(object):
     file_name = os.path.join(absolute_path,filename_prefix + "_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv")
     try:
       csv_file = data_frame.to_csv(file_name, encoding='utf-8', index=index_column) #df.to_csv(file_name, sep='\t', encoding='utf-8')
-      return csv_file #TODO instead of return perform check to see if file was created.
+      if os.path.isfile(file_name):
+        return csv_file
+      else:
+        print("Failed to generate file : " + file_name)
+        return False
     except FileNotFoundError:
       print("Failed to convert to CSV.")
       return None

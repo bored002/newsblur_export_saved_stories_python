@@ -28,7 +28,7 @@ class api_caller(object):
     cls.config['user_name'] = user_name
     cls.config['password'] = password
   cls.feeds_dict = dict()
-  cls.parser_object = parser.parser()
+  cls.parser_object = parser.Parser()
   cls.connection_session = requests.Session()
   
      
@@ -48,13 +48,14 @@ class api_caller(object):
   # if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
   #  print("Authentication: Succesfull")
   #  return True
-  if newblur_login.status_code!=200:
+  if newblur_login.status_code!=200 or json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
+   print("Authentication Failed.")
    print('Error Content:' + str(newblur_login.content))
    print('Error: Response code is ' + str(newblur_login.status_code))
    return False
-  elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
-   print('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
-   return False
+  # elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
+  #  print('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
+  #  return False
   print("Authentication: Succesfull")
   return True
   

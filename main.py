@@ -28,14 +28,14 @@ if __name__ == "__main__":
         print("Encountered Index Error in passed system arguments")
         user_name =None
         password = None
-    newsblur_object = api_calls.api_caller('alwaysgood1','Mfeed20')
+    newsblur_object = api_calls.api_caller(user_name,password)
     if newsblur_object.login_newsblur() == True:
       data_parser_object  = data_parser.Data_Parser() 
       data_sciences = data_processor.data_science()
       saved_stories_dataframe = data_parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
       aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-      data_parser_object.data_frame_to_csv(saved_stories_dataframe, 'saved_stories')
-      data_parser_object.data_frame_to_csv(aggregation_dataframe,'origin_distribution_aggregation', 'origin')
+      data_parser.Data_Parser.dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+      data_parser.Data_Parser.dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

@@ -8,7 +8,7 @@ import os
 import inspect
 config_path = "config.yaml" 
 
-class Parser(object):
+class Content_Parser(object):
       
   @classmethod
   def __init__(cls):

@@ -1,7 +1,7 @@
 import time
 import sys
 from src import api_calls
-from src import parser
+from src import parse
 from src import data_processor
 from src import email_client
 
@@ -23,12 +23,12 @@ if __name__ == "__main__":
     if newsblur_object.login_newsblur() != True:
         print('API Authentication Failed.')
         sys.exit("API Authentication Failed. Terminating Execution.")
-    parser_object  = parser.parser() 
+    parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-    parser.parser.dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
-    parser.parser.dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
+    parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+    parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

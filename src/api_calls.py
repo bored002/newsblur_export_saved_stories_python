@@ -7,10 +7,11 @@ import yaml
 # import gspread #TODO add to reqruirments txt and install
 import time
 import logging
-try:
-  import parser 
-except ModuleNotFoundError:
-  from src import parser
+import src
+# try:
+
+# except ModuleNotFoundError:
+from src import parse
 from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
@@ -28,7 +29,7 @@ class api_caller(object):
     cls.config['user_name'] = user_name
     cls.config['password'] = password
   cls.feeds_dict = dict()
-  cls.parser_object = parser.Parser()
+  cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
   
      

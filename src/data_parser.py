@@ -91,7 +91,7 @@ class Data_Parser(object):
     file_name = os.path.join(absolute_path,filename_prefix + "_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv")
     try:
       csv_file = data_frame.to_csv(file_name, encoding='utf-8', index=index_column) #df.to_csv(file_name, sep='\t', encoding='utf-8')
-      return csv_file
+      return csv_file #TODO instead of return perform check to see if file was created.
     except FileNotFoundError:
       print("Failed to convert to CSV.")
       return None

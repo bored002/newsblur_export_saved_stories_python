@@ -1,19 +1,10 @@
 import time
 import sys
 from src import api_calls
-from src import data_parser
+from src import parser
 from src import data_processor
 from src import email_client
-def test_module():
-    print("This is a Test.")
-    print("waiting...")
-    timer = 30
-    while timer>0:
-        print('Wait Time left : ' + str(timer))
-        time.sleep(10)
-        timer-=10        
-    print("Done waiting.")
-	
+
 if __name__ == "__main__":
 
     print(f"Arguments count: {len(sys.argv)}") #debug
@@ -31,13 +22,13 @@ if __name__ == "__main__":
     newsblur_object = api_calls.api_caller(user_name,password)
     if newsblur_object.login_newsblur() != True:
         print('API Authentication Failed.')
-        sys.exit("API Authentication Failed. Terminating Execution")
-    data_parser_object  = data_parser.Data_Parser() 
+        sys.exit("API Authentication Failed. Terminating Execution.")
+    parser_object  = parser.parser() 
     data_sciences = data_processor.data_science()
-    saved_stories_dataframe = data_parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
+    saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-    data_parser.Data_Parser.dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
-    data_parser.Data_Parser.dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
+    parser.parser.dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+    parser.parser.dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

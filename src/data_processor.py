@@ -14,11 +14,12 @@ class data_science(object):
         Template
         '''
 
-    def get_origin_distribution(raw_data_frame):
+    def get_origin_distribution(self, raw_data_frame):
         '''
         Generates a Data Frame which conaints the story distribution per origin website (feed)
         '''
-        raw_data_frame.groupby('origin').size()
+        return raw_data_frame['origin'].value_counts()
+        # return raw_data_frame.groupby('origin')
 
     def analyze_trends():
         '''

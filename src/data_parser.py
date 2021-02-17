@@ -3,6 +3,8 @@ import logging
 import pandas
 from collections import OrderedDict
 import time
+import os
+import inspect
 config_path = "config.yaml" 
 
 class Data_Parser(object):
@@ -77,14 +79,19 @@ class Data_Parser(object):
     self.stories_dataframe = pandas.DataFrame(stories_list)
     return self.stories_dataframe
 
-  def data_frame_to_csv(self, data_frame):
+  def data_frame_to_csv(self, data_frame, filename_prefix,index_column=False):
     '''
     Converts a pandas Data frame structure to a CSV format to send as email
     temporary solution
     '''
-    file_name = 'saved_stories'+"_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv"
-    csv_file = data_frame.to_csv(file_name, encoding='utf-8', index=False) #df.to_csv(file_name, sep='\t', encoding='utf-8')
-    return csv_file
+    absolute_path =(os.path.dirname(os.path.abspath(inspect.getabsfile(inspect.currentframe())))).replace('src','output')
+    file_name = os.path.join(absolute_path,filename_prefix + "_" + str(time.strftime('%Y%m%d%H%M%S')) + ".csv")
+    try:
+      csv_file = data_frame.to_csv(file_name, encoding='utf-8', index=False) #df.to_csv(file_name, sep='\t', encoding='utf-8')
+      return csv_file
+    except FileNotFoundError:
+      print("Failed to convert to CSV.")
+      return None
 
     
   @classmethod

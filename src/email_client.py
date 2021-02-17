@@ -36,6 +36,10 @@ class Emailer(object):
     #         pass
     #     smtpserver.quit()
 
+    def write_csv_to_folder(self,csv):
+        '''
+        saves CSV file to predefined location
+        '''
 
     def email_csv(self, file):
         emailfrom = 'your_python_project@github.com'

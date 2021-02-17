@@ -45,14 +45,18 @@ class api_caller(object):
    print(str(e))
    return False
   
-  if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
-   print("Authentication: Succesfull")
-   return True
-  elif newblur_login.status_code!=200:
+  # if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
+  #  print("Authentication: Succesfull")
+  #  return True
+  if newblur_login.status_code!=200:
    print('Error Content:' + str(newblur_login.content))
-   return('Error: Response code is ' + str(newblur_login.status_code))
+   print('Error: Response code is ' + str(newblur_login.status_code))
+   return False
   elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
-   return('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
+   print('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
+   return False
+  print("Authentication: Succesfull")
+  return True
   
  def get_saved_stories(self):
   '''

@@ -31,7 +31,7 @@ if __name__ == "__main__":
     newsblur_object = api_calls.api_caller(user_name,password)
     if newsblur_object.login_newsblur() != True:
         print('API Authentication Failed.')
-        exit
+        sys.exit("API Authentication Failed. Terminating Execution")
     data_parser_object  = data_parser.Data_Parser() 
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = data_parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
@@ -41,4 +41,5 @@ if __name__ == "__main__":
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)
+
 #Place Holder  to mark EOF

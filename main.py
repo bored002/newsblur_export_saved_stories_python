@@ -34,8 +34,8 @@ if __name__ == "__main__":
       data_sciences = data_processor.data_science()
       saved_stories_dataframe = data_parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
       aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-      data_parser_object.data_frame_to_csv(saved_stories_dataframe, 'saved_stories')
-      data_parser_object.data_frame_to_csv(aggregation_dataframe,'origin_distribution_aggregation')
+      data_parser.Data_Parser.dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+      data_parser.Data_Parser.dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

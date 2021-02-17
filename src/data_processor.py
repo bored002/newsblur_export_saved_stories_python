@@ -18,7 +18,9 @@ class data_science(object):
         '''
         Generates a Data Frame which conaints the story distribution per origin website (feed)
         '''
-        return raw_data_frame['origin'].value_counts()
+        grouped_data = raw_data_frame.groupby('origin').size()
+        return pandas.DataFrame(grouped_data)
+        # return raw_data_frame['origin'].value_counts()
         # return raw_data_frame.groupby('origin')
 
     def analyze_trends():

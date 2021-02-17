@@ -24,20 +24,22 @@ class Data_Parser(object):
     '''
     
     story_object_list = list()
-    # print("Parsing Story List")
+    # print("Parsing Story List") #debug
     for story in story_list:
       story_object = OrderedDict()
       try:
         story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
       except KeyError:
         story_object['origin'] = self.extract_origin_from_url(story)
-          # story_object['origin'] = 'Unknown'
       story_object['title'] = story['story_title']
-      story_object['link'] = story['id']
+      if 'http' in story['id']:
+        story_object['link'] = story['id']
+      else:
+            story_object['link'] =story['story_permalink']
       story_object['tags'] = story['story_tags']
       story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       
-      # print("Story Parsed: Adding to list")
+      # print("Story Parsed: Adding to list") #debug
       story_object_list.append(story_object)
     return story_object_list
   
@@ -79,7 +81,7 @@ class Data_Parser(object):
     self.stories_dataframe = pandas.DataFrame(stories_list)
     return self.stories_dataframe
 
-  def data_frame_to_csv(self, data_frame, filename_prefix,index_column=False):
+  def data_frame_to_csv(self, data_frame, filename_prefix):
     '''
     Converts a pandas Data frame structure to a CSV format to send as email
     temporary solution

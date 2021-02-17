@@ -41,5 +41,4 @@ if __name__ == "__main__":
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)
-#   test_module()
- #Place Holder  to mark EOF
+#Place Holder  to mark EOF

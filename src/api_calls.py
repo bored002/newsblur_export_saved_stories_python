@@ -87,9 +87,12 @@ class api_caller(object):
         story_validation =self.validate_stories_page(stories_page, page_index)
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))
-        stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-        parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-        self.stories_list.extend(parsed_stories)
+        try:
+          stories = json.loads(stories_page.content.decode('utf-8'))['stories']
+          parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
+          self.stories_list.extend(parsed_stories)          
+        except json.decoder.JSONDecodeError:
+          pass        
         print("Total stories retrieved and processed : " + str(len(self.stories_list))) #debug printout
         page_index+=1
   print("All Saved stories Aggregated in : " +str(time.perf_counter()-start_time)+ " seconds")   
@@ -134,9 +137,3 @@ class api_caller(object):
   Best practices
   '''
 
-
-if __name__ == "__main__":
-  newsblur_object = api_caller(None,None)
-  if newsblur_object.login_newsblur() == True:
-    x = newsblur_object.get_feeds()
-    y = newsblur_object.get_saved_stories()

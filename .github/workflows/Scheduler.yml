@@ -51,7 +51,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: results-csv
-          path: '*.csv'
+          path: output/*.csv
 
       
       # Runs a set of commands using the runners shell

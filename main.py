@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print('API Authentication Failed.')
         sys.exit("API Authentication Failed. Terminating Execution.")
     list_of_csv = os.listdir('output')
-    print('Content of output folder: ' ++ str(list_of_csv))
+    print('Content of output folder: ' + str(list_of_csv))
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())

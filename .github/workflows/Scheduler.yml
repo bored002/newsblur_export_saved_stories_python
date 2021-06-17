@@ -54,6 +54,27 @@ jobs:
       # #   with:
       # #     name: results-csv
       # #     path: output/*.csv
+     
+
+      # - name: Display structure of downloaded files
+      #   run: ls -R
+      
+      # Runs a set of commands using the runners shell
+      - name: Execute python script script # run the run.py to get the latest data
+        run: python main.py ${{ secrets.USER }} ${{ secrets.PASS }}
+        env:
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASS }}
+      
+      # Upload execution results
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: results-csv
+          path: output/*.csv
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -89,26 +110,6 @@ jobs:
           path: downloads/
           # Optional, defaults to current repo
           #repo: ${{github.repository}}
-
-      # - name: Display structure of downloaded files
-      #   run: ls -R
-      
-      # Runs a set of commands using the runners shell
-      - name: Execute python script script # run the run.py to get the latest data
-        run: python main.py ${{ secrets.USER }} ${{ secrets.PASS }}
-        env:
-          username: ${{ secrets.USER }}
-          password: ${{ secrets.PASS }}
-      
-      # Upload execution results
-      - name: Upload CSV artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: results-csv
-          path: output/*.csv
-          if-no-files-found: warn
-          retention-days: 7
-      
       # Test env vars
 #       - name: Hello world
 #         run: echo Hello world $USER and $PASS

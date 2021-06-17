@@ -47,11 +47,11 @@ jobs:
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
      
       # Download Artifacts
-      # - name: Download CSV artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: results-csv
-      #     path: '*.csv'
+      - name: Download CSV artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: results-csv
+          path: '*.csv'
 
       
       # Runs a set of commands using the runners shell

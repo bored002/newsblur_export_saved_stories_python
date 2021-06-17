@@ -88,7 +88,7 @@ jobs:
           # Or a workflow status:
           # "completed", "in_progress", "queued"
           # Default: "completed,success"
-          workflow_conclusion: Success
+          workflow_conclusion: completed,success
           # Optional, will get head commit SHA
           pr: ${{github.event.pull_request.number}}
           # Optional, no need to specify if PR is

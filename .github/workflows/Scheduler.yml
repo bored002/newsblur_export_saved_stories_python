@@ -50,9 +50,9 @@ jobs:
       - name: Download CSV artifact
         uses: actions/download-artifact@v2
         with:
-          name: download-stored-csv
-          path: output/*.csv
-          if-no-files-found: warn
+          name: results-csv
+          path: '*.csv'
+          # if-no-files-found: warn
       
       # Runs a set of commands using the runners shell
       - name: Execute python script script # run the run.py to get the latest data
@@ -65,7 +65,7 @@ jobs:
       - name: Upload CSV artifact
         uses: actions/upload-artifact@v2
         with:
-          name: upload-csv
+          name: results-csv
           path: output/*.csv
           if-no-files-found: warn
           retention-days: 7

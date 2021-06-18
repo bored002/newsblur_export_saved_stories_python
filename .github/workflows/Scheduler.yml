@@ -81,13 +81,13 @@ jobs:
           # Default: "completed,success"
           workflow_conclusion: success
           # Optional, will get head commit SHA
-          pr: ${{github.event.pull_request.number}}
+          # pr: ${{github.event.pull_request.number}}
           # Optional, no need to specify if PR is
           commit: ${{github.event.pull_request.head.sha}}
           # Optional, will use the branch
           branch: main
           # Optional, defaults to all types
-          event: push
+          # event: push
           # Optional, will use specified workflow run
           #run_id: 1122334455
           # Optional, run number from the workflow

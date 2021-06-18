@@ -81,14 +81,14 @@ jobs:
           # Optional, GitHub token
           #github_token: ${{secrets.GITHUB_TOKEN}}
           # Required, workflow file name or ID
-          workflow: Run Code in Container
+          workflow: Scheduler.yml
           # Optional, the status or conclusion of a completed workflow to search for
           # Can be one of a workflow conclusion::
           # "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
           # Or a workflow status:
           # "completed", "in_progress", "queued"
           # Default: "completed,success"
-          workflow_conclusion: completed,success
+          workflow_conclusion: in_progress
           # Optional, will get head commit SHA
           pr: ${{github.event.pull_request.number}}
           run: echo ${{github.event.pull_request.number}}

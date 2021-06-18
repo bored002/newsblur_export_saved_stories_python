@@ -27,10 +27,12 @@ if __name__ == "__main__":
         sys.exit("API Authentication Failed. Terminating Execution.")
     list_of_csv = os.listdir('downloads')
     print('Content of output folder: ' + str(list_of_csv))
+    #TODO: read from saved stories csv convert to datafram and get length of list
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     current_number_of_stories = saved_stories_dataframe.shape[0]
+
     print('Today`s saved stories count:'+ str(current_number_of_stories))
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')

@@ -28,9 +28,9 @@ jobs:
           path: downloads
     
     #Displayy content of folder
-    - name: Display structure of downloaded files
-      run: ls -R
-      working-directory: downloads #path/to/artifact
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: downloads #path/to/artifact
 
 
   build_ubuntu:

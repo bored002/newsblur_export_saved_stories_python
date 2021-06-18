@@ -25,7 +25,7 @@ if __name__ == "__main__":
     if newsblur_object.login_newsblur() != True:
         print('API Authentication Failed.')
         sys.exit("API Authentication Failed. Terminating Execution.")
-    list_of_csv = os.listdir('output')
+    list_of_csv = os.listdir('downloads')
     print('Content of output folder: ' + str(list_of_csv))
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()

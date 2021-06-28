@@ -97,7 +97,7 @@ class api_caller(object):
         print("Total stories retrieved and processed : " + str(len(self.stories_list))) #debug printout
         page_index+=1
   print("All Saved stories Aggregated in : " +str(time.perf_counter()-start_time)+ " seconds")   
-  print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
+  # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list
 
  def get_feeds(self):

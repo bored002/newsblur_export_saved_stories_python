@@ -6,7 +6,7 @@ name: Run Code in Container
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   schedule:
-   - cron: '5 0 * * *' #runs at 00:05 UTC everyday
+   - cron: '5 1 * * *' #runs at 00:15 UTC everyday
   push:
     branches: [ main ]
   pull_request:

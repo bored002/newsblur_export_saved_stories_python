@@ -128,10 +128,14 @@ class api_caller(object):
   if response.status_code!=200:
           print("Response code is not 200")
           return("Response code is not 200")
-  if json.loads(response.content.decode('utf-8'))['stories'] is None:
-    print("Page # " + str(index) + " returned no stories")
-    return("Page # " + str(index) + " returned no stories")
-  return True
+  try:
+    if json.loads(response.content.decode('utf-8'))['stories'] is None:
+      print("Page # " + str(index) + " returned no stories")
+      return("Page # " + str(index) + " returned no stories")
+    return True
+  except json.decoder.JSONDecodeError as e:
+    print('Caught exception: ' + str(e))
+    return False
  
  @classmethod
  def teardown(cls):

@@ -88,6 +88,7 @@ class api_caller(object):
         story_validation =self.validate_stories_page(stories_page, page_index)
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))
+
         try:
           stories = json.loads(stories_page.content.decode('utf-8'))['stories']
           parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
@@ -126,14 +127,16 @@ class api_caller(object):
   Validates that no errors were returned
   '''
   if response.status_code!=200:
-          print("Response code is not 200")
-          return("Response code is not 200")
+          print("Response code is not 200 . Actual Response Code is : " + str(response.status_code))
+          return False
+          # return("Response code is not 200")
   try:
     if json.loads(response.content.decode('utf-8'))['stories'] is None:
       print("Page # " + str(index) + " returned no stories")
       return("Page # " + str(index) + " returned no stories")
     return True
-  except json.decoder.JSONDecodeError as e:
+  except Exception as e:
+    print('Failed to validate json content in response.')
     print('Caught exception: ' + str(e))
     return False
  

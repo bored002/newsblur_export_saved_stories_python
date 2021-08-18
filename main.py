@@ -45,6 +45,7 @@ if __name__ == "__main__":
     print('Today`s saved stories count:'+ str(current_number_of_stories))
     print('Change (Delta) in story count is :' + str(current_number_of_stories-previous_number_of_stories))
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
+    #TODO: Add call to ML Module  with saved_stories_dataframe
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 

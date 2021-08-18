@@ -3,6 +3,7 @@ import sys
 import os
 import inspect
 import pandas
+from src import ml_models
 from src import api_calls
 from src import parse
 from src import data_processor
@@ -41,11 +42,11 @@ if __name__ == "__main__":
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     current_number_of_stories = saved_stories_dataframe.shape[0]
-
     print('Today`s saved stories count:'+ str(current_number_of_stories))
     print('Change (Delta) in story count is :' + str(current_number_of_stories-previous_number_of_stories))
-    aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
+    aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)    
     #TODO: Add call to ML Module  with saved_stories_dataframe
+    ml_models.ML_modeling.setup_experiment(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
 

@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL"
+name: "CodeQL Code analysis"
 
 on:
  # push:
@@ -65,3 +65,12 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+
+        # Upload Analysis results
+    - name: Upload CSV artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: python.sarif
+        path: results/*.sarif
+        if-no-files-found: warn
+        retention-days: 7

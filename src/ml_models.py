@@ -1,7 +1,7 @@
 import tensorflow as tf
 import pathlib
 import os
-from matplotlib import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 

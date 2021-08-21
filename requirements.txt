@@ -9,4 +9,4 @@ google-auth-httplib2
 google-auth-oauthlib
 oauth2client
 # pycaret
-tensorflow==1.15
+tensorflow==2.4.2

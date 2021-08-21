@@ -36,7 +36,8 @@ if __name__ == "__main__":
     previous_saved = pandas.read_csv(path_to_stories_list)
     previous_number_of_stories = previous_saved.shape[0]
     print('Yesterday`s saved stories count:'+ str(previous_number_of_stories))
-    # ml_models.ML_modeling.setup_experiment(previous_saved) #experiment to see if will crash
+    ml_experiment = ml_models.machine_learning()
+    ml_experiment.base_case(previous_saved) #experiment
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())

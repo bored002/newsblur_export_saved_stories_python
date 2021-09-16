@@ -1,11 +1,13 @@
 import logging
+import datetime
 
-
-class logging_mechanism():
+class logging_mechanism(object):
     '''
     '''
 
-    def __hash__(self) -> int:
+    def __init__(self) -> int:
+        '''
+        '''
         pass
 
     def write_to_log(self,message):
@@ -13,3 +15,5 @@ class logging_mechanism():
         Method to write to log file.
         and to console if required
         '''
+
+    

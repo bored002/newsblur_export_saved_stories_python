@@ -41,7 +41,7 @@ if __name__ == "__main__":
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     current_number_of_stories = saved_stories_dataframe.shape[0]
-    duplicateRowsDF = current_number_of_stories[current_number_of_stories.duplicated(['title'])]
+    duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]
     print('==========================================================================')
     print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
     print('==========================================================================')

@@ -41,7 +41,10 @@ if __name__ == "__main__":
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     current_number_of_stories = saved_stories_dataframe.shape[0]
-
+    duplicateRowsDF = current_number_of_stories[current_number_of_stories.duplicated(['title'])]
+    print('==========================================================================')
+    print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
+    print('==========================================================================')
     print('Today`s saved stories count:'+ str(current_number_of_stories))
     print('Change (Delta) in story count is :' + str(current_number_of_stories-previous_number_of_stories))
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)

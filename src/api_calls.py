@@ -13,7 +13,7 @@ import datetime
 
 # except ModuleNotFoundError:
 from src import parse
-from oauth2client.service_account import ServiceAccountCredentials
+# from oauth2client.service_account import ServiceAccountCredentials
 
 config_path = "./configs/config.yaml" 
 

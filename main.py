@@ -34,23 +34,25 @@ if __name__ == "__main__":
             break
     previous_saved = pandas.read_csv(path_to_stories_list)
     previous_number_of_stories = previous_saved.shape[0]
-    print('Yesterday`s saved stories count:'+ str(previous_number_of_stories))
+    print('Previous Number of saved stories :'+ str(previous_number_of_stories))
     
     #TODO: read from saved stories csv convert to datafram and get length of list
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
     current_number_of_stories = saved_stories_dataframe.shape[0]
-    duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]
+    duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
     print('==========================================================================')
-    print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
-    print('==========================================================================')
-    print('Today`s saved stories count:'+ str(current_number_of_stories))
+    print('Previous Number of saved stories :'+ str(previous_number_of_stories))
+    print('Current saved stories count:'+ str(current_number_of_stories))
     print('Change (Delta) in story count is :' + str(current_number_of_stories-previous_number_of_stories))
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
     parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories')
+    print('==========================================================================')
+    print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
+    print('==========================================================================')
 
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

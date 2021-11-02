@@ -85,6 +85,14 @@ class api_caller(object):
         except requests.exceptions.RequestException as e:
           # logging.error("Loging API Call threw an exception: " + str(e))
           print(str(e))
+        if stories_page.status_code==502: #handling timeout 502
+              time.sleep(30)
+              try:
+                stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+              except requests.exceptions.RequestException as e:
+                #  logging.error("Loging API Call threw an exception: " + str(e))
+                print(str(e))
+              
         story_validation =self.validate_stories_page(stories_page, page_index)
         if story_validation!=True:
           print("Validation of stories page failed error: " + str(story_validation))

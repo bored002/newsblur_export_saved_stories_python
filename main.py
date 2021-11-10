@@ -29,7 +29,8 @@ if __name__ == "__main__":
     list_of_csv = os.listdir('downloads')
     print('Content of downloads folder: ' + str(list_of_csv))
     for csv in list_of_csv:
-        if 'saved_stories' in csv:
+        # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
+        if csv.startswith('saved_stories'):
             path_to_stories_list = os.path.join('downloads',csv)
             break
     previous_saved = pandas.read_csv(path_to_stories_list)
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
-    # parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') #Disabling duplicated saved_stories csv
+    parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
     print('==========================================================================')
     print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
     print('==========================================================================')

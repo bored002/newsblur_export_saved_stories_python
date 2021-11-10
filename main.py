@@ -49,7 +49,7 @@ if __name__ == "__main__":
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
-    parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories')
+    # parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') #Disabling duplicated saved_stories csv
     print('==========================================================================')
     print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
     print('==========================================================================')

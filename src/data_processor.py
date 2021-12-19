@@ -25,6 +25,7 @@ class data_science(object):
 
     def update_distribution():
         '''
+        
         '''
 
     def analyze_trends():

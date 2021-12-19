@@ -35,7 +35,7 @@ class data_science(object):
         '''
     @staticmethod
     def plot(data_frame):
-        data_frame.plot(x ='origin', y='0', kind = 'bar')
+        dist_plot = data_frame.plot(x ='origin', y='0', kind = 'bar')
         matplotlib.pyplot.show()
 
     @classmethod

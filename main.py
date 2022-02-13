@@ -38,6 +38,7 @@ if __name__ == "__main__":
     print('Previous Number of saved stories :'+ str(previous_number_of_stories))
     
     #TODO: read from saved stories csv convert to datafram and get length of list
+    #TODO: Make sure when saving the stories we don't lose disonctinued feed
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
     saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())

@@ -1,5 +1,5 @@
 name: Build Docker Container
-
+#Creates a docker image and publishes it to the docker hub
 on:
   push:
     branches:

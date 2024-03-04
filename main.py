@@ -24,10 +24,10 @@ if __name__ == "__main__":
         password = None
     newsblur_object = api_calls.api_caller(user_name,password)
     if newsblur_object.login_newsblur() != True:
-        print('API Authentication Failed.')
+        print('API Authentication Failed.',file=sys.stderr)
         sys.exit("API Authentication Failed. Terminating Execution.")
     list_of_csv = os.listdir('downloads')
-    print('Content of downloads folder: ' + str(list_of_csv))
+    print(f'Content of downloads folder: {list(list_of_csv)}',file=sys.stdout)
     for csv in list_of_csv:
         # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
         if csv.startswith('saved_stories'):
@@ -35,9 +35,9 @@ if __name__ == "__main__":
             break
     previous_saved = pandas.read_csv(path_to_stories_list)
     previous_number_of_stories = previous_saved.shape[0]
-    print('Previous Number of saved stories :'+ str(previous_number_of_stories))
+    print(f'Previous Number of saved stories : {previous_number_of_stories}')
     
-    #TODO: read from saved stories csv convert to datafram and get length of list
+    #TODO: read from saved stories csv convert to dataframe and get length of list
     #TODO: Make sure when saving the stories we don't lose disonctinued feed
     parser_object  = parse.Content_Parser()
     data_sciences = data_processor.data_science()
@@ -45,9 +45,9 @@ if __name__ == "__main__":
     current_number_of_stories = saved_stories_dataframe.shape[0]
     duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
     print('==========================================================================')
-    print('Previous Number of saved stories :'+ str(previous_number_of_stories))
-    print('Current saved stories count:'+ str(current_number_of_stories))
-    print('Change (Delta) in story count is :' + str(current_number_of_stories-previous_number_of_stories))
+    print(f'Previous Number of saved stories : {previous_number_of_stories}')
+    print(f'Current saved stories count:{current_number_of_stories}')
+    print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
     aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
     parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
     parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')

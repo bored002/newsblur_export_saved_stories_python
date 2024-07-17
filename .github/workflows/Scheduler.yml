@@ -105,7 +105,7 @@ jobs:
       
       
       # Runs a set of commands using the runners shell
-      - name: Execute python script script # run the run.py to get the latest data
+      - name: Execute python script # run the run.py to get the latest data
         run: python main.py ${{ secrets.USER }} ${{ secrets.PASS }}
         env:
           username: ${{ secrets.USER }}

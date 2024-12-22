@@ -57,6 +57,9 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest' 
+      - name: Print Base URL
+        run: |
+          echo "Base URL: ${{ steps.pages.outputs.base_url }}/"
       - name: Build with Hugo
         env:
           # For maximum backward compatibility with Hugo modules

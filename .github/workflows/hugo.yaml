@@ -77,8 +77,8 @@ jobs:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          cd quickstart |
-          pwd |
+          cd quickstart
+          pwd
           # hugo \
           #   --gc \
           #   --minify \

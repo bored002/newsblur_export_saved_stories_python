@@ -1,4 +1,4 @@
-baseURL = 'https://myowndash.org/'
+baseURL = 'https://[YOUR_GITHUB_USERNAME].github.io/[YOUR_REPOSITORY_NAME]/'
 languageCode = 'en-us'
 title = 'My New Hugo Site'
 theme = 'ananke'

@@ -80,10 +80,12 @@ jobs:
           cd quickstart
           pwd
           # hugo --minify \
-          #   --gc \
-          #   --minify \
             --baseURL "https://${{ steps.username.outputs.username }}.github.io/${{ steps.repo_name.outputs.repo_name }}/" \ 
             --config="./quickstart/hugo.toml"
+          #   --gc \
+          #   --minify \
+            # --baseURL "https://${{ steps.username.outputs.username }}.github.io/${{ steps.repo_name.outputs.repo_name }}/" \ 
+            # --config="./quickstart/hugo.toml"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

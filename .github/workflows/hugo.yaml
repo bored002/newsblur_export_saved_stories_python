@@ -53,6 +53,16 @@ jobs:
       - name: Debug Print Working Directory
         run: |
           pwd
+      - name: Determine Repository Name
+        id: repo_name
+        run: |
+          echo "::set-output name=repo_name::$(echo "${{ github.repository }}" | cut -d '/' -f 2)"
+
+      - name: Determine Username
+        id: username
+        run: |
+          echo "::set-output name=username::$(echo "${{ github.repository }}" | cut -d '/' -f 1)"
+          
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
@@ -69,7 +79,7 @@ jobs:
           hugo \
             --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/" 
+            --baseURL "https://${{ steps.username.outputs.username }}.github.io/${{ steps.repo_name.outputs.repo_name }}/" \ 
             --config="./quickstart/hugo.toml"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2

@@ -120,6 +120,34 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  deploy-page:
+      needs: [build_ubuntu]  # This ensures it runs after your main job
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        pages: write
+        id-token: write
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          
+        - name: Setup Pages
+          uses: actions/configure-pages@v4
+          
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: '.'
+            
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+
+
       # Test env vars
 #       - name: Hello world
 #         run: echo Hello world $USER and $PASS

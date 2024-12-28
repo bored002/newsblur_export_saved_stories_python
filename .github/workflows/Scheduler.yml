@@ -135,23 +135,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install pandas
+        run: pip install pandas
+      
       - name: Download workflow artifacts
         uses: actions/download-artifact@v3
         with:
           name: results-csv
           path: output
 
-      - name: Update index.md
+      - name: Update index.md with DataFrame
         run: |
-          echo "# Newsblur Export Saved Stories" > index.md
-          echo "" >> index.md
-          echo "Last updated: $(date)" >> index.md
-          echo "" >> index.md
-          echo "## Latest Results" >> index.md
-          echo "Files exported in the last run:" >> index.md
-          echo "\`\`\`" >> index.md
-          ls -l output/ >> index.md
-          echo "\`\`\`" >> index.md
+          python - <<EOF
+          import pandas as pd
+          import os
+          
+          # Read the DataFrame
+          df = pd.read_csv('output/for_display.csv')
+          
+          # Create the markdown content
+          with open('index.md', 'w') as f:
+              f.write("# Newsblur Export Saved Stories\n\n")
+              f.write(f"Last updated: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S UTC')}\n\n")
+              f.write("## Latest Results\n\n")
+              
+              # Convert DataFrame to markdown table
+              f.write(df.to_markdown(index=False))
+              
+              f.write("\n\n## Files in Output Directory\n")
+              f.write("```\n")
+              for file in os.listdir('output'):
+                  f.write(f"- {file}\n")
+              f.write("```\n")
+          EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -164,7 +185,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
 
       # Test env vars
 #       - name: Hello world

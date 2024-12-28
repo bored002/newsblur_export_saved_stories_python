@@ -121,31 +121,49 @@ jobs:
           retention-days: 7
 
   deploy-page:
-      needs: [build_ubuntu]  # This ensures it runs after your main job
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-        pages: write
-        id-token: write
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
+    needs: [build_ubuntu]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+      - name: Download workflow artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: results-csv
+          path: output
+
+      - name: Update index.md
+        run: |
+          echo "# Newsblur Export Saved Stories" > index.md
+          echo "" >> index.md
+          echo "Last updated: $(date)" >> index.md
+          echo "" >> index.md
+          echo "## Latest Results" >> index.md
+          echo "Files exported in the last run:" >> index.md
+          echo "\`\`\`" >> index.md
+          ls -l output/ >> index.md
+          echo "\`\`\`" >> index.md
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
           
-        - name: Setup Pages
-          uses: actions/configure-pages@v4
-          
-        - name: Upload artifact
-          uses: actions/upload-pages-artifact@v3
-          with:
-            path: '.'
-            
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
 
       # Test env vars

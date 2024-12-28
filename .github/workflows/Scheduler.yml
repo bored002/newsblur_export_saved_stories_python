@@ -120,8 +120,53 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  deploy-page:
-    needs: [build_ubuntu]
+  # Generate delta gauge chart
+  generate_gauge:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]  # Adjust as needed
+
+    steps:
+      - name: Checkout repo content
+        uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python_version }}
+
+      - name: Update PIP
+        run: python -m pip install --upgrade pip
+
+      - name: Install Requirements
+        run: pip install -r requirements.txt
+
+      - name: Generate delta gauge chart
+        run: |
+          # Import libraries
+          import plotly.graph_objects as go
+          from your_module import create_delta_gauge_chart  # Import your function
+
+          # Define delta and reference values (replace with your logic)
+          delta_value = 5
+          reference_value = 100
+
+          # Generate delta gauge chart using your function
+          fig = create_delta_gauge_chart(delta_value, reference_value)
+
+          # Optional: Save the figure as an image (for debugging)
+          # fig.write_image("delta_gauge.png")
+
+      - name: Save figure data (optional)
+        run: |
+          import pickle
+          with open('fig.pickle', 'wb') as f:
+            pickle.dump(fig, f)
+
+  # Deploy gauge to GitHub Pages
+  deploy_to_pages:
+    needs: [generate_gauge]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -130,40 +175,88 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Download workflow artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: results-csv
-          path: output
+
+      - name: Load figure data
+        run: |
+          import pickle
+          with open('fig.pickle', 'rb') as f:
+            fig = pickle.load(f)
+
+      - name: Generate HTML from gauge chart data
+        run: |
+          html_string = fig.to_html(full_html=False)
+          with open("delta_gauge.html", "w") as f:
+            f.write(html_string)
 
       - name: Update index.md
         run: |
-          echo "# Newsblur Export Saved Stories" > index.md
+          echo "# Delta Gauge Visualization" > index.md
           echo "" >> index.md
           echo "Last updated: $(date)" >> index.md
           echo "" >> index.md
-          echo "## Latest Results" >> index.md
-          echo "Files exported in the last run:" >> index.md
-          echo "\`\`\`" >> index.md
-          ls -l output/ >> index.md
-          echo "\`\`\`" >> index.md
+          echo "## Delta Gauge" >> index.md
+          echo "View the delta gauge here: [Delta Gauge](delta_gauge.html)" >> index.md
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+
+      - name: Upload content
+        uses: actions/upload-artifact@v3
         with:
-          path: '.'
-          
+          name: delta-gauge
+          path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  # deploy-page:
+  #   needs: [build_ubuntu]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+    
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Download workflow artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: results-csv
+  #         path: output
+
+  #     - name: Update index.md
+  #       run: |
+  #         echo "# Newsblur Export Saved Stories" > index.md
+  #         echo "" >> index.md
+  #         echo "Last updated: $(date)" >> index.md
+  #         echo "" >> index.md
+  #         echo "## Latest Results" >> index.md
+  #         echo "Files exported in the last run:" >> index.md
+  #         echo "\`\`\`" >> index.md
+  #         ls -l output/ >> index.md
+  #         echo "\`\`\`" >> index.md
+
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v4
+        
+  #     - name: Upload artifact
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: '.'
+          
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
 
 
       # Test env vars

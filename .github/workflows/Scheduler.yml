@@ -119,6 +119,63 @@ jobs:
           path: output/*.csv
           if-no-files-found: warn
           retention-days: 7
+  
+  deploy-page:
+    needs: [build_ubuntu]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Download workflow artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: results-csv
+          path: output
+
+      # Add these debugging steps
+      - name: Debug - List files
+        run: |
+          echo "Current directory content:"
+          ls -la
+          echo "Output directory content:"
+          ls -la output || echo "Output directory not found"
+          
+      - name: Update index.md
+        run: |
+          echo "# Newsblur Export Saved Stories" > index.md
+          echo "" >> index.md
+          echo "Last updated: $(date)" >> index.md
+          echo "" >> index.md
+          echo "## Latest Results" >> index.md
+          echo "Files exported in the last run:" >> index.md
+          echo "\`\`\`" >> index.md
+          ls -l output/ >> index.md
+          echo "\`\`\`" >> index.md
+
+      # Add another debug step here
+      - name: Debug - Verify index.md
+        run: cat index.md
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
 #TODO: Uncomment it
   # Generate delta gauge chart
@@ -143,8 +200,8 @@ jobs:
   #     - name: Install Requirements
   #       run: pip install -r requirements.txt
 
-  #     - name: Generate delta gauge chart
-  #       run: |
+  #     - name: Generate delta gauge chart  
+  #       run: |  
   #         # Import libraries
   #         import plotly.graph_objects as go
   #         from your_module import create_delta_gauge_chart  # Import your function
@@ -214,50 +271,7 @@ jobs:
   #     - name: Deploy to GitHub Pages
   #       id: deployment
   #       uses: actions/deploy-pages@v4
-  deploy-page:
-    needs: [build_ubuntu]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Download workflow artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: results-csv
-          path: output
-
-      - name: Update index.md
-        run: |
-          echo "# Newsblur Export Saved Stories" > index.md
-          echo "" >> index.md
-          echo "Last updated: $(date)" >> index.md
-          echo "" >> index.md
-          echo "## Latest Results" >> index.md
-          echo "Files exported in the last run:" >> index.md
-          echo "\`\`\`" >> index.md
-          ls -l output/ >> index.md
-          echo "\`\`\`" >> index.md
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  
 
 
       # Test env vars

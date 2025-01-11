@@ -142,28 +142,28 @@ jobs:
           path: output
 
       # Add these debugging steps
-      - name: Debug - List files
-        run: |
-          echo "Current directory content:"
-          ls -la
-          echo "Output directory content:"
-          ls -la output || echo "Output directory not found"
+      # - name: Debug - List files
+      #   run: |
+      #     echo "Current directory content:"
+      #     ls -la
+      #     echo "Output directory content:"
+      #     ls -la output || echo "Output directory not found"
           
-      - name: Update index.md
-        run: |
-          echo "# Newsblur Export Saved Stories" > index.md
-          echo "" >> index.md
-          echo "Last updated: $(date)" >> index.md
-          echo "" >> index.md
-          echo "## Latest Results" >> index.md
-          echo "Files exported in the last run:" >> index.md
-          echo "\`\`\`" >> index.md
-          ls -l output/ >> index.md
-          echo "\`\`\`" >> index.md
+      # - name: Update index.md
+      #   run: |
+      #     echo "# Newsblur Export Saved Stories" > index.md
+      #     echo "" >> index.md
+      #     echo "Last updated: $(date)" >> index.md
+      #     echo "" >> index.md
+      #     echo "## Latest Results" >> index.md
+      #     echo "Files exported in the last run:" >> index.md
+      #     echo "\`\`\`" >> index.md
+      #     ls -l output/ >> index.md
+      #     echo "\`\`\`" >> index.md
 
-      # Add another debug step here
-      - name: Debug - Verify index.md
-        run: cat index.md
+      # # Add another debug step here
+      # - name: Debug - Verify index.md
+      #   run: cat index.md
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

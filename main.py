@@ -18,15 +18,15 @@ print(f"Arguments: {sys.argv}")
 #     #     print(f"Argument {i:>6}: {arg}") # should pass newsblur user,password and google api key #debug
 #     #     print(" user : "  + str(sys.argv[1])) #debug
 #     #     print(" pass : "  + str(sys.argv[2])) #debug        
-#     try:
-#         print(f"0 place arg : {sys.argv[1]}")
-#         user_name = sys.argv[1]
-#         password = sys.argv[2]
-#         print(f"User/Password Parssed sucesfully")
-#     except IndexError:
-#         print("Encountered Index Error in passed system arguments")
-#         user_name =None
-#         password = None
+try:
+    print(f"0 place arg : {sys.argv[1]}")
+    user_name = sys.argv[1]
+    password = sys.argv[2]
+    print(f"User/Password Parssed sucesfully")
+except IndexError:
+    print("Encountered Index Error in passed system arguments")
+    user_name =None
+    password = None
 #     newsblur_object = api_calls.api_caller(user_name,password)
 #     if newsblur_object.login_newsblur() != True:
 #         print('API Authentication Failed.',file=sys.stderr)

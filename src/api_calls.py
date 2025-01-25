@@ -59,12 +59,14 @@ class api_caller(object):
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
   self.get_feeds()
+  print(f"Retrieved Feeds")
   extended_url=r'/reader/starred_stories?page='
   self.stories_list =list()
   page_index = 1
   print("Starting to read Saved Stories Feed.")
   start_time =time.perf_counter()
   try:
+    print(f"First Call to get page from url {self.config['URL'] + extended_url+str(page_index)}")
     stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
   except requests.exceptions.RequestException as e:
     # logging.error("Loging API Call threw an exception: " + str(e))

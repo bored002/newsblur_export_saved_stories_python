@@ -74,11 +74,12 @@ class api_caller(object):
     return False
 
   stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
+  print(f"stories per page #1 : {stories_per_page}")
   
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  while page_index<50:
-        print(f"Stories Count: {stories_per_page}")
+  while page_index=<10:
+        print(f"Stories Count for page #{page_index}: {stories_per_page}")
         print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:

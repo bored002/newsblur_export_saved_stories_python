@@ -41,6 +41,10 @@ class api_caller(object):
   extended_url = '/api/login'  
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
   try:
+      sleeper=30
+      print(f"Sleeping {sleeper)")
+      time.sleep(sleeper)
+      
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)
   except requests.exceptions.RequestException as e:
 #    logging.error("Loging API Call threw an exception: " + str(e))

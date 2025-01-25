@@ -101,8 +101,10 @@ jobs:
           path: downloads
           # Optional, defaults to current repo
           repo: ${{github.repository}}
-      
-      
+     
+      - name: Print downloaded artifact path
+        run: |
+          echo "Downloaded artifact path: ${{ steps.download_artifact.outputs.artifact_path }}"
       
       # Runs a set of commands using the runners shell
       - name: Execute python script # run the run.py to get the latest data

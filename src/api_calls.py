@@ -75,7 +75,7 @@ class api_caller(object):
   
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  while index<4:
+  while page_index <4:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           # print(f"Sleeping: {self.sleeper}")
@@ -88,18 +88,18 @@ class api_caller(object):
         except requests.exceptions.RequestException as e:
           print(f"Requests Exceptions {e}")
               
-  #       story_validation =self.validate_stories_page(stories_page, page_index)
-  #       if story_validation!=True:
-  #         print("Validation of stories page failed error: " + str(story_validation))
+        story_validation =self.validate_stories_page(stories_page, page_index)
+        if story_validation!=True:
+          print("Validation of stories page failed error: " + str(story_validation))
 
-  #       try:
-  #         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-  #         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-  #         self.stories_list.extend(parsed_stories)          
-  #       except json.decoder.JSONDecodeError:
-  #         pass        
-  #       print(f"Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
-  #       page_index+=1
+        try:
+          stories = json.loads(stories_page.content.decode('utf-8'))['stories']
+          parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
+          self.stories_list.extend(parsed_stories)          
+        except json.decoder.JSONDecodeError:
+          pass        
+        print(f"Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
+        page_index+=1
   print(f"All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds")   
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list

@@ -27,7 +27,7 @@ except IndexError:
     print("Encountered Index Error in passed system arguments")
     user_name =None
     password = None
-    newsblur_object = api_calls.api_caller(user_name,password)
+newsblur_object = api_calls.api_caller(user_name,password)
 if newsblur_object.login_newsblur() != True:
     print('API Authentication Failed.',file=sys.stderr)
     sys.exit("API Authentication Failed. Terminating Execution.")

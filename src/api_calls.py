@@ -72,19 +72,21 @@ class api_caller(object):
     # logging.error("Loging API Call threw an exception: " + str(e))
     print(f"first api call caught requests exception: {e}")
     return False
+  
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  #       # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
-  #       try:
-  #         # print(f"Sleeping: {self.sleeper}")
-  #         time.sleep(self.sleeper)
-  #         stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  #         if stories_page.status_code in [502, 429]:
-  #          time.sleep(self.sleeper)
-  #          # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
-  #          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  #       except requests.exceptions.RequestException as e:
-  #         print(f"Requests Exceptions {e}")
+  while index<4:
+        # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
+        try:
+          # print(f"Sleeping: {self.sleeper}")
+          time.sleep(self.sleeper)
+          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+          if stories_page.status_code in [502, 429]:
+           time.sleep(self.sleeper)
+           # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
+           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+        except requests.exceptions.RequestException as e:
+          print(f"Requests Exceptions {e}")
               
   #       story_validation =self.validate_stories_page(stories_page, page_index)
   #       if story_validation!=True:

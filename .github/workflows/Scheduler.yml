@@ -91,14 +91,14 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
       
-      # # Upload execution results
-      # - name: Upload CSV artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: results-csv
-      #     path: output/*.csv
-      #     if-no-files-found: warn
-      #     retention-days: 7
+      # Upload execution results
+      - name: Upload CSV artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: results-csv
+          path: output/*.csv
+          if-no-files-found: warn
+          retention-days: 7
   
   
   

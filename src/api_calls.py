@@ -42,7 +42,7 @@ class api_caller(object):
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
   try:
       sleeper=30
-      print(f"Sleeping {sleeper)")
+      print(f"Sleeping {sleeper}")
       time.sleep(sleeper)
       
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload,verify=False)

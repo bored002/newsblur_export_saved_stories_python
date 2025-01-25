@@ -7,6 +7,7 @@ A Python utility to export saved stories from Newsblur RSS reader.
 - Maintain original formatting and content
 - Easy to use Python interface
 - Test Webpage visualisations
+- check if this the page  being published
 
 ## Installation
 ```bash

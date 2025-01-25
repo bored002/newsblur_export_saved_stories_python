@@ -78,7 +78,7 @@ class api_caller(object):
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
   while page_index<50:
-        print(f"Stories Count: {stories_count}")
+        print(f"Stories Count: {stories_per_page}")
         print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
@@ -99,7 +99,7 @@ class api_caller(object):
         try:
           
           stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-          stories_count = len(stories)
+          stories_per_page = len(stories)
           parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:

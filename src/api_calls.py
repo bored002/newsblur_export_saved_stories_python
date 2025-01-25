@@ -42,7 +42,7 @@ class api_caller(object):
   extended_url = '/api/login'  
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
   try:
-      newblur_login = self.connection_session.post(self.config['URL']+extended_url, headers={'User-agent': 'Rando 0.1'}, data=payload, verify=False)
+      newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload, verify=False)
   except requests.exceptions.RequestException as e:
    print(f"Request Exception in login {e}")
    return False
@@ -94,7 +94,7 @@ class api_caller(object):
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:
           pass        
-        print(f"Total stories retrieved and processed : {len(self.stories_list}") #debug printout
+        print(f"Total stories retrieved and processed : {len(self.stories_list)}") #debug printout
         page_index+=1
   print(f"All Saved stories Aggregated in : {str(time.perf_counter()-start_time} seconds")   
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
@@ -108,17 +108,17 @@ class api_caller(object):
       try:
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
-                print("Status code is : " + str(feeds.status_code))
+                print(f"Status code is : {str(feeds.status_code)}")
                 active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
                 self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
                 # return self.feeds_dict
           else:
-                print("Status code is : " + str(feeds.status_code))
-                print('Content: ' + str(feeds.content))
+                print(f"Status code is : {str(feeds.status_code)}")
+                print(f"Content: {str(feeds.content)}")
                 # return None
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
-        print(str(e))
+        print(f'Get Feeds: Caught requests exception: {str(e)}')
         # return None      
          
  def validate_stories_page(self, response, index):
@@ -133,12 +133,12 @@ class api_caller(object):
           # return("Response code is not 200")
   try:
     if json.loads(response.content.decode('utf-8'))['stories'] is None:
-      print("Page # " + str(index) + " returned no stories")
-      return("Page # " + str(index) + " returned no stories")
+      print(f"Page # {str(index)} returned no stories")
+      return(f"Page # {str(index)} returned no stories")
     return True
   except Exception as e:
     print('Failed to validate json content in response.')
-    print('Caught exception: ' + str(e))
+    
     return False
  
  @classmethod

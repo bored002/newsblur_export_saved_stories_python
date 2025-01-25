@@ -100,7 +100,8 @@ class api_caller(object):
           pass        
         print(f"Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
         page_index+=1
-  print(f"All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds")   
+  print(f"All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
+  print(f"Stories: {self.stories_list}")
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list
 

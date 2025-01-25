@@ -16,7 +16,7 @@ if __name__ == "__main__":
     #     print(" user : "  + str(sys.argv[1])) #debug
     #     print(" pass : "  + str(sys.argv[2])) #debug        
     try:
-        printf(f"0 place arg : {sys.argv[1]}")
+        print(f"0 place arg : {sys.argv[1]}")
         user_name = sys.argv[1]
         password = sys.argv[2]
         print(f"User/Password Parssed sucesfully")

@@ -112,6 +112,15 @@ jobs:
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+       # environment:
+      - name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
 #Deploy Jekyll with GitHub Pages dependencies preinstalled
 # deploy: 
@@ -153,7 +162,7 @@ jobs:
     #       uses: actions/upload-pages-artifact@v3
   
     # Deployment job
-    deploy_jekyll:
+    # deploy_jekyll:
       environment:
         name: github-pages
         url: ${{ steps.deployment.outputs.page_url }}

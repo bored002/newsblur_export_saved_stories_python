@@ -32,7 +32,7 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
-  cls.sleeper=60
+  cls.sleeper=30
   
      
  def login_newsblur(self):
@@ -44,21 +44,13 @@ class api_caller(object):
   try:
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, headers={'User-agent': 'Rando 0.1'}, data=payload, verify=False)
   except requests.exceptions.RequestException as e:
-#    logging.error("Loging API Call threw an exception: " + str(e))
-   print(str(e))
+   print(f"Request Exception in login {e}")
    return False
-  
-  # if newblur_login.status_code==200 and json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']==True:
-  #  print("Authentication: Succesfull")
-  #  return True
   if newblur_login.status_code!=200 or json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    print("Authentication Failed.")
-   print(f'Error Content:{str(newblur_login.content)}')
-   print(f'Error: Response code is {str(newblur_login.status_code)}')
+   print(f'Error Authentication Content:{str(newblur_login.content)}')
+   print(f'Error: Authentication Response code is {str(newblur_login.status_code)}')
    return False
-  # elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
-  #  print('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
-  #  return False
   print("Authentication: Succesfull")
   return True
   
@@ -82,19 +74,15 @@ class api_caller(object):
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
-          print(f"Sleeping: {self.sleeper}")
-          time.sleep(self.sleeper)
+          # print(f"Sleeping: {self.sleeper}")
+          # time.sleep(self.sleeper)
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+          if stories_page.status_code in [502, 429]:
+           time.sleep(self.sleeper)
+           print(f"Waited sleeper period due to server availability, buffered request")
+           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
-          # logging.error("Loging API Call threw an exception: " + str(e))
-          print(str(e))
-        if stories_page.status_code==502: #handling timeout 502
-              time.sleep(30)
-              try:
-                stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-              except requests.exceptions.RequestException as e:
-                #  logging.error("Loging API Call threw an exception: " + str(e))
-                print(str(e))
+          print(f"Requests Exceptions {e}")
               
         story_validation =self.validate_stories_page(stories_page, page_index)
         if story_validation!=True:
@@ -106,9 +94,9 @@ class api_caller(object):
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:
           pass        
-        print("Total stories retrieved and processed : " + str(len(self.stories_list))) #debug printout
+        print(f"Total stories retrieved and processed : {len(self.stories_list}") #debug printout
         page_index+=1
-  print("All Saved stories Aggregated in : " +str(time.perf_counter()-start_time)+ " seconds")   
+  print(f"All Saved stories Aggregated in : {str(time.perf_counter()-start_time} seconds")   
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list
 

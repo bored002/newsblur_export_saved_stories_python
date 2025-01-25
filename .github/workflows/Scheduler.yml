@@ -52,9 +52,9 @@ jobs:
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
      
       #
-			- name: Download previously saved artifacts
-         uses: dawidd6/action-download-artifact@v7
-         with:
+      - name: Download previously saved artifacts
+        uses: dawidd6/action-download-artifact@v7
+        with:
            # Optional, GitHub token
            github_token: ${{secrets.GITHUB_TOKEN}}
            # Required, workflow file name or ID

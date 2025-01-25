@@ -47,10 +47,11 @@ if path_to_stories_list:
 else:
     print(f"No saved stories were retrieved from the folder")
 
-#TODO: read from saved stories csv convert to dataframe and get length of list
-#TODO: Make sure when saving the stories we don't lose disonctinued feed
-# parser_object  = parse.Content_Parser()
-# data_sciences = data_processor.data_science()
+# TODO: read from saved stories csv convert to dataframe and get length of list
+# TODO: Make sure when saving the stories we don't lose disonctinued feed
+parser_object  = parse.Content_Parser()
+data_sciences = data_processor.data_science()
+print(f'parser and data processor inited')
 # saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
 # current_number_of_stories = saved_stories_dataframe.shape[0]
 # duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    

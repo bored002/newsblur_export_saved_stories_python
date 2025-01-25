@@ -68,7 +68,7 @@ if __name__ == "__main__":
         # print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
         print('==========================================================================')
     except Exception as general_e:
-        print(f"Exception Caught")
+        print(f"Exception Caught: {general_e}")
     #TODO:
     # Add plot for : network graph --> stories saved by feed
     # Add plot/widget for Delta of stories saved, total stories, stories by feed

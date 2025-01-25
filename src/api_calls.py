@@ -137,7 +137,7 @@ class api_caller(object):
   if response.status_code!=200:
           print(f"Response code is not 200 . Actual Response Code is : {str(response.status_code)}")
           print(f"Response Headers: {str(response.headers)}")
-          print(f"Response Content: {str(response.content)})
+          print(f"Response Content: {str(response.content)}")
           return False
           # return("Response code is not 200")
   try:

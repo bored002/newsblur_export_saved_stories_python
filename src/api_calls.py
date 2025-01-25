@@ -32,7 +32,7 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
-  cls.sleeper=60
+  cls.sleeper=15
   
      
  def login_newsblur(self):
@@ -74,8 +74,8 @@ class api_caller(object):
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
-          # print(f"Sleeping: {self.sleeper}")
-          # time.sleep(self.sleeper)
+          print(f"Sleeping: {self.sleeper}")
+          time.sleep(self.sleeper)
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
           if stories_page.status_code in [502, 429]:
            time.sleep(self.sleeper)

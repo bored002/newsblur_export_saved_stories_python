@@ -9,7 +9,7 @@ from src import data_processor
 from src import email_client
 
 print(f"Arguments count: {len(sys.argv)}")
-
+print(f"Arguments: {sys.argv})
 # if __name__ == "__main__":
 
 #     print(f"Arguments count: {len(sys.argv)}") #debug

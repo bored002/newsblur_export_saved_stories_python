@@ -30,15 +30,19 @@ if __name__ == "__main__":
         sys.exit("API Authentication Failed. Terminating Execution.")
     list_of_csv = os.listdir('downloads')
     print(f'Content of downloads folder: {list(list_of_csv)}',file=sys.stdout)
+    path_to_stories_list = None
     for csv in list_of_csv:
         # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
         if csv.startswith('saved_stories'):
             path_to_stories_list = os.path.join('downloads',csv)
             break
-    previous_saved = pandas.read_csv(path_to_stories_list)
-    previous_number_of_stories = previous_saved.shape[0]
-    print(f'Previous Number of saved stories : {previous_number_of_stories}')
-    
+    if path_to_stories_list:
+        previous_saved = pandas.read_csv(path_to_stories_list)
+        previous_number_of_stories = previous_saved.shape[0]
+        print(f'Previous Number of saved stories : {previous_number_of_stories}')
+    else:
+        print(f"No saved stories were retrieved from the folder")
+
     #TODO: read from saved stories csv convert to dataframe and get length of list
     #TODO: Make sure when saving the stories we don't lose disonctinued feed
     parser_object  = parse.Content_Parser()

@@ -49,22 +49,22 @@ else:
 
 #TODO: read from saved stories csv convert to dataframe and get length of list
 #TODO: Make sure when saving the stories we don't lose disonctinued feed
-parser_object  = parse.Content_Parser()
-data_sciences = data_processor.data_science()
-saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
-current_number_of_stories = saved_stories_dataframe.shape[0]
-duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
-print('==========================================================================')
-print(f'Previous Number of saved stories : {previous_number_of_stories}')
-print(f'Current saved stories count:{current_number_of_stories}')
-print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
-aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
-parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
-parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
-print('==========================================================================')
-print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
-print('==========================================================================')
+# parser_object  = parse.Content_Parser()
+# data_sciences = data_processor.data_science()
+# saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
+# current_number_of_stories = saved_stories_dataframe.shape[0]
+# duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
+# print('==========================================================================')
+# print(f'Previous Number of saved stories : {previous_number_of_stories}')
+# print(f'Current saved stories count:{current_number_of_stories}')
+# print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
+# aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
+# parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+# parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
+# parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
+# print('==========================================================================')
+# print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
+# print('==========================================================================')
 #TODO:
 # Add plot for : network graph --> stories saved by feed
 # Add plot/widget for Delta of stories saved, total stories, stories by feed

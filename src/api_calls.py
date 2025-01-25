@@ -32,7 +32,7 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
-  cls.sleeper=15
+  cls.sleeper=10
   
      
  def login_newsblur(self):
@@ -74,12 +74,12 @@ class api_caller(object):
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
-          print(f"Sleeping: {self.sleeper}")
+          # print(f"Sleeping: {self.sleeper}")
           time.sleep(self.sleeper)
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
           if stories_page.status_code in [502, 429]:
            time.sleep(self.sleeper)
-           print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
+           # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
            stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
           print(f"Requests Exceptions {e}")
@@ -131,7 +131,7 @@ class api_caller(object):
           print(f"Response Content: {str(response.content)}")
           return False
           # return("Response code is not 200")
-  print(f"Headers: {response.headers}")
+  # print(f"Headers: {response.headers}")
   try:
     if json.loads(response.content.decode('utf-8'))['stories'] is None:
       print(f"Page # {str(index)} returned no stories")

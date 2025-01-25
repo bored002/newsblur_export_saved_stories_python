@@ -28,11 +28,11 @@ except IndexError:
     user_name =None
     password = None
     newsblur_object = api_calls.api_caller(user_name,password)
-    if newsblur_object.login_newsblur() != True:
-        print('API Authentication Failed.',file=sys.stderr)
-        sys.exit("API Authentication Failed. Terminating Execution.")
-    print(f"Login - Passed")
-    list_of_csv = os.listdir('downloads')
+if newsblur_object.login_newsblur() != True:
+    print('API Authentication Failed.',file=sys.stderr)
+    sys.exit("API Authentication Failed. Terminating Execution.")
+print(f"Login - Passed")
+list_of_csv = os.listdir('downloads')
 #     print(f'Content of downloads folder: {list(list_of_csv)}',file=sys.stdout)
 #     path_to_stories_list = None
 #     for csv in list_of_csv:

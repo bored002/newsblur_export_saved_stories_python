@@ -8,8 +8,7 @@ from src import parse
 from src import data_processor
 from src import email_client
 
-
- print(f"Arguments count: {len(sys.argv)}")
+print(f"Arguments count: {len(sys.argv)}")
 
 if __name__ == "__main__":
 

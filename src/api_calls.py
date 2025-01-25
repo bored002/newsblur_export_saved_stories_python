@@ -72,9 +72,13 @@ class api_caller(object):
     # logging.error("Loging API Call threw an exception: " + str(e))
     print(f"first api call caught requests exception: {e}")
     return False
+
+  stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
   
   #TODO : improve to run asynch : Challenge
-  while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
+  # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
+  while page_index<50
+        print(f"Stories Count: {stories_count}")
         print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
@@ -93,7 +97,9 @@ class api_caller(object):
           print("Validation of stories page failed error: " + str(story_validation))
 
         try:
+          
           stories = json.loads(stories_page.content.decode('utf-8'))['stories']
+          stories_count = len(stories)
           parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:

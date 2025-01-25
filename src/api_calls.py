@@ -76,8 +76,8 @@ class api_caller(object):
   #TODO : improve to run asynch : Challenge
   
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  while page_index <15:
-        print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
+  while page_index <5:
+        # print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           # print(f"Sleeping: {self.sleeper}")

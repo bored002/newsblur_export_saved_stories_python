@@ -32,6 +32,7 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
+  cls.sleeper=60
   
      
  def login_newsblur(self):
@@ -41,10 +42,7 @@ class api_caller(object):
   extended_url = '/api/login'  
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
   try:
-      sleeper=60
-      print(f"Sleeping {sleeper}")
       time.sleep(sleeper)
-      
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, headers={'User-agent': 'Rando 0.1'}, data=payload, verify=False)
   except requests.exceptions.RequestException as e:
 #    logging.error("Loging API Call threw an exception: " + str(e))
@@ -56,8 +54,8 @@ class api_caller(object):
   #  return True
   if newblur_login.status_code!=200 or json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    print("Authentication Failed.")
-   print('Error Content:' + str(newblur_login.content))
-   print('Error: Response code is ' + str(newblur_login.status_code))
+   print(f'Error Content:{str(newblur_login.content)}')
+   print(f'Error: Response code is {str(newblur_login.status_code)}')
    return False
   # elif json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
   #  print('Authentication Failed:'  + str(json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['errors']))
@@ -85,6 +83,8 @@ class api_caller(object):
   while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
+          print(f"Sleeping: {self.sleeper}")
+          time.sleep(self.sleeper)
           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
         except requests.exceptions.RequestException as e:
           # logging.error("Loging API Call threw an exception: " + str(e))

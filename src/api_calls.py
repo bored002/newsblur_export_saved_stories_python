@@ -9,9 +9,7 @@ import time
 import logging
 import src
 import datetime
-# try:
 
-# except ModuleNotFoundError:
 from src import parse
 # from oauth2client.service_account import ServiceAccountCredentials
 

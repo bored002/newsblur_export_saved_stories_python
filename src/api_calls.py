@@ -74,14 +74,14 @@ class api_caller(object):
     return False
 
   stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
-  print(f"stories per page #1 : {stories_per_page}")
+  # print(f"stories per page #1 : {stories_per_page}")
   
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
   # while page_index<40:
   while True:
-        print(f"Stories Count for page #{page_index}: {stories_per_page}")
-        print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
+        # print(f"Stories Count for page #{page_index}: {stories_per_page}")
+        # print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
         try:
           # print(f"Sleeping: {self.sleeper}")
@@ -112,7 +112,7 @@ class api_caller(object):
          break
         page_index+=1
    
-  print(f"All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
+  print(f"{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
   # print(f"Stories: {self.stories_list}")
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list

@@ -108,18 +108,20 @@ jobs:
 
     
   ### OLD Deployment Code
-  # deploy-page:
-  #   needs: [build_ubuntu]
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     pages: write
-  #     id-token: write
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
+  deploy_page:
+    # needs: [build_ubuntu]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
-  #   steps:
+    steps:
+        - name: Print a message
+          run: echo "Your message here"
   #     - name: Checkout
   #       uses: actions/checkout@v4
       

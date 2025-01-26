@@ -103,7 +103,7 @@ class api_caller(object):
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:
           pass        
-        print(f"Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
+        print(f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
         if stories_per_page==0:
          print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
          break

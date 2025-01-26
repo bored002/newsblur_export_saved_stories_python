@@ -1,13 +1,14 @@
-# Newsblur Export Saved Stories
+# Saved Stories Dashboard
 
-A Python utility to export saved stories from Newsblur RSS reader.
+Summaries Data. Tests Webpage visualisations
 
 ## Features
-- Export saved stories from Newsblur
-- Maintain original formatting and content
-- Easy to use Python interface
-- Test Webpage visualisations
-- check if this the page  being published
+- Delta of Stories
+- Total Count of Stories
+- Duplicate Stories Count
+- TO COME:
+  * Network Graph
+  * Sankey Diagram 
 
 ## Installation
 ```bash

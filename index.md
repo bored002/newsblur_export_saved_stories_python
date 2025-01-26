@@ -2,7 +2,7 @@
 
 Summaries Data. Tests Webpage visualisations
 
-## Features
+## Represntation
 - Delta of Stories
 - Total Count of Stories
 - Duplicate Stories Count

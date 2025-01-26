@@ -78,7 +78,8 @@ class api_caller(object):
   
   #TODO : improve to run asynch : Challenge
   # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  while page_index<40:
+  # while page_index<40:
+  while True:
         print(f"Stories Count for page #{page_index}: {stories_per_page}")
         print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
         # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
@@ -106,7 +107,11 @@ class api_caller(object):
         except json.decoder.JSONDecodeError:
           pass        
         print(f"Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
+        if stories_per_page==0:
+         print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
+         break
         page_index+=1
+   
   print(f"All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
   # print(f"Stories: {self.stories_list}")
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))

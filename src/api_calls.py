@@ -32,7 +32,7 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
-  cls.sleeper=15
+  cls.sleeper=15 # 10 Requests per minute
   
      
  def login_newsblur(self):

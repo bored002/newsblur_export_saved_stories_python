@@ -108,7 +108,7 @@ jobs:
 
     
   ### OLD Deployment Code
-  deploy_page:
+  deploy_jekyll_page:
     needs: [Run_Python_Scrapper]
     runs-on: ubuntu-latest
     permissions:
@@ -122,6 +122,36 @@ jobs:
     steps:
         - name: Print a message
           run: echo "Your message here"
+        
+        - name: Checkout
+          uses: actions/checkout@v4
+        
+        - name: Setup Pages
+          uses: actions/configure-pages@v5
+        
+        - name: Build
+          uses: actions/jekyll-build-pages@v1
+          with:
+              source: ./
+        
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v3
+          with:
+              source: ./
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+        
+        
+        
+        # - name: Build with Jekyll
+        #   uses: actions/jekyll-build-pages@v1
+        #   with:
+        #       source: ./
+      
+        # - name: Deploy to GitHub Pages
+        #   id: deployment
+        #   uses: actions/deploy-pages@v3
   #     - name: Checkout
   #       uses: actions/checkout@v4
       

@@ -1,19 +1,16 @@
-# import src
 import requests
 from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning) # Suppress only the single warning from urllib3 needed.
 import json
 import yaml
-# import gspread #TODO add to reqruirments txt and install
 import time
 import logging
 import src
 import datetime
-# try:
-
-# except ModuleNotFoundError:
+import threading
 from src import parse
 # from oauth2client.service_account import ServiceAccountCredentials
+# import gspread #TODO add to reqruirments txt and install
 
 config_path = "./configs/config.yaml" 
 
@@ -158,6 +155,43 @@ class api_caller(object):
     print('Failed to validate json content in response.')
     
     return False
+ 
+ def send_get_request(self, url, index):
+    """
+    Sends a GET request to the given URL and prints the index.
+
+    Args:
+        url: The URL to send the request to.
+        index: The index of the request.
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        print(f"Request {index}: Successful! Status code: {response.status_code}")
+        #TODO validate status code and content; 
+        #TODO push content into a list and after all agregation is done then work on the list
+    except requests.exceptions.RequestException as e:
+        print(f"Request {index}: Failed! Error: {e}")
+
+
+
+ def run_parallel_requests(self, urls, num_threads):
+    """
+    Sends GET requests to the given URLs in parallel using threads.
+
+    Args:
+        urls: A list of URLs to send requests to.
+        num_threads: The number of threads to use.
+    """
+    threads = []
+    for i, url in enumerate(urls):
+        thread = threading.Thread(target=send_get_request, args=(url, i))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
  
  @classmethod
  def teardown(cls):

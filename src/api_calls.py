@@ -103,13 +103,13 @@ class api_caller(object):
           self.stories_list.extend(parsed_stories)          
         except json.decoder.JSONDecodeError:
           pass        
-        print(f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
         if stories_per_page==0:
          print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
          break
         page_index+=1
    
-  print(f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
+  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
   # print(f"Stories: {self.stories_list}")
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list

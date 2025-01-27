@@ -88,6 +88,7 @@ jobs:
            path: downloads
            # Optional, defaults to current repo
            repo: ${{github.repository}}
+        continue-on-error: true
       
       
       

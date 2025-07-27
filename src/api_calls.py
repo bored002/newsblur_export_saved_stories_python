@@ -63,62 +63,63 @@ class api_caller(object):
   start_time = time.time
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
-  elapsed_time = end_time - start_time
+  print(f"end time {end_time}")
+  # elapsed_time = end_time - start_time
   # print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
   
   self.get_feeds()
-  print(f"Retrieved Feeds")
-  extended_url=r'/reader/starred_stories?page='
-  self.stories_list =list()
-  page_index = 1
-  print("Starting to read Saved Stories Feed.")
-  start_time =time.perf_counter()
-  try:
-    print(f"First Call to get page from url {self.config['URL'] + extended_url+str(page_index)}")
-    stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  except requests.exceptions.RequestException as e:
-    # logging.error("Loging API Call threw an exception: " + str(e))
-    print(f"first api call caught requests exception: {e}")
-    return False
+  # print(f"Retrieved Feeds")
+  # extended_url=r'/reader/starred_stories?page='
+  # self.stories_list =list()
+  # page_index = 1
+  # print("Starting to read Saved Stories Feed.")
+  # start_time =time.perf_counter()
+  # try:
+  #   print(f"First Call to get page from url {self.config['URL'] + extended_url+str(page_index)}")
+  #   stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  # except requests.exceptions.RequestException as e:
+  #   # logging.error("Loging API Call threw an exception: " + str(e))
+  #   print(f"first api call caught requests exception: {e}")
+  #   return False
 
-  stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
-  # print(f"stories per page #1 : {stories_per_page}")
+  # stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
+  # # print(f"stories per page #1 : {stories_per_page}")
   
-  #TODO : improve to run asynch : Challenge
-  # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  # while page_index<40:
-  while True:
-        # print(f"Stories Count for page #{page_index}: {stories_per_page}")
-        # print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
-        # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
-        try:
-          # print(f"Sleeping: {self.sleeper}")
-          time.sleep(self.sleeper)
-          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-          if stories_page.status_code in [502, 429]:
-           time.sleep(self.sleeper)
-           # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
-           stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-        except requests.exceptions.RequestException as e:
-          print(f"Requests Exceptions {e}")
+  # #TODO : improve to run asynch : Challenge
+  # # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
+  # # while page_index<40:
+  # while True:
+  #       # print(f"Stories Count for page #{page_index}: {stories_per_page}")
+  #       # print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
+  #       # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
+  #       try:
+  #         # print(f"Sleeping: {self.sleeper}")
+  #         time.sleep(self.sleeper)
+  #         stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  #         if stories_page.status_code in [502, 429]:
+  #          time.sleep(self.sleeper)
+  #          # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
+  #          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
+  #       except requests.exceptions.RequestException as e:
+  #         print(f"Requests Exceptions {e}")
               
-        story_validation =self.validate_stories_page(stories_page, page_index)
-        if story_validation!=True:
-          print("Validation of stories page failed error: " + str(story_validation))
+  #       story_validation =self.validate_stories_page(stories_page, page_index)
+  #       if story_validation!=True:
+  #         print("Validation of stories page failed error: " + str(story_validation))
 
-        try:
+  #       try:
           
-          stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-          stories_per_page = len(stories)
-          parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-          self.stories_list.extend(parsed_stories)          
-        except json.decoder.JSONDecodeError:
-          pass        
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
-        if stories_per_page==0:
-         print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
-         break
-        page_index+=1
+  #         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
+  #         stories_per_page = len(stories)
+  #         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
+  #         self.stories_list.extend(parsed_stories)          
+  #       except json.decoder.JSONDecodeError:
+  #         pass        
+  #       print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
+  #       if stories_per_page==0:
+  #        print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
+  #        break
+  #       page_index+=1
    
   print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
   # print(f"Stories: {self.stories_list}")

@@ -56,14 +56,14 @@ class api_caller(object):
   try:
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload, verify=False)
   except requests.exceptions.RequestException as e:
-   print(f"Request Exception in login {e}")
+   logger.error(f"Request Exception in login {e}")
    return False
   if newblur_login.status_code!=200 or json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
-   print("Authentication Failed.")
-   print(f'Error Authentication Content:{str(newblur_login.content)}')
-   print(f'Error: Authentication Response code is {str(newblur_login.status_code)}')
+   logger.error("Authentication Failed.")
+   logger.error(f'Error Authentication Content:{str(newblur_login.content)}')
+   logger.error(f'Error: Authentication Response code is {str(newblur_login.status_code)}')
    return False
-  print("Authentication: Succesfull")
+  logger.info("Authentication: Succesfull")
   return True
   
  def get_saved_stories(self):
@@ -77,12 +77,13 @@ class api_caller(object):
   elapsed_time = end_time - start_time
   logger.info(f"Method 'get_all_starred_hashes' took {end_time - start_time} seconds to run.")
   logger.info(f"Running 'get_feeds'")
+  time.sleep(self.sleeper) # Sleep to respect rate limit
   self.get_feeds()
   logger.info(f"'get_feeds' execution finished")
   self.stories_list = self.get_starred_stories_by_hashes(self.hashes)
   end_time = time.time()
-  logger.info(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
-  logger.info(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
+  # logger.info(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
+  # logger.info(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -241,6 +242,8 @@ class api_caller(object):
        url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
        try:
+         logger.info(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
+         time.sleep(self.sleeper)   # Respect the rate limit
          logger.info(f"Sending GET request to URL: {url}")
          response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
          response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
@@ -254,7 +257,7 @@ class api_caller(object):
             logger.warning(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
 
        except requests.exceptions.HTTPError as http_err:
-           logger.error(f"HTTP error occurred: {http_err} - Response: {response.text}")
+           logger.error(f"HTTP error occurred: {http_err} - Status Code: {response.status_code} Response: {response.text}")
        except requests.exceptions.ConnectionError as conn_err:
            logger.error(f"Connection error occurred: {conn_err}")
        except requests.exceptions.Timeout as timeout_err:

@@ -13,6 +13,8 @@ from src import parse
 # import gspread #TODO add to reqruirments txt and install
 
 config_path = "./configs/config.yaml" 
+STARRED_HASHES_URL = "https://www.newsblur.com/reader/starred_story_hashes"
+STARRED_STORIES_URL = "https://www.newsblur.com/reader/starred_stories"
 
 class api_caller(object):
  
@@ -29,6 +31,8 @@ class api_caller(object):
   cls.feeds_dict = dict()
   cls.parser_object = parse.Content_Parser()
   cls.connection_session = requests.Session()
+  cls.hashes = []
+  cls.rate_limit = 6
   cls.sleeper=15 # 10 Requests per minute
   
      
@@ -55,6 +59,13 @@ class api_caller(object):
   '''
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
+  print(f"Testing Getting Hashes:")
+  start_time = time.time
+  self.hashes=self.get_saved_stories_hashes(self.hashes)
+  end_time = time.time() # End timing
+  elapsed_time = end_time - start_time
+  print(f"Method 'get_all_starred_hashes' took {elapsed_time:.2f} seconds to run.")
+  
   self.get_feeds()
   print(f"Retrieved Feeds")
   extended_url=r'/reader/starred_stories?page='
@@ -173,7 +184,35 @@ class api_caller(object):
     except requests.exceptions.RequestException as e:
         print(f"Request {index}: Failed! Error: {e}")
 
+ def get_saved_stories_hashes(self,hashes=[]):
+    page = 1
+    while True:
+        print(f"Fetching starred story hashes - Page {page}...")
+        params = {"page": page}
+        try:
+            response = self.connection_session.get(STARRED_HASHES_URL, params=params)
+            response.raise_for_status()
+            data = response.json()
 
+            # The API returns a dictionary with 'starred_story_hashes' key
+            current_page_hashes = data.get("starred_story_hashes", [])
+
+            if not current_page_hashes:
+                print(f"No more hashes found after Page {page-1}.")
+                break # No more hashes to retrieve
+
+            self.hashes.extend(current_page_hashes)
+            print(f"  Retrieved {len(current_page_hashes)} hashes. Total: {len(all_hashes)}")
+            page += 1
+            time.sleep(self.rate_limit) # Respect rate limit
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred while fetching hashes on page {page}: {e}")
+            if response.status_code == 429:
+                print("Rate limit hit while fetching hashes. Waiting longer before retrying...")
+                time.sleep(self.rate_limit * 2) # Wait longer on rate limit
+            else:
+                break # Break on other errors
+    return hashes
 
  def run_parallel_requests(self, urls, num_threads):
     """

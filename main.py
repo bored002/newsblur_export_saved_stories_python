@@ -46,6 +46,7 @@ if __name__ == "__main__":
     print(f'Content of downloads folder: {list(list_of_csv)}',file=sys.stdout)
     path_to_stories_list = None
     for csv in list_of_csv:
+        print(f'Checking if '{csv}' is a saved stories list csv file')
         # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
         if csv.startswith('saved_stories'):
             path_to_stories_list = os.path.join('downloads',csv)
@@ -60,9 +61,8 @@ if __name__ == "__main__":
             print(f"Pandas Exception Caught while reading previous saved stories: {e}")
             previous_number_of_stories = 0
     else:
-        logger.warning(f"No saved stories were retrieved from the folder")
-    
-    print(f'No previous saved stories found, setting previous_number_of_stories to 0')
+        print(f"No saved stories were retrieved from the folder")
+        print(f'No previous saved stories found, setting previous_number_of_stories to 0')
     # TODO: read from saved stories csv convert to dataframe and get length of list
     # TODO: Make sure when saving the stories we don't lose disonctinued feed
     

@@ -187,22 +187,6 @@ class api_caller(object):
     
     return False
  
- def send_get_request(self, url, index):
-    """
-    Sends a GET request to the given URL and prints the index.
-
-    Args:
-        url: The URL to send the request to.
-        index: The index of the request.
-    """
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        print(f"Request {index}: Successful! Status code: {response.status_code}")
-        #TODO validate status code and content; 
-        #TODO push content into a list and after all agregation is done then work on the list
-    except requests.exceptions.RequestException as e:
-        print(f"Request {index}: Failed! Error: {e}")
 
  def get_saved_stories_hashes(self,hashes=[]):    
     response = self.connection_session.get(STARRED_HASHES_URL, verify=True)
@@ -228,7 +212,11 @@ class api_caller(object):
    chunk_size = 100 # API allows up to 100 hashes at a time
 
       # Split the list of hashes into chunks
+   logger.info(f"Total number of hashes to process: {len(story_hashes)}")
    for i in range(0, len(story_hashes), chunk_size):
+       if i == 2:
+            logger.info(f"Skipping the first two hashes as per requirement.")
+            break
        chunk = story_hashes[i:i + chunk_size]
        logger.info(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
@@ -266,26 +254,43 @@ class api_caller(object):
            logger.error(f"An unexpected error occurred: {req_err}")
        except json.JSONDecodeError as json_err:
            logger.error(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
-
+       logger.info(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
    return all_retrieved_stories
 
- def run_parallel_requests(self, urls, num_threads):
-    """
-    Sends GET requests to the given URLs in parallel using threads.
+#  def run_parallel_requests(self, urls, num_threads):
+#     """
+#     Sends GET requests to the given URLs in parallel using threads.
 
-    Args:
-        urls: A list of URLs to send requests to.
-        num_threads: The number of threads to use.
-    """
-    threads = []
-    for i, url in enumerate(urls):
-        thread = threading.Thread(target=send_get_request, args=(url, i))
-        threads.append(thread)
-        thread.start()
+#     Args:
+#         urls: A list of URLs to send requests to.
+#         num_threads: The number of threads to use.
+#     """
+#     threads = []
+#     for i, url in enumerate(urls):
+#         thread = threading.Thread(target=send_get_request, args=(url, i))
+#         threads.append(thread)
+#         thread.start()
 
-    # Wait for all threads to finish
-    for thread in threads:
-        thread.join()
+#     # Wait for all threads to finish
+#     for thread in threads:
+#         thread.join()
+#    def send_get_request(self, url, index):
+#     """
+#     Sends a GET request to the given URL and prints the index.
+
+#     Args:
+#         url: The URL to send the request to.
+#         index: The index of the request.
+#     """
+#     try:
+#         response = requests.get(url)
+#         response.raise_for_status()  # Raise an exception for bad status codes
+#         print(f"Request {index}: Successful! Status code: {response.status_code}")
+#         #TODO validate status code and content; 
+#         #TODO push content into a list and after all agregation is done then work on the list
+#     except requests.exceptions.RequestException as e:
+#         print(f"Request {index}: Failed! Error: {e}")
+
  
  @classmethod
  def teardown(cls):

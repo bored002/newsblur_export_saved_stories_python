@@ -221,19 +221,19 @@ class api_caller(object):
        logger.info(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
 
-  #       # Construct the query parameters for the current chunk
-  #      params = []
-  #      for h in chunk:
-  #          params.append(f"h={h}")
-  #      query_string = "&".join(params)
+        # Construct the query parameters for the current chunk
+       params = []
+       for h in chunk:
+           params.append(f"h={h}")
+       query_string = "&".join(params)
 
-  #       # Construct the full URL
-  #      url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
+        # Construct the full URL
+       url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
-  #      try:
-  #        logger.info(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
-  #        time.sleep(self.sleeper)   # Respect the rate limit
-  #        logger.info(f"Sending GET request to URL: {url}")
+       try:
+         logger.info(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
+         time.sleep(self.sleeper)   # Respect the rate limit
+         logger.info(f"Sending GET request to URL: {url}")
   #        response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
   #        response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
 
@@ -245,17 +245,17 @@ class api_caller(object):
   #        else:
   #           logger.warning(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
 
-  #      except requests.exceptions.HTTPError as http_err:
-  #          logger.error(f"HTTP error occurred: {http_err} - Status Code: {response.status_code} Response: {response.text}")
-  #      except requests.exceptions.ConnectionError as conn_err:
-  #          logger.error(f"Connection error occurred: {conn_err}")
-  #      except requests.exceptions.Timeout as timeout_err:
-  #          logger.error(f"Timeout error occurred: {timeout_err}")
-  #      except requests.exceptions.RequestException as req_err:
-  #          logger.error(f"An unexpected error occurred: {req_err}")
-  #      except json.JSONDecodeError as json_err:
-  #          logger.error(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
-  #      logger.info(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
+      #  except requests.exceptions.HTTPError as http_err:
+      #      logger.error(f"HTTP error occurred: {http_err} - Status Code: {response.status_code} Response: {response.text}")
+       except requests.exceptions.ConnectionError as conn_err:
+           logger.error(f"Connection error occurred: {conn_err}")
+       except requests.exceptions.Timeout as timeout_err:
+           logger.error(f"Timeout error occurred: {timeout_err}")
+       except requests.exceptions.RequestException as req_err:
+           logger.error(f"An unexpected error occurred: {req_err}")
+      #  except json.JSONDecodeError as json_err:
+      #      logger.error(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
+       logger.info(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
    return all_retrieved_stories
 
 #  def run_parallel_requests(self, urls, num_threads):

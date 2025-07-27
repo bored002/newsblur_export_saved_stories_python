@@ -185,33 +185,50 @@ class api_caller(object):
         print(f"Request {index}: Failed! Error: {e}")
 
  def get_saved_stories_hashes(self,hashes=[]):
-    page = 1
-    while True:
-        print(f"Fetching starred story hashes - Page {page}...")
-        params = {"page": page}
+    
+    response = self.connection_session.get(STARRED_HASHES_URL, verify=True)
+    if response.status_code != 200:
+        print(f"Failed to fetch starred story hashes. Status code: {response.status_code}")
+        return hashes
+    else:
+        print(f"Successfully fetched starred story hashes. Status code: {response.status_code}")
+        print(f"Response Content: {response.content.decode('utf-8')}")
         try:
-            response = self.connection_session.get(STARRED_HASHES_URL, params=params)
-            response.raise_for_status()
             data = response.json()
+            hashes.extend(data.get("starred_story_hashes", []))
+            print(f"Initial hashes retrieved: {len(hashes)}")
+            print(f"Hashes: {hashes}")
+        except json.JSONDecodeError as e:
+            print(f"Failed to decode JSON response: {e}")
+            return hashes
+        
+    # page = 1
+    # while True:
+    #     print(f"Fetching starred story hashes - Page {page}...")
+    #     params = {"page": page}
+    #     try:
+    #         response = self.connection_session.get(STARRED_HASHES_URL, params=params)
+    #         response.raise_for_status()
+    #         data = response.json()
 
-            # The API returns a dictionary with 'starred_story_hashes' key
-            current_page_hashes = data.get("starred_story_hashes", [])
+    #         # The API returns a dictionary with 'starred_story_hashes' key
+    #         current_page_hashes = data.get("starred_story_hashes", [])
 
-            if not current_page_hashes:
-                print(f"No more hashes found after Page {page-1}.")
-                break # No more hashes to retrieve
+    #         if not current_page_hashes:
+    #             print(f"No more hashes found after Page {page-1}.")
+    #             break # No more hashes to retrieve
 
-            hashes.extend(current_page_hashes)
-            print(f"Retrieved {len(current_page_hashes)} hashes. Total: {len(hashes)}")
-            page += 1
-            time.sleep(self.rate_limit) # Respect rate limit
-        except requests.exceptions.RequestException as e:
-            print(f"An error occurred while fetching hashes on page {page}: {e}")
-            if response.status_code == 429:
-                print("Rate limit hit while fetching hashes. Waiting longer before retrying...")
-                time.sleep(self.rate_limit * 2) # Wait longer on rate limit
-            else:
-                break # Break on other errors
+    #         hashes.extend(current_page_hashes)
+    #         print(f"Retrieved {len(current_page_hashes)} hashes. Total: {len(hashes)}")
+    #         page += 1
+    #         time.sleep(self.rate_limit) # Respect rate limit
+    #     except requests.exceptions.RequestException as e:
+    #         print(f"An error occurred while fetching hashes on page {page}: {e}")
+    #         if response.status_code == 429:
+    #             print("Rate limit hit while fetching hashes. Waiting longer before retrying...")
+    #             time.sleep(self.rate_limit * 2) # Wait longer on rate limit
+    #         else:
+    #             break # Break on other errors
     return hashes
 
  def run_parallel_requests(self, urls, num_threads):

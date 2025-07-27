@@ -60,7 +60,7 @@ class api_caller(object):
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
   print(f"Testing Getting Hashes:")
-  start_time = time.time
+  start_time = time.time()
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
   print(f"end time {end_time}")
@@ -199,7 +199,7 @@ class api_caller(object):
             data = response.json()
             hashes.extend(data.get("starred_story_hashes", []))
             print(f"Initial hashes retrieved: {len(hashes)}")
-            print(f"Hashes: {hashes}")
+            # print(f"Hashes: {hashes}") #don't print large lists
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON response: {e}")
             return hashes

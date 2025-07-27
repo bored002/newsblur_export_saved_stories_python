@@ -241,16 +241,17 @@ class api_caller(object):
        url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
        try:
-           response = self.session.get(url, verify=True) # verify=True for SSL certificate verification
-           response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
+         logger.info(f"Sending GET request to URL: {url}")
+         response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
+         response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
 
-           stories_data = response.json()
-           if stories_data and 'stories' in stories_data:
-               retrieved_count = len(stories_data['stories'])
-               logger.info(f"Successfully retrieved {retrieved_count} stories for this chunk.")
-               all_retrieved_stories.extend(stories_data['stories'])
-           else:
-               logger.warning(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
+         stories_data = response.json()
+         if stories_data and 'stories' in stories_data:
+          retrieved_count = len(stories_data['stories'])
+          logger.info(f"Successfully retrieved {retrieved_count} stories for this chunk.")
+          all_retrieved_stories.extend(stories_data['stories'])
+         else:
+            logger.warning(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
 
        except requests.exceptions.HTTPError as http_err:
            logger.error(f"HTTP error occurred: {http_err} - Response: {response.text}")

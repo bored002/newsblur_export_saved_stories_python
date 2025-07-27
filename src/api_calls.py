@@ -152,7 +152,7 @@ class api_caller(object):
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
                 print(f"'get_feeds' Status code is : {str(feeds.status_code)}")
-                print(f"'get_feeds' Content: {str(feeds.content)}")
+                #print(f"'get_feeds' Content: {str(feeds.content)}")
                 
                 active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
                 self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
@@ -215,22 +215,22 @@ class api_caller(object):
       # Split the list of hashes into chunks
    print(f"Total number of hashes to process: {len(story_hashes)}")
    
-  #  for i in range(0, len(story_hashes), chunk_size):
-  #      if i == 1:
-  #           print(f"Skipping the first two hashes as per requirement.")
-  #           break
-  #      chunk = story_hashes[i:i + chunk_size]
-  #      print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
+   for i in range(0, len(story_hashes), chunk_size):
+       if i == 1:
+            print(f"Skipping the first two hashes as per requirement.")
+            break
+       chunk = story_hashes[i:i + chunk_size]
+       print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
 
-  #       # Construct the query parameters for the current chunk
-  #      params = []
-  #      for h in chunk:
-  #          params.append(f"h={h}")
-  #      query_string = "&".join(params)
+        # Construct the query parameters for the current chunk
+       params = []
+       for h in chunk:
+           params.append(f"h={h}")
+       query_string = "&".join(params)
 
-  #       # Construct the full URL
-  #      url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
+        # Construct the full URL
+       url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
   #      try:
   #        print(f"Sleeping for {self.sleeper} seconds to respect rate limit.")

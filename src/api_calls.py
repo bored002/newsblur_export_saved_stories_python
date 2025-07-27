@@ -201,8 +201,8 @@ class api_caller(object):
                 print(f"No more hashes found after Page {page-1}.")
                 break # No more hashes to retrieve
 
-            self.hashes.extend(current_page_hashes)
-            print(f"  Retrieved {len(current_page_hashes)} hashes. Total: {len(all_hashes)}")
+            hashes.extend(current_page_hashes)
+            print(f"Retrieved {len(current_page_hashes)} hashes. Total: {len(hashes)}")
             page += 1
             time.sleep(self.rate_limit) # Respect rate limit
         except requests.exceptions.RequestException as e:

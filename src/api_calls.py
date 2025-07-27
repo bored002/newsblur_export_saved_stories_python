@@ -65,7 +65,7 @@ class api_caller(object):
   end_time = time.time() # End timing
   print(f"end time {end_time}")
   elapsed_time = end_time - start_time
-  print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
+  print(f"Method 'get_all_starred_hashes' took {end_time - start_time} seconds to run.")
   
   # self.get_feeds()
   # print(f"Retrieved Feeds")

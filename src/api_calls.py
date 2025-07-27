@@ -64,10 +64,10 @@ class api_caller(object):
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
   print(f"end time {end_time}")
-  # elapsed_time = end_time - start_time
-  # print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
+  elapsed_time = end_time - start_time
+  print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
   
-  self.get_feeds()
+  # self.get_feeds()
   # print(f"Retrieved Feeds")
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -121,7 +121,7 @@ class api_caller(object):
   #        break
   #       page_index+=1
    
-  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
+  # print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
   # print(f"Stories: {self.stories_list}")
   # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   return self.stories_list
@@ -134,12 +134,13 @@ class api_caller(object):
       try:
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
-                print(f"Status code is : {str(feeds.status_code)}")
-                print(f"Content: {str(feeds.content)}")
+                print(f"'get_feeds' Status code is : {str(feeds.status_code)}")
+                print(f"'get_feeds' Content: {str(feeds.content)}")
                 
-                # active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-                # self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
-                # return self.feeds_dict
+                active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
+                self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
+                print(f"Returning feeds_dict with {len(self.feeds_dict)} feeds")
+                return self.feeds_dict
           else:
                 print(f"Status code is : {str(feeds.status_code)}")
                 print(f"Content: {str(feeds.content)}")

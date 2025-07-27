@@ -238,7 +238,7 @@ class api_caller(object):
        query_string = "&".join(params)
 
         # Construct the full URL
-       url = f"{self.base_url}/reader/starred_stories?{query_string}"
+       url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
        try:
            response = self.session.get(url, verify=True) # verify=True for SSL certificate verification

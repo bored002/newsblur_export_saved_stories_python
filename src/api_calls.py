@@ -4,6 +4,7 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning) # Su
 import json
 import yaml
 import time
+import sys
 import logging
 from logging import getLogger
 import src
@@ -14,6 +15,12 @@ from src import parse
 # import gspread #TODO add to reqruirments txt and install
 
 logger = getLogger(__name__)
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+if (logger.hasHandlers()):
+    logger.handlers.clear()
+logger.addHandler(handler)
 
 config_path = "./configs/config.yaml" 
 STARRED_HASHES_URL = "https://www.newsblur.com/reader/starred_story_hashes"
@@ -63,16 +70,19 @@ class api_caller(object):
   '''
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
-  logger.info("Starting to retrieve all saved stories bases on hashes")
+  logger.info(f"Starting to retrieve all saved stories bases on hashes")
   start_time = time.time()
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
-  print(f"end time {end_time}")
   elapsed_time = end_time - start_time
-  print(f"Method 'get_all_starred_hashes' took {end_time - start_time} seconds to run.")
-  print(f"Running get_feeds to get feeds_dict")
+  logger.info(f"Method 'get_all_starred_hashes' took {end_time - start_time} seconds to run.")
+  logger.info(f"Running 'get_feeds'")
   self.get_feeds()
-  print(f"Retrieved Feeds")
+  logger.info(f"'get_feeds' execution finished")
+  self.stories_list = self.get_starred_stories_by_hashes(self.hashes)
+  end_time = time.time()
+  logger.info(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
+  logger.info(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -139,20 +149,20 @@ class api_caller(object):
       try:
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
-                print(f"'get_feeds' Status code is : {str(feeds.status_code)}")
-                print(f"'get_feeds' Content: {str(feeds.content)}")
+                logger.info(f"'get_feeds' Status code is : {str(feeds.status_code)}")
+                logger.info(f"'get_feeds' Content: {str(feeds.content)}")
                 
                 active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
                 self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
-                print(f"Returning feeds_dict with {len(self.feeds_dict)} feeds")
+                logger.info(f"Returning feeds_dict with {len(self.feeds_dict)} feeds")
                 return self.feeds_dict
           else:
-                print(f"'get_feeds' Status code is : {str(feeds.status_code)}")
-                print(f"'get_feeds' Content: {str(feeds.content)}")
+                logger.error(f"'get_feeds' Status code is : {str(feeds.status_code)}")
+                logger.error(f"'get_feeds' Content: {str(feeds.content)}")
                 # return None
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))
-        print(f'Get Feeds: Caught requests exception: {str(e)}')
+        logger.info(f'Get Feeds: Caught requests exception: {str(e)}')
         # return None      
          
  def validate_stories_page(self, response, index):
@@ -196,20 +206,64 @@ class api_caller(object):
  def get_saved_stories_hashes(self,hashes=[]):    
     response = self.connection_session.get(STARRED_HASHES_URL, verify=True)
     if response.status_code != 200:
-        print(f"Failed to fetch starred story hashes. Status code: {response.status_code}")
+        logger.error(f"Failed to fetch starred story hashes. Status code: {response.status_code}")
         return hashes
     else:
-        print(f"Successfully fetched starred story hashes. Status code: {response.status_code}")
+        logger.info(f"Successfully fetched starred story hashes. Status code: {response.status_code}")
         try:
             data = response.json()
             hashes.extend(data.get("starred_story_hashes", []))
-            print(f"Initial hashes retrieved: {len(hashes)}")
+            logger.info(f"Initial hashes retrieved: {len(hashes)}")
             # print(f"Hashes: {hashes}") #don't print large lists
         except json.JSONDecodeError as e:
-            print(f"Failed to decode JSON response: {e}")
+            logger.error(f"Failed to decode JSON response: {e}")
             return hashes
-    print(f"Returngin hashes object")
+    logger.info(f"Returngin hashes object")
     return hashes
+ 
+
+def get_starred_stories_by_hashes(self, story_hashes: list) -> list:
+ all_retrieved_stories = []
+ chunk_size = 100 # API allows up to 100 hashes at a time
+
+  # Split the list of hashes into chunks
+ for i in range(0, len(story_hashes), chunk_size):
+     chunk = story_hashes[i:i + chunk_size]
+     logger.info(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
+
+     # Construct the query parameters for the current chunk
+     params = []
+     for h in chunk:
+         params.append(f"h={h}")
+     query_string = "&".join(params)
+
+     # Construct the full URL
+     url = f"{self.base_url}/reader/starred_stories?{query_string}"
+
+     try:
+         response = self.session.get(url, verify=True) # verify=True for SSL certificate verification
+         response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
+
+         stories_data = response.json()
+         if stories_data and 'stories' in stories_data:
+             retrieved_count = len(stories_data['stories'])
+             logger.info(f"Successfully retrieved {retrieved_count} stories for this chunk.")
+             all_retrieved_stories.extend(stories_data['stories'])
+         else:
+             logger.warning(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
+
+     except requests.exceptions.HTTPError as http_err:
+         logger.error(f"HTTP error occurred: {http_err} - Response: {response.text}")
+     except requests.exceptions.ConnectionError as conn_err:
+         logger.error(f"Connection error occurred: {conn_err}")
+     except requests.exceptions.Timeout as timeout_err:
+         logger.error(f"Timeout error occurred: {timeout_err}")
+     except requests.exceptions.RequestException as req_err:
+         logger.error(f"An unexpected error occurred: {req_err}")
+     except json.JSONDecodeError as json_err:
+         logger.error(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
+
+ return all_retrieved_stories
 
  def run_parallel_requests(self, urls, num_threads):
     """

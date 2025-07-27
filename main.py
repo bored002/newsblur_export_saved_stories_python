@@ -39,6 +39,7 @@ if __name__ == "__main__":
         # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
         if csv.startswith('saved_stories'):
             path_to_stories_list = os.path.join('downloads',csv)
+            print(f"path: {path_to_stories_list} found in downloads folder")
             break
     if path_to_stories_list:
         previous_saved = pandas.read_csv(path_to_stories_list)
@@ -52,21 +53,23 @@ if __name__ == "__main__":
     try:
         parser_object  = parse.Content_Parser()
         data_sciences = data_processor.data_science()
-        print(f'parser and data processor inited')
-        saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
-        current_number_of_stories = saved_stories_dataframe.shape[0]
-        duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
-        print('==========================================================================')
-        # print(f'Previous Number of saved stories : {previous_number_of_stories}')
-        print(f'Current saved stories count:{current_number_of_stories}')
-        # # print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
-        # aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
-        parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
-        # parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
-        # parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
+        print(f'parser and data processor iniated')
+        stories = newsblur_object.get_saved_stories()
+        print(f'Number of stories retrieved from NewsBlur: {len(stories)}')
+        # saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
+        # current_number_of_stories = saved_stories_dataframe.shape[0]
+        # duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
         # print('==========================================================================')
-        # print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
-        print('==========================================================================')
+        # # print(f'Previous Number of saved stories : {previous_number_of_stories}')
+        # print(f'Current saved stories count:{current_number_of_stories}')
+        # # # print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
+        # # aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
+        # parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')
+        # # parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
+        # # parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
+        # # print('==========================================================================')
+        # # print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
+        # print('==========================================================================')
     except Exception as general_e:
         print(f"Exception Caught: {general_e}")
     #TODO:

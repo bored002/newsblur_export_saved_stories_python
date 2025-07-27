@@ -5,12 +5,15 @@ import json
 import yaml
 import time
 import logging
+from logging import getLogger
 import src
 import datetime
 import threading
 from src import parse
 # from oauth2client.service_account import ServiceAccountCredentials
 # import gspread #TODO add to reqruirments txt and install
+
+logger = getLogger(__name__)
 
 config_path = "./configs/config.yaml" 
 STARRED_HASHES_URL = "https://www.newsblur.com/reader/starred_story_hashes"
@@ -34,6 +37,7 @@ class api_caller(object):
   cls.hashes = []
   cls.rate_limit = 6
   cls.sleeper=15 # 10 Requests per minute
+  cls.stories_list = list()
   
      
  def login_newsblur(self):
@@ -59,16 +63,17 @@ class api_caller(object):
   '''
   Pulls all the saved stories page by page and returns an object with all the stories
   '''
-  print(f"Testing Getting Hashes:")
+  logger.info("Starting to retrieve all saved stories bases on hashes")
   start_time = time.time()
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
   print(f"end time {end_time}")
   elapsed_time = end_time - start_time
   print(f"Method 'get_all_starred_hashes' took {end_time - start_time} seconds to run.")
-  
-  # self.get_feeds()
-  # print(f"Retrieved Feeds")
+  print(f"Running get_feeds to get feeds_dict")
+  self.get_feeds()
+  print(f"Retrieved Feeds")
+
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
   # page_index = 1
@@ -142,8 +147,8 @@ class api_caller(object):
                 print(f"Returning feeds_dict with {len(self.feeds_dict)} feeds")
                 return self.feeds_dict
           else:
-                print(f"Status code is : {str(feeds.status_code)}")
-                print(f"Content: {str(feeds.content)}")
+                print(f"'get_feeds' Status code is : {str(feeds.status_code)}")
+                print(f"'get_feeds' Content: {str(feeds.content)}")
                 # return None
       except requests.exceptions.RequestException as e:
         # logging.error("Loging API Call threw an exception: " + str(e))

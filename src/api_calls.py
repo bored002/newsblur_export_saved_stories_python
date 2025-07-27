@@ -216,48 +216,49 @@ class api_caller(object):
    print(f"Total number of hashes to process: {len(story_hashes)}")
    
    for i in range(0, len(story_hashes), chunk_size):
-       if i == 1:
-            print(f"Skipping the first two hashes as per requirement.")
-            break
-       chunk = story_hashes[i:i + chunk_size]
-       print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
+    print(f"i == {i}")
+    if i == 3:
+        print(f"Skipping the first two hashes as per requirement. breaking the loop.")
+        break
+    chunk = story_hashes[i:i + chunk_size]
+    print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
 
-        # Construct the query parameters for the current chunk
-       params = []
-       for h in chunk:
-           params.append(f"h={h}")
-       query_string = "&".join(params)
+    # Construct the query parameters for the current chunk
+    params = []
+    for h in chunk:
+        params.append(f"h={h}")
+    query_string = "&".join(params)
 
-        # Construct the full URL
-       url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
+    # Construct the full URL
+    url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
-       try:
-         print(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
-         time.sleep(self.sleeper)   # Respect the rate limit
-         print(f"Sending GET request to URL: {url}")
-  # #        response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
-  # #        response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
+    try:
+      print(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
+      # time.sleep(self.sleeper)   # Respect the rate limit
+      print(f"Sending GET request to URL: {url}")
+# #        response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
+# #        response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
 
-  # #        stories_data = response.json()
-  # #        if stories_data and 'stories' in stories_data:
-  # #         retrieved_count = len(stories_data['stories'])
-  # #         print(f"Successfully retrieved {retrieved_count} stories for this chunk.")
-  # #         all_retrieved_stories.extend(stories_data['stories'])
-  # #        else:
-  # #           print(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
+# #        stories_data = response.json()
+# #        if stories_data and 'stories' in stories_data:
+# #         retrieved_count = len(stories_data['stories'])
+# #         print(f"Successfully retrieved {retrieved_count} stories for this chunk.")
+# #         all_retrieved_stories.extend(stories_data['stories'])
+# #        else:
+# #           print(f"No 'stories' key found in response for chunk starting with {chunk[0] if chunk else 'N/A'}.")
 
-  #     #  except requests.exceptions.HTTPError as http_err:
-  #     #      print(f"HTTP error occurred: {http_err} - Status Code: {response.status_code} Response: {response.text}")
-       except requests.exceptions.ConnectionError as conn_err:
-           print(f"Connection error occurred: {conn_err}")
-       except requests.exceptions.Timeout as timeout_err:
-           print(f"Timeout error occurred: {timeout_err}")
-       except requests.exceptions.RequestException as req_err:
-           print(f"An unexpected error occurred: {req_err}")
-  #     #  except json.JSONDecodeError as json_err:
-  #     #      print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
-   print(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
+#     #  except requests.exceptions.HTTPError as http_err:
+#     #      print(f"HTTP error occurred: {http_err} - Status Code: {response.status_code} Response: {response.text}")
+    except requests.exceptions.ConnectionError as conn_err:
+        print(f"Connection error occurred: {conn_err}")
+    except requests.exceptions.Timeout as timeout_err:
+        print(f"Timeout error occurred: {timeout_err}")
+    except requests.exceptions.RequestException as req_err:
+        print(f"An unexpected error occurred: {req_err}")
+#     #  except json.JSONDecodeError as json_err:
+#     #      print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
+    print(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
    return all_retrieved_stories
  
  @classmethod

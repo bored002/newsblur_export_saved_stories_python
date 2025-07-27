@@ -135,8 +135,10 @@ class api_caller(object):
           feeds = self.connection_session.get(self.config['URL'] + url_extention , verify=True)
           if feeds.status_code==200:
                 print(f"Status code is : {str(feeds.status_code)}")
-                active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
-                self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
+                print(f"Content: {str(feeds.content)}")
+                
+                # active_feeds = json.loads(feeds.content.decode('utf-8'))['feeds']
+                # self.feeds_dict = self.parser_object.parse_feeds(active_feeds)
                 # return self.feeds_dict
           else:
                 print(f"Status code is : {str(feeds.status_code)}")

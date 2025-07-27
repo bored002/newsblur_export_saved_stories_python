@@ -64,7 +64,7 @@ class api_caller(object):
   self.hashes=self.get_saved_stories_hashes(self.hashes)
   end_time = time.time() # End timing
   elapsed_time = end_time - start_time
-  print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
+  # print(f"Method 'get_all_starred_hashes' took {elapsed_time} seconds to run.")
   
   self.get_feeds()
   print(f"Retrieved Feeds")
@@ -191,7 +191,6 @@ class api_caller(object):
         return hashes
     else:
         print(f"Successfully fetched starred story hashes. Status code: {response.status_code}")
-        print(f"Response Content: {response.content.decode('utf-8')}")
         try:
             data = response.json()
             hashes.extend(data.get("starred_story_hashes", []))
@@ -200,6 +199,7 @@ class api_caller(object):
         except json.JSONDecodeError as e:
             print(f"Failed to decode JSON response: {e}")
             return hashes
+    print(f"Returngin hashes object")
     return hashes
 
  def run_parallel_requests(self, urls, num_threads):

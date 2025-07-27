@@ -46,7 +46,7 @@ if __name__ == "__main__":
     print(f'Content of downloads folder: {list(list_of_csv)}',file=sys.stdout)
     path_to_stories_list = None
     for csv in list_of_csv:
-        print(f'Checking if '{csv}' is a saved stories list csv file')
+        print(f'Checking if csv file is saved_stories csv')
         # if 'saved_stories' in csv and 'duplicated_saved_stories' not in csv:
         if csv.startswith('saved_stories'):
             path_to_stories_list = os.path.join('downloads',csv)

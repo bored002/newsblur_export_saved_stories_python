@@ -220,6 +220,7 @@ class api_caller(object):
        chunk = story_hashes[i:i + chunk_size]
        logger.info(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
+
   #       # Construct the query parameters for the current chunk
   #      params = []
   #      for h in chunk:

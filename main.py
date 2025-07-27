@@ -42,9 +42,13 @@ if __name__ == "__main__":
             print(f"path: {path_to_stories_list} found in downloads folder")
             break
     if path_to_stories_list:
-        previous_saved = pandas.read_csv(path_to_stories_list)
-        previous_number_of_stories = previous_saved.shape[0]
-        print(f'Previous Number of saved stories : {previous_number_of_stories}')
+        try:
+            previous_saved = pandas.read_csv(path_to_stories_list)
+            previous_number_of_stories = previous_saved.shape[0]
+            print(f'Previous Number of saved stories : {previous_number_of_stories}')
+        except Exception as e:
+            print(f"Pandas Exception Caught while reading previous saved stories: {e}")
+            previous_number_of_stories = 0
     else:
         print(f"No saved stories were retrieved from the folder")
     

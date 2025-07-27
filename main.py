@@ -61,7 +61,7 @@ if __name__ == "__main__":
             previous_number_of_stories = 0
     else:
         logger.warning(f"No saved stories were retrieved from the folder")
-    
+    logger.info(f'No previous saved stories found, setting previous_number_of_stories to 0')
     # TODO: read from saved stories csv convert to dataframe and get length of list
     # TODO: Make sure when saving the stories we don't lose disonctinued feed
     try:

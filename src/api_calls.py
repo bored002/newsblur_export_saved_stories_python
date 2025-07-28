@@ -83,7 +83,7 @@ class api_caller(object):
   print(f"'get_feeds' execution finished")
   self.stories_list = self.get_starred_stories_by_hashes(self.hashes)
   end_time = time.time()
-  print(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
+  print(f"'get_saved_stories' :: Retrieved {len(self.stories_list)} stories from NewsBlur")
   print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
   print(f"Parsing stories with Content_Parser")
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
@@ -160,16 +160,16 @@ class api_caller(object):
    
   print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {end_time - start_time} seconds") 
   # print(f"Stories: {self.stories_list}") #disable
-  for item in self.stories_list:
-    if 'origin' not in item or item['origin'] is None:
-      try:
-        print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
-      except KeyError as e:
-        print(f"KeyError: {e} - Story item may not have a 'title' key. Setting origin to 'Unknown'")
-        print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
-      # item['origin'] = 'Unknown'
-    else:
-      print(f"Story {item['title']} has origin: {item['origin']}")
+  # for item in self.stories_list:
+  #   if 'origin' not in item or item['origin'] is None:
+  #     try:
+  #       print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+  #     except KeyError as e:
+  #       print(f"KeyError: {e} - Story item may not have a 'title' key. Setting origin to 'Unknown'")
+  #       print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
+  #     # item['origin'] = 'Unknown'
+  #   else:
+  #     print(f"Story {item['title']} has origin: {item['origin']}")
   print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")
@@ -242,18 +242,15 @@ class api_caller(object):
  
 
  def get_starred_stories_by_hashes(self, story_hashes: list) -> list:
+   print(f"Starting to 'get_starred_stories_by_hashes' with {len(story_hashes)} hashes")
    all_retrieved_stories = []
    chunk_size = 100 # API allows up to 100 hashes at a time
-
-      # Split the list of hashes into chunks
-   print(f"Total number of hashes to process: {len(story_hashes)}")
-   
+   # Split the list of hashes into chunks
+  
    for i in range(0, len(story_hashes), chunk_size):
-    print(f"i == {i}")
 
     chunk = story_hashes[i:i + chunk_size]
     print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
-
 
     # Construct the query parameters for the current chunk
     params = []
@@ -289,14 +286,13 @@ class api_caller(object):
         print(f"An unexpected error occurred: {req_err}")
     except json.JSONDecodeError as json_err:
         print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
-    print(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
+    
     if i <= 300: # and i >= 400:
-        print(f" breaking the loop.")
-        print(f"Returning retrieved stories with total count: {len(all_retrieved_stories)}")
+        print(f"breaking the loop:::'get_starred_stories_by_hashes':: Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
         return all_retrieved_stories
         break
   
-   print(f"Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
+   print(f"'get_starred_stories_by_hashes':: Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
    return all_retrieved_stories
  
  @classmethod

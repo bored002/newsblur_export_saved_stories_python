@@ -29,14 +29,14 @@ class Content_Parser(object):
     # print("Parsing Story List") #debug
     for story in story_list:
       story_object = OrderedDict()
-      print("=======================================================") #debug
-      print(f"parse_stories::Parsing story: {story}") #debug
-      print(f"Story keys: {story.keys()}") #debug
-      print("=======================================================") #debug
+      # print("=======================================================") #debug
+      # print(f"parse_stories::Parsing story: {story}") #debug
+      # print(f"Story keys: {story.keys()}") #debug
+      # print("=======================================================") #debug
       try:
-        print(f"Parsing story by 'story_feed_id'") #debug
+        # print(f"Parsing story by 'story_feed_id'") #debug
         story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
-        print(f"'story_feed_id' :setting: Origin found: {story_object['origin']}") #debug
+        # print(f"'story_feed_id' :setting: Origin found: {story_object['origin']}") #debug
       except KeyError as e:
         print(f"KeyError: {e} - 'story_feed_id' not found in feed_dict") #debug        print(f"Origin not found in feed_dict, extracting from URL")
         print(f"using 'extract_origin_from_url' to find origin") #debug
@@ -50,7 +50,7 @@ class Content_Parser(object):
       story_object['tags'] = story['story_tags']
       story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       
-      print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}; full object {story_object}") #debug
+      # print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}; full object {story_object}") #debug
       story_object_list.append(story_object)
     print(f"'parse_stories' :: Total stories parsed: {len(story_object_list)}")
     for story in story_object_list:

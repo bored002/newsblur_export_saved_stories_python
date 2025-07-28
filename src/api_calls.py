@@ -82,8 +82,8 @@ class api_caller(object):
   print(f"'get_feeds' execution finished")
   self.stories_list = self.get_starred_stories_by_hashes(self.hashes)
   end_time = time.time()
-  # print(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
-  # print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
+  print(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
+  print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -137,9 +137,9 @@ class api_caller(object):
   #        break
   #       page_index+=1
    
-  # print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
-  # print(f"Stories: {self.stories_list}")
-  # print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
+  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {str(time.perf_counter()-start_time)} seconds") 
+  print(f"Stories: {self.stories_list}")
+  print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   return self.stories_list
 

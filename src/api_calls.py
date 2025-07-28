@@ -217,9 +217,9 @@ class api_caller(object):
    
    for i in range(0, len(story_hashes), chunk_size):
     print(f"i == {i}")
-    if i == 300:
-        print(f"Skipping the first two hashes as per requirement. breaking the loop.")
-        break
+    # if i == 300:
+    #     print(f"Skipping the first two hashes as per requirement. breaking the loop.")
+    #     break
     chunk = story_hashes[i:i + chunk_size]
     print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 

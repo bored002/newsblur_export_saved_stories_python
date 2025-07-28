@@ -88,6 +88,7 @@ class api_caller(object):
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
   self.parsed_stories_list = parsed_stories
   print(f"Finished parsing stories with Content_Parser")
+  print(f"comparing parsed stories: {self.parsed_stories_list==parsed_stories}")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -142,7 +143,13 @@ class api_caller(object):
   #       page_index+=1
    
   print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {end_time - start_time} seconds") 
-  print(f"Stories: {self.stories_list}")
+  # print(f"Stories: {self.stories_list}") #disable
+  for item in self.stories_list:
+    if 'origin' not in item or item['origin'] is None:
+      print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+      # item['origin'] = 'Unknown'
+    else:
+      print(f"Story {item['title']} has origin: {item['origin']}")
   print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")

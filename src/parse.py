@@ -29,13 +29,19 @@ class Content_Parser(object):
     # print("Parsing Story List") #debug
     for story in story_list:
       story_object = OrderedDict()
+      print("=======================================================") #debug
+      print(f"parse_stories::Parsing story: {story}") #debug
+      print(f"Story keys: {story.keys()}") #debug
+      print("=======================================================") #debug
       try:
         print(f"Parsing story by 'story_feed_id'") #debug
         story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
-        print(f"Origin found: {story_object['origin']}") #debug
-      except KeyError:
-        print(f"Origin not found in feed_dict, extracting from URL")
+        print(f"'story_feed_id' :setting: Origin found: {story_object['origin']}") #debug
+      except KeyError as e:
+        print(f"KeyError: {e} - 'story_feed_id' not found in feed_dict") #debug        print(f"Origin not found in feed_dict, extracting from URL")
+        print(f"using 'extract_origin_from_url' to find origin") #debug
         story_object['origin'] = self.extract_origin_from_url(story)
+
       story_object['title'] = story['story_title']
       if 'http' in story['id']:
         story_object['link'] = story['id']

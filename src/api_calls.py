@@ -92,10 +92,10 @@ class api_caller(object):
   for item in parsed_stories:
     if 'origin' not in item or item['origin'] is None:
       try:
-        print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+        print(f" ERROR:: Story {item['title']} has no origin. Setting to 'Unknown'")
       except KeyError as e:
-        print(f"KeyError: {e} - Story item may not have a 'title' key.")
-        print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
+        print(f" ERROR:: KeyError: {e} - Story item may not have a 'title' key.")
+        print(f" ERROR:: <!!!> Story item: {item} has no title/origin/link field") #debug printout
       # item['origin'] = 'Unknown'
     else:
       print(f"Story {item['title']} has origin: {item['origin']}")
@@ -104,7 +104,7 @@ class api_caller(object):
 
   self.parsed_stories_list = parsed_stories
   print(f"Finished parsing stories with Content_Parser")
-  print(f"comparing parsed stories: {self.parsed_stories_list==parsed_stories}")
+  # print(f"comparing parsed stories: {self.parsed_stories_list==parsed_stories}")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -174,7 +174,8 @@ class api_caller(object):
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")
   print(f"Returing from 'get_Saved_stories'")
-  return self.stories_list
+  return self.parsed_stories_list
+  # return self.stories_list
 
  def get_feeds(self):
       '''

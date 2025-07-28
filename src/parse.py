@@ -53,6 +53,10 @@ class Content_Parser(object):
       print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}; full object {story_object}") #debug
       story_object_list.append(story_object)
     print(f"'parse_stories' :: Total stories parsed: {len(story_object_list)}")
+    for story in story_object_list:
+      print("******************************************************************************")
+      print(f"Story: {story['title']} - Origin: {story['origin']} - Link: {story['link']}")
+      print("******************************************************************************")
     return story_object_list
   
   def extract_origin_from_url(self, story):

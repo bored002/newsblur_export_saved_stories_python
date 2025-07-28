@@ -44,8 +44,9 @@ class Content_Parser(object):
       story_object['tags'] = story['story_tags']
       story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       
-      # print("Story Parsed: Adding to list") #debug
+      print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}") #debug
       story_object_list.append(story_object)
+    print(f"Total stories parsed: {len(story_object_list)}")
     return story_object_list
   
   def extract_origin_from_url(self, story):

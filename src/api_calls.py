@@ -146,7 +146,11 @@ class api_caller(object):
   # print(f"Stories: {self.stories_list}") #disable
   for item in self.stories_list:
     if 'origin' not in item or item['origin'] is None:
-      print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+      try:
+        print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+      except KeyError as e:
+        print(f"KeyError: {e} - Story item may not have a 'title' key. Setting origin to 'Unknown'")
+        print(f"Story item: {item['link']} has no title or origin field") #debug printout
       # item['origin'] = 'Unknown'
     else:
       print(f"Story {item['title']} has origin: {item['origin']}")

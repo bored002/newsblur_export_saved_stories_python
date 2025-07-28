@@ -19,6 +19,9 @@ class data_science(object):
         '''
         Generates a Data Frame which conaints the story distribution per origin website (feed)
         '''
+        print('Generating origin distribution data frame')
+        print(f'Raw data frame shape: {raw_data_frame.shape}')
+        print(f'Raw data frame columns: {raw_data_frame.columns.tolist()}')
         grouped_data = raw_data_frame.groupby('origin').size()
         print('Plotting distribution graph')
         data_science.plot(grouped_data)

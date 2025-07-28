@@ -93,6 +93,11 @@ class Content_Parser(object):
     print(f"Converting stories list to DataFrame with {len(stories_list)} stories") #debug
     self.stories_dataframe = pandas.DataFrame(stories_list)
     print(f"Stories DataFrame created with shape: {self.stories_dataframe.shape}") #debug
+    print(f"Stories DataFrame columns: {self.stories_dataframe.columns.tolist()}") #debug
+    print(f"Stories DataFrame head: {self.stories_dataframe.head()}") #debug
+    print(f"Stories DataFrame info: {self.stories_dataframe.info()}") #debug
+    print(f"Stories DataFrame: {self.stories_dataframe}") #
+    
     return self.stories_dataframe
 
   @staticmethod

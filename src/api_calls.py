@@ -86,6 +86,21 @@ class api_caller(object):
   print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
   print(f"Parsing stories with Content_Parser")
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
+  print(f"Validating parsed stories")
+  print(f"//////////////////////////////////////////////////////////////////////")
+  for item in parsed_stories:
+    if 'origin' not in item or item['origin'] is None:
+      try:
+        print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+      except KeyError as e:
+        print(f"KeyError: {e} - Story item may not have a 'title' key.")
+        print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
+      # item['origin'] = 'Unknown'
+    else:
+      print(f"Story {item['title']} has origin: {item['origin']}")
+  print(f"//////////////////////////////////////////////////////////////////////")
+  print(f"Validating parsed stories ------ Done")
+
   self.parsed_stories_list = parsed_stories
   print(f"Finished parsing stories with Content_Parser")
   print(f"comparing parsed stories: {self.parsed_stories_list==parsed_stories}")
@@ -150,7 +165,7 @@ class api_caller(object):
         print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
       except KeyError as e:
         print(f"KeyError: {e} - Story item may not have a 'title' key. Setting origin to 'Unknown'")
-        print(f"Story item: {item} has no title/origin/link field") #debug printout
+        print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
       # item['origin'] = 'Unknown'
     else:
       print(f"Story {item['title']} has origin: {item['origin']}")

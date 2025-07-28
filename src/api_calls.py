@@ -84,7 +84,7 @@ class api_caller(object):
   end_time = time.time()
   print(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
   print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
-
+  print(f"Parsing stories with Content_Parser")
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
   self.parsed_stories_list = parsed_stories
 

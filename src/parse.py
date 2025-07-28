@@ -30,6 +30,7 @@ class Content_Parser(object):
     for story in story_list:
       story_object = OrderedDict()
       try:
+        print(f"Parsing story by 'story_feed_id'") #debug
         story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
       except KeyError:
         story_object['origin'] = self.extract_origin_from_url(story)
@@ -49,11 +50,14 @@ class Content_Parser(object):
         '''
         In case there is no specific origin the origin will be extraced from the link URL
         '''
+        print("Extracting origin from URL") #debug
         url = story['id']
         try:
           domain_name = story['id'].split("//")[1].split("/")[0].split(".")[0].lower()
+          print(f"Extracted domain name: {domain_name}") #debug
         except IndexError:
           domain_name = story['story_permalink'].split("//")[1].split("/")[0].split(".")[0].lower()
+          print(f"Extracted domain name from permalink: {domain_name}") #debug
         for feed_name in self.feed_dict.values():
               if domain_name == feed_name.lower():
                     return feed_name
@@ -96,7 +100,7 @@ class Content_Parser(object):
       if os.path.isfile(file_name):
         return csv_file
       else:
-        print("Failed to generate file : " + file_name)
+        print(f"Failed to generate file : {file_name}")
         return False
     except FileNotFoundError:
       print("Failed to convert to CSV.")

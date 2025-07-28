@@ -85,6 +85,9 @@ class api_caller(object):
   print(f"Retrieved {len(self.stories_list)} stories from NewsBlur")
   print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
 
+  parsed_stories = self.parser_object.parse_stories(self.stories_list)
+  self.parsed_stories_list = parsed_stories
+
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
   # page_index = 1
@@ -137,10 +140,11 @@ class api_caller(object):
   #        break
   #       page_index+=1
    
-  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {(start_time-time.perf_counter())} seconds") 
+  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {end_time - start_time} seconds") 
   print(f"Stories: {self.stories_list}")
   print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
+  print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")
   return self.stories_list
 
  def get_feeds(self):

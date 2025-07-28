@@ -87,6 +87,7 @@ class api_caller(object):
   print(f"Parsing stories with Content_Parser")
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
   self.parsed_stories_list = parsed_stories
+  print(f"Finished parsing stories with Content_Parser")
 
   # extended_url=r'/reader/starred_stories?page='
   # self.stories_list =list()
@@ -145,6 +146,7 @@ class api_caller(object):
   print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")
+  print(f"Returing from 'get_Saved_stories'")
   return self.stories_list
 
  def get_feeds(self):

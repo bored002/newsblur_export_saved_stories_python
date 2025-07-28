@@ -70,8 +70,9 @@ if __name__ == "__main__":
         parser_object  = parse.Content_Parser()
         data_sciences = data_processor.data_science()
         print(f'parser and data processor iniated')
-        stories = newsblur_object.get_saved_stories()
-        print(f'Number of stories retrieved from NewsBlur: {len(stories)}')
+        # stories = newsblur_object.get_saved_stories()
+        # print(f'Number of stories retrieved from NewsBlur: {len(stories)}')
+        print(f"Creating 'saved_stories_dataframe' from retrieved stories with inner calls")
         saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
         current_number_of_stories = saved_stories_dataframe.shape[0]
 
@@ -80,7 +81,7 @@ if __name__ == "__main__":
         # # print(f'Previous Number of saved stories : {previous_number_of_stories}')
         print(f'Current saved stories count:{current_number_of_stories}')
         # # # print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
-
+        print(f'get_origin_distribution calling')
         aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
         print(f'Converting saved stories dataframe to csv')
         parse.Content_Parser().dataframe_to_csv(saved_stories_dataframe, 'saved_stories')

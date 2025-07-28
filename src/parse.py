@@ -44,9 +44,9 @@ class Content_Parser(object):
       story_object['tags'] = story['story_tags']
       story_object['date'] = story['starred_date'] #TODO: Remove Yesterday/Today
       
-      print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}") #debug
+      print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}; full object {story_object}") #debug
       story_object_list.append(story_object)
-    print(f"Total stories parsed: {len(story_object_list)}")
+    print(f"'parse_stories' :: Total stories parsed: {len(story_object_list)}")
     return story_object_list
   
   def extract_origin_from_url(self, story):
@@ -90,7 +90,9 @@ class Content_Parser(object):
     '''
     #TODO parse the stories and write them to a good format for a file
     # https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe
+    print(f"Converting stories list to DataFrame with {len(stories_list)} stories") #debug
     self.stories_dataframe = pandas.DataFrame(stories_list)
+    print(f"Stories DataFrame created with shape: {self.stories_dataframe.shape}") #debug
     return self.stories_dataframe
 
   @staticmethod

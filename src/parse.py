@@ -32,7 +32,9 @@ class Content_Parser(object):
       try:
         print(f"Parsing story by 'story_feed_id'") #debug
         story_object['origin'] = self.feed_dict[str(story['story_feed_id'])]
+        print(f"Origin found: {story_object['origin']}") #debug
       except KeyError:
+        print(f"Origin not found in feed_dict, extracting from URL")
         story_object['origin'] = self.extract_origin_from_url(story)
       story_object['title'] = story['story_title']
       if 'http' in story['id']:
@@ -53,9 +55,12 @@ class Content_Parser(object):
         print("Extracting origin from URL") #debug
         url = story['id']
         try:
+          print(f"Extracting domain name from story ID: {story['id']}") #debug
           domain_name = story['id'].split("//")[1].split("/")[0].split(".")[0].lower()
           print(f"Extracted domain name: {domain_name}") #debug
         except IndexError:
+          print(f"Failed to extract domain name from story ID: {story['id']}") #debug
+          print(f"Using permalink to extract domain name") #debug
           domain_name = story['story_permalink'].split("//")[1].split("/")[0].split(".")[0].lower()
           print(f"Extracted domain name from permalink: {domain_name}") #debug
         for feed_name in self.feed_dict.values():

@@ -217,9 +217,7 @@ class api_caller(object):
    
    for i in range(0, len(story_hashes), chunk_size):
     print(f"i == {i}")
-    # if i == 300:
-    #     print(f"Skipping the first two hashes as per requirement. breaking the loop.")
-    #     break
+
     chunk = story_hashes[i:i + chunk_size]
     print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
 
@@ -259,7 +257,12 @@ class api_caller(object):
     except json.JSONDecodeError as json_err:
         print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
     print(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
-  # print(f"All retrieved stories: {all_retrieved_stories}") # Don't print large lists
+    if i < 600 and i >= 400:
+        print(f" breaking the loop.")
+        print(f"Returning retrieved stories with total count: {len(all_retrieved_stories)}")
+        return all_retrieved_stories
+        break
+  
    print(f"Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
    return all_retrieved_stories
  

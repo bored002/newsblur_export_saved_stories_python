@@ -288,7 +288,7 @@ class api_caller(object):
     except json.JSONDecodeError as json_err:
         print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
     
-    if i <= 300: # and i >= 400:
+    if i <= 1000:
         print(f"breaking the loop:::'get_starred_stories_by_hashes':: Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
         return all_retrieved_stories
         break

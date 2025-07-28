@@ -259,6 +259,8 @@ class api_caller(object):
     except json.JSONDecodeError as json_err:
         print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
     print(f"Total number of stories retrieved: {len(all_retrieved_stories)}")
+  # print(f"All retrieved stories: {all_retrieved_stories}") # Don't print large lists
+   print(f"Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
    return all_retrieved_stories
  
  @classmethod

@@ -1,12 +1,19 @@
 import json
 import logging
+from logging import getLogger
 from os.path import abspath
 import pandas
 from collections import OrderedDict
 import time
+import re
+import datetime
+import sys
 import os
 import inspect
 config_path = "config.yaml" 
+
+logger = getLogger(__name__)
+
 
 class Content_Parser(object):
       
@@ -53,10 +60,10 @@ class Content_Parser(object):
       # print(f"Story Parsed: Adding to list: {story_object['title']} with {story_object['origin']}; full object {story_object}") #debug
       story_object_list.append(story_object)
     print(f"'parse_stories' :: Total stories parsed: {len(story_object_list)}")
-    for story in story_object_list:
-      print("******************************************************************************")
-      print(f"Story: {story['title']} - Origin: {story['origin']} - Link: {story['link']}")
-      print("******************************************************************************")
+    # for story in story_object_list:
+    #   print("******************************************************************************")
+    #   print(f"Story: {story['title']} - Origin: {story['origin']} - Link: {story['link']}")
+    #   print("******************************************************************************")
     return story_object_list
   
   def extract_origin_from_url(self, story):
@@ -109,6 +116,79 @@ class Content_Parser(object):
     print(f"Stories DataFrame: {self.stories_dataframe}") #
     
     return self.stories_dataframe
+  
+  @staticmethod
+  def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    print(f"Script directory: {script_dir}")
+    parent_dir = os.path.dirname(script_dir)
+    print(f"Parent directory: {parent_dir}")
+    md_filepath = os.path.join(parent_dir, "index.md")
+    print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
+    print(f"list dir: {os.listdir(parent_dir)}")
+  
+    # md_filepath =(os.path.dirname(os.path.abspath(inspect.getabsfile(inspect.currentframe())))).replace('src','output')
+    if not os.path.exists(md_filepath):
+        print(f"Error: Markdown file not found at '{md_filepath}'")
+        return
+    try:
+        with open(md_filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        content = re.sub(r'(- Delta of Stories: )\d+', r'\g<1>' + str(delta_stories), content)
+        content = re.sub(r'(- Total Count of Stories: )\d+', r'\g<1>' + str(total_stories), content)
+        content = re.sub(r'(- Duplicate Stories Count: )\d+', r'\g<1>' + str(duplicate_stories), content)
+
+        # Add or update a timestamp line
+        # First, try to replace an existing timestamp line if it follows a similar pattern
+        # This regex looks for a line starting with '- Last Updated: ' and then anything until the end of the line.
+        # This makes it flexible for various timestamp formats.
+        timestamp_pattern = r'(- Last Updated: ).*'
+        if re.search(timestamp_pattern, content):
+            # If a timestamp line exists, replace it
+            content = re.sub(timestamp_pattern, r'\g<1>' + timestamp, content)
+        else:
+            # If no timestamp line exists, find where to insert it.
+            # Let's insert it right after "Duplicate Stories Count: X" for example.
+            # This regex looks for the last data line and appends the timestamp after it.
+            insert_point_pattern = r'(- Duplicate Stories Count: \d+)'
+            if re.search(insert_point_pattern, content):
+                content = re.sub(insert_point_pattern, r'\g<1>\n- Last Updated: ' + timestamp, content)
+            else:
+                # Fallback: if data section structure is different, just append to a known section
+                # Or to the very end of the 'Data' section if it's there
+                data_section_end_pattern = r'(## Representation:\s+ \*\*Data\*\*.*\n)' # Matches till the end of Data section title line + newline
+                if re.search(data_section_end_pattern, content, re.DOTALL): # re.DOTALL makes . match newlines
+                     # This is a bit tricky, you need to append *after* the existing data points.
+                     # A safer way might be to look for the line before "TO COME:"
+                     to_come_pattern = r'(- TO COME:)'
+                     if re.search(to_come_pattern, content):
+                         content = re.sub(to_come_pattern, '- Last Updated: ' + timestamp + '\n\g<1>', content)
+                     else:
+                         # If 'TO COME' isn't there, append to the very end of the file
+                         content += f"\n- Last Updated: {timestamp}\n"
+
+
+        with open(md_filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+        print(f"Successfully updated numerical values in '{md_filepath}'")
+        if origin_distribution_df is not None:
+          # Convert DataFrame to Markdown table
+          df_markdown = origin_distribution_df.to_markdown(index=False)
+
+          with open(md_filepath, 'a', encoding='utf-8') as f:
+                f.write("\n\n## Saved Article Origin Distribution\n") # Add a heading before the table
+                f.write(df_markdown)
+                f.write("\n") # Add a final newline for good measure
+
+          print(f"Successfully appended DataFrame to '{md_filepath}'")
+
+    except Exception as e:
+        print(f"An error occurred while updating the Markdown file: {e}")
+
 
   @staticmethod
   def dataframe_to_csv(data_frame, filename_prefix, index_column=False):

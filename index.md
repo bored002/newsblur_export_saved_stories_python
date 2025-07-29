@@ -2,11 +2,13 @@
 
 Summaries Data. Tests Webpage visualisations
 
-## Represntation
+## Representation:
+  **Data**
 - Delta of Stories
 - Total Count of Stories
 - Duplicate Stories Count
 - TO COME:
+  **Graphs**
   * Network Graph
   * Sankey Diagram 
 

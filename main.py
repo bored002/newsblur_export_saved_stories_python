@@ -13,7 +13,7 @@ from logging import getLogger, StreamHandler, Formatter
 logger = getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# handler.setFormatter(formatter)
+handler.setFormatter(formatter)
 if (logger.hasHandlers()):
     logger.handlers.clear()
 logger.addHandler(handler)
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         print(f"0 place arg : {sys.argv[1]}")
         user_name = sys.argv[1]
         password = sys.argv[2]
-        logger.info(f"User/Password Parsed successfully.")
+        logger.info(f"logger print: User/Password Parsed successfully.")
         print(f"User/Password Parssed sucesfully")
     except IndexError:
         print("Encountered Index Error in passed system arguments")

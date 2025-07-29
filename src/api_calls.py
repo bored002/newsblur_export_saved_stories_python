@@ -15,12 +15,12 @@ from src import parse
 # import gspread #TODO add to reqruirments txt and install
 
 logger = getLogger(__name__)
-handler = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-if (logger.hasHandlers()):
-    logger.handlers.clear()
-logger.addHandler(handler)
+# handler = logging.StreamHandler(sys.stdout)
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# handler.setFormatter(formatter)
+# if (logger.hasHandlers()):
+#     logger.handlers.clear()
+# logger.addHandler(handler)
 
 config_path = "./configs/config.yaml" 
 STARRED_HASHES_URL = "https://www.newsblur.com/reader/starred_story_hashes"
@@ -189,7 +189,8 @@ class api_caller(object):
    for i in range(0, len(story_hashes), chunk_size):
 
     chunk = story_hashes[i:i + chunk_size]
-    print(f"Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
+    print(f"{str(datetime.datetime.now().strftime("%Y-%m-%d"))} :: Processing chunk {int(i/chunk_size) + 1} of {int(len(story_hashes)/chunk_size) + (1 if len(story_hashes) % chunk_size > 0 else 0)} with {len(chunk)} hashes.")
+
 
     # Construct the query parameters for the current chunk
     params = []

@@ -54,9 +54,10 @@ class api_caller(object):
   extended_url = '/api/login'  
   payload = {'username': self.config['user_name'],'password' : self.config['password']}
   try:
+      logger.info(f"Logging into Newsblur")
       newblur_login = self.connection_session.post(self.config['URL']+extended_url, data=payload, verify=False)
   except requests.exceptions.RequestException as e:
-   print(f"Request Exception in login {e}")
+   print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Request Exception in login {e}")
    return False
   if newblur_login.status_code!=200 or json.loads(newblur_login.content.decode('utf-8').replace("'", '"'))['authenticated']!=True:
    print("Authentication Failed.")

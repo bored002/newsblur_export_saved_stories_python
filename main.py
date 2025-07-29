@@ -10,13 +10,13 @@ from src import email_client
 import logging
 from logging import getLogger, StreamHandler, Formatter
 
-# logger = getLogger(__name__)
-# handler = logging.StreamHandler(sys.stdout)
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# # handler.setFormatter(formatter)
-# if (logger.hasHandlers()):
-#     logger.handlers.clear()
-# logger.addHandler(handler)
+logger = getLogger(__name__)
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# handler.setFormatter(formatter)
+if (logger.hasHandlers()):
+    logger.handlers.clear()
+logger.addHandler(handler)
 
 print(f"Arguments count: {len(sys.argv)}")
 print(f"Arguments: {sys.argv}")
@@ -32,6 +32,7 @@ if __name__ == "__main__":
         print(f"0 place arg : {sys.argv[1]}")
         user_name = sys.argv[1]
         password = sys.argv[2]
+        logger.info(f"User/Password Parsed successfully.")
         print(f"User/Password Parssed sucesfully")
     except IndexError:
         print("Encountered Index Error in passed system arguments")
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         try:
             previous_saved = pandas.read_csv(path_to_stories_list)
             previous_number_of_stories = previous_saved.shape[0]
-            print(f'Previous Number of saved stories : {previous_number_of_stories}')
+            # print(f'Previous Number of saved stories : {previous_number_of_stories}')
         except Exception as e:
             print(f"Pandas Exception Caught while reading previous saved stories: {e}")
             previous_number_of_stories = 0
@@ -76,11 +77,11 @@ if __name__ == "__main__":
         saved_stories_dataframe = parser_object.convert_to_dataframe(newsblur_object.get_saved_stories())
         current_number_of_stories = saved_stories_dataframe.shape[0]
 
-        # duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
-        # print('==========================================================================')
-        # # print(f'Previous Number of saved stories : {previous_number_of_stories}')
+        duplicateRowsDF = saved_stories_dataframe[saved_stories_dataframe.duplicated(['title'])]    
+        print('==========================================================================')
+        print(f'Previous Number of saved stories : {previous_number_of_stories}')
         print(f'Current saved stories count:{current_number_of_stories}')
-        # # # print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
+        print(f'Change (Delta) in story count is :{current_number_of_stories-previous_number_of_stories}')
         print(f'get_origin_distribution calling')
         aggregation_dataframe = data_sciences.get_origin_distribution(saved_stories_dataframe)
         print(f'Converting saved stories dataframe to csv')
@@ -89,12 +90,13 @@ if __name__ == "__main__":
         parse.Content_Parser().dataframe_to_csv(aggregation_dataframe,'origin_distribution_aggregation','origin')
         print(f'Converting dataframes to CSV completed')
         print(f'Content of output folder: {os.listdir("output")}')
-        # parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
-        # # print('==========================================================================')
-        # # print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
-        # print('==========================================================================')
+        parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
+        print('==========================================================================')
+        print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
+        print('==========================================================================')
     except Exception as general_e:
         print(f"Exception Caught: {general_e}")
+    print()
     #TODO:
     # Add plot for : network graph --> stories saved by feed
     # Add plot/widget for Delta of stories saved, total stories, stories by feed

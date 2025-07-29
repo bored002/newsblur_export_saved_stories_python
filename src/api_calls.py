@@ -87,89 +87,26 @@ class api_caller(object):
   print(f"Total time taken to retrieve all saved stories and hashes: {end_time - start_time} seconds")
   print(f"Parsing stories with Content_Parser")
   parsed_stories = self.parser_object.parse_stories(self.stories_list)
-  print(f"Validating parsed stories")
-  print(f"//////////////////////////////////////////////////////////////////////")
-  for item in parsed_stories:
-    if 'origin' not in item or item['origin'] is None:
-      try:
-        print(f" ERROR:: Story {item['title']} has no origin. Setting to 'Unknown'")
-      except KeyError as e:
-        print(f" ERROR:: KeyError: {e} - Story item may not have a 'title' key.")
-        print(f" ERROR:: <!!!> Story item: {item} has no title/origin/link field") #debug printout
-      # item['origin'] = 'Unknown'
-    else:
-      print(f"Story {item['title']} has origin: {item['origin']}")
-  print(f"//////////////////////////////////////////////////////////////////////")
-  print(f"Validating parsed stories ------ Done")
-
-  self.parsed_stories_list = parsed_stories
-  print(f"Finished parsing stories with Content_Parser")
-  # print(f"comparing parsed stories: {self.parsed_stories_list==parsed_stories}")
-
-  # extended_url=r'/reader/starred_stories?page='
-  # self.stories_list =list()
-  # page_index = 1
-  # print("Starting to read Saved Stories Feed.")
-  # start_time =time.perf_counter()
-  # try:
-  #   print(f"First Call to get page from url {self.config['URL'] + extended_url+str(page_index)}")
-  #   stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  # except requests.exceptions.RequestException as e:
-  #   # logging.error("Loging API Call threw an exception: " + str(e))
-  #   print(f"first api call caught requests exception: {e}")
-  #   return False
-
-  # stories_per_page = len(json.loads(stories_page.content.decode('utf-8'))['stories'])
-  # # print(f"stories per page #1 : {stories_per_page}")
-  
-  # #TODO : improve to run asynch : Challenge
-  # # while len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0:
-  # # while page_index<40:
-  # while True:
-  #       # print(f"Stories Count for page #{page_index}: {stories_per_page}")
-  #       # print(f"len of stories: {len(json.loads(stories_page.content.decode('utf-8'))['stories'])>0}")
-  #       # print("Page: " + str(page_index) + " Contains  : " + str(len(json.loads(stories_page.content.decode('utf-8'))['stories'])) + " stories.")
-  #       try:
-  #         # print(f"Sleeping: {self.sleeper}")
-  #         time.sleep(self.sleeper)
-  #         stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  #         if stories_page.status_code in [502, 429]:
-  #          time.sleep(self.sleeper)
-  #          # print(f"Waited sleeper period: {self.sleeper} due to server availability, buffered request")
-  #          stories_page=self.connection_session.get(self.config['URL'] + extended_url+str(page_index),verify=True)
-  #       except requests.exceptions.RequestException as e:
-  #         print(f"Requests Exceptions {e}")
-              
-  #       story_validation =self.validate_stories_page(stories_page, page_index)
-  #       if story_validation!=True:
-  #         print("Validation of stories page failed error: " + str(story_validation))
-
-  #       try:
-          
-  #         stories = json.loads(stories_page.content.decode('utf-8'))['stories']
-  #         stories_per_page = len(stories)
-  #         parsed_stories = self.parser_object.parse_stories(json.loads(stories_page.content.decode('utf-8'))['stories'])       
-  #         self.stories_list.extend(parsed_stories)          
-  #       except json.decoder.JSONDecodeError:
-  #         pass        
-  #       print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: Total stories retrieved and processed up to page index {page_index}: {len(self.stories_list)}") #debug printout
-  #       if stories_per_page==0:
-  #        print(f"No Stories were retrieved from page {page_index}. Breaking Retrieve loop")
-  #        break
-  #       page_index+=1
-   
-  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {end_time - start_time} seconds") 
-  # print(f"Stories: {self.stories_list}") #disable
-  # for item in self.stories_list:
+  # print(f"Validating parsed stories")
+  # print(f"//////////////////////////////////////////////////////////////////////")
+  # for item in parsed_stories:
   #   if 'origin' not in item or item['origin'] is None:
   #     try:
-  #       print(f"Story {item['title']} has no origin. Setting to 'Unknown'")
+  #       print(f" ERROR:: Story {item['title']} has no origin. Setting to 'Unknown'")
   #     except KeyError as e:
-  #       print(f"KeyError: {e} - Story item may not have a 'title' key. Setting origin to 'Unknown'")
-  #       print(f" <!!!> Story item: {item} has no title/origin/link field") #debug printout
+  #       print(f" ERROR:: KeyError: {e} - Story item may not have a 'title' key.")
+  #       print(f" ERROR:: <!!!> Story item: {item} has no title/origin/link field") #debug printout
   #     # item['origin'] = 'Unknown'
   #   else:
   #     print(f"Story {item['title']} has origin: {item['origin']}")
+  # print(f"//////////////////////////////////////////////////////////////////////")
+  # print(f"Validating parsed stories ------ Done")
+
+  self.parsed_stories_list = parsed_stories
+  print(f"Finished parsing stories with Content_Parser")
+   
+  print(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')} :: All Saved stories Aggregated in: {end_time - start_time} seconds") 
+  
   print("Total stories saved to date: " +str(datetime.datetime.now().strftime("%Y-%m-%d")) + " : " + str(len(self.stories_list)))
   print(f"Total number of stories retrieved: {len(self.stories_list)}")
   print(f"Total number of parsed stories : {len(self.parsed_stories_list)}")
@@ -263,9 +200,9 @@ class api_caller(object):
     url = f"{self.config['URL']}/reader/starred_stories?{query_string}"
 
     try:
-      print(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
+      # print(f"Sleeping for {self.sleeper} seconds to respect rate limit.")
       time.sleep(self.sleeper)   # Respect the rate limit
-      print(f"Sending GET request to URL: {url}")
+      # print(f"Sending GET request to URL: {url}")
       response = self.connection_session.get(url, verify=True) # verify=True for SSL certificate verification
       response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
 
@@ -287,11 +224,7 @@ class api_caller(object):
         print(f"An unexpected error occurred: {req_err}")
     except json.JSONDecodeError as json_err:
         print(f"Failed to decode JSON response: {json_err} - Content: {response.text}")
-    
-    # if (int(i/chunk_size) + 1) ==20:
-    #     print(f"breaking the loop @ {int(i/chunk_size) + 1}:::'get_starred_stories_by_hashes':: Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
-    #     return all_retrieved_stories
-    #     break
+  
   
    print(f"'get_starred_stories_by_hashes':: Returning all rtrieved stories with total count: {len(all_retrieved_stories)}")
    return all_retrieved_stories

@@ -22,7 +22,6 @@ print(f"Arguments count: {len(sys.argv)}")
 print(f"Arguments: {sys.argv}")
 
 if __name__ == "__main__":
-
 #     print(f"Arguments count: {len(sys.argv)}") #debug
 #     # for i, arg in enumerate(sys.argv):
 #     #     print(f"Argument {i:>6}: {arg}") # should pass newsblur user,password and google api key #debug
@@ -91,9 +90,12 @@ if __name__ == "__main__":
         print(f'Converting dataframes to CSV completed')
         print(f'Content of output folder: {os.listdir("output")}')
         parse.Content_Parser().dataframe_to_csv(duplicateRowsDF, 'duplicated_saved_stories') 
+        print(f"Count of duplicate stories: {duplicateRowsDF.shape[0]}")
         print('==========================================================================')
         print("Duplicate values based on a story title column are:", duplicateRowsDF, sep='\n')
         print('==========================================================================')
+        print(f'Updating markdown dashboard with delta stories, total stories and duplicate stories :: Test')
+        parse.Content_Parser().update_markdown_dashboard((current_number_of_stories-previous_number_of_stories), current_number_of_stories, duplicateRowsDF.shape[0]) #update_markdown_dashboard(delta_stories, total_stories, duplicate_stories)
     except Exception as general_e:
         print(f"Exception Caught: {general_e}")
     print()

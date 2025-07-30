@@ -137,18 +137,18 @@ class Content_Parser(object):
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print("update_markdown_dashboard :: inputs:", {'delta_stories': delta_stories, 'total_stories': total_stories, 'duplicate_stories': duplicate_stories, 'timestamp': timestamp})
         
-        # Make the regex patterns more robust to handle any whitespace
-        # The '\s+' matches one or more whitespace characters (spaces, tabs, etc.)
-        content = re.sub(r'(- Delta of Stories:\s*)\d+', r'\g<1>' + str(delta_stories), content)
-        content = re.sub(r'(- Total Count of Stories:\s*)\d+', r'\g<1>' + str(total_stories), content)
-        content = re.sub(r'(- Duplicate Stories Count:\s*)\d+', r'\g<1>' + str(duplicate_stories), content)
+        # --- CORRECTED REGEX PATTERNS ---
+        # The '\d*' now matches zero or more digits, so it will work even if the numbers are missing.
+        content = re.sub(r'(- Delta of Stories:\s*)\d*', r'\g<1>' + str(delta_stories), content)
+        content = re.sub(r'(- Total Count of Stories:\s*)\d*', r'\g<1>' + str(total_stories), content)
+        content = re.sub(r'(- Duplicate Stories Count:\s*)\d*', r'\g<1>' + str(duplicate_stories), content)
 
-        # Add or update a timestamp line
+        # Update or add a timestamp line
         timestamp_pattern = r'(- Last Updated: ).*'
         if re.search(timestamp_pattern, content):
             content = re.sub(timestamp_pattern, r'\g<1>' + timestamp, content)
         else:
-            insert_point_pattern = r'(- Duplicate Stories Count:\s*\d+)'
+            insert_point_pattern = r'(- Duplicate Stories Count:\s*\d*)'
             if re.search(insert_point_pattern, content):
                 content = re.sub(insert_point_pattern, r'\g<1>\n- Last Updated: ' + timestamp, content)
             else:

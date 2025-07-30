@@ -137,6 +137,7 @@ class Content_Parser(object):
             content = f.read()
 
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"update_markdown_dashboard :: inputs: {'delta_stories': delta_stories, 'total_stories': total_stories, 'duplicate_stories': duplicate_stories, 'timestamp': timestamp}") #debug
         content = re.sub(r'(- Delta of Stories: )\d+', r'\g<1>' + str(delta_stories), content)
         content = re.sub(r'(- Total Count of Stories: )\d+', r'\g<1>' + str(total_stories), content)
         content = re.sub(r'(- Duplicate Stories Count: )\d+', r'\g<1>' + str(duplicate_stories), content)

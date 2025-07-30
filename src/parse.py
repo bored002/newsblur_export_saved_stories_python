@@ -126,9 +126,7 @@ class Content_Parser(object):
     print(f"Parent directory: {parent_dir}")
     md_filepath = os.path.join(parent_dir, "index.md")
     print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
-    # print(f"list dir: {os.listdir(parent_dir)}")
-  
-    # md_filepath =(os.path.dirname(os.path.abspath(inspect.getabsfile(inspect.currentframe())))).replace('src','output')
+ 
     if not os.path.exists(md_filepath):
         print(f"Error: Markdown file not found at '{md_filepath}'")
         return
@@ -137,57 +135,46 @@ class Content_Parser(object):
             content = f.read()
 
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print(f"update_markdown_dashboard :: inputs: 'delta_stories': {delta_stories}:: 'total_stories': {total_stories},:: 'duplicate_stories': {duplicate_stories},:: 'timestamp': {timestamp}") #debug
-        content = re.sub(r'(- Delta of Stories: )\d+', r'\g<1>' + str(delta_stories), content)
-        content = re.sub(r'(- Total Count of Stories: )\d+', r'\g<1>' + str(total_stories), content)
-        content = re.sub(r'(- Duplicate Stories Count: )\d+', r'\g<1>' + str(duplicate_stories), content)
-
+        print("update_markdown_dashboard :: inputs:", {'delta_stories': delta_stories, 'total_stories': total_stories, 'duplicate_stories': duplicate_stories, 'timestamp': timestamp})
         
+        # Make the regex patterns more robust to handle any whitespace
+        # The '\s+' matches one or more whitespace characters (spaces, tabs, etc.)
+        content = re.sub(r'(- Delta of Stories:\s*)\d+', r'\g<1>' + str(delta_stories), content)
+        content = re.sub(r'(- Total Count of Stories:\s*)\d+', r'\g<1>' + str(total_stories), content)
+        content = re.sub(r'(- Duplicate Stories Count:\s*)\d+', r'\g<1>' + str(duplicate_stories), content)
 
         # Add or update a timestamp line
-        # First, try to replace an existing timestamp line if it follows a similar pattern
-        # This regex looks for a line starting with '- Last Updated: ' and then anything until the end of the line.
-        # This makes it flexible for various timestamp formats.
         timestamp_pattern = r'(- Last Updated: ).*'
         if re.search(timestamp_pattern, content):
-            # If a timestamp line exists, replace it
             content = re.sub(timestamp_pattern, r'\g<1>' + timestamp, content)
         else:
-            # If no timestamp line exists, find where to insert it.
-            # Let's insert it right after "Duplicate Stories Count: X" for example.
-            # This regex looks for the last data line and appends the timestamp after it.
-            insert_point_pattern = r'(- Duplicate Stories Count: \d+)'
+            insert_point_pattern = r'(- Duplicate Stories Count:\s*\d+)'
             if re.search(insert_point_pattern, content):
                 content = re.sub(insert_point_pattern, r'\g<1>\n- Last Updated: ' + timestamp, content)
             else:
-                # Fallback: if data section structure is different, just append to a known section
-                # Or to the very end of the 'Data' section if it's there
-                data_section_end_pattern = r'(## Representation:\s+ \*\*Data\*\*.*\n)' # Matches till the end of Data section title line + newline
-                if re.search(data_section_end_pattern, content, re.DOTALL): # re.DOTALL makes . match newlines
-                     # This is a bit tricky, you need to append *after* the existing data points.
-                     # A safer way might be to look for the line before "TO COME:"
-                     to_come_pattern = r'(- TO COME:)'
-                     if re.search(to_come_pattern, content):
-                         content = re.sub(to_come_pattern, '- Last Updated: ' + timestamp + '\n\g<1>', content)
-                     else:
-                         # If 'TO COME' isn't there, append to the very end of the file
-                         content += f"\n- Last Updated: {timestamp}\n"
-
-        print(f"Updated Content: {content}") #debug
+                to_come_pattern = r'(- TO COME:)'
+                if re.search(to_come_pattern, content):
+                    content = re.sub(to_come_pattern, '- Last Updated: ' + timestamp + '\n\g<1>', content)
+                else:
+                    content += f"\n- Last Updated: {timestamp}\n"
+        
+        # --- NEW DEBUG PRINT STATEMENT ---
+        print("\n--- Content to be written to file: ---")
+        print(content)
+        print("--------------------------------------\n")
+        
         with open(md_filepath, 'w', encoding='utf-8') as f:
             f.write(content)
 
         print(f"Successfully updated numerical values in '{md_filepath}'")
         if origin_distribution_df is not None:
-          # Convert DataFrame to Markdown table
-          df_markdown = origin_distribution_df.to_markdown(index=False)
-
-          with open(md_filepath, 'a', encoding='utf-8') as f:
-                f.write("\n\n## Saved Article Origin Distribution\n") # Add a heading before the table
+            df_markdown = origin_distribution_df.to_markdown(index=False)
+            with open(md_filepath, 'a', encoding='utf-8') as f:
+                f.write("\n\n## Saved Article Origin Distribution\n")
                 f.write(df_markdown)
-                f.write("\n") # Add a final newline for good measure
+                f.write("\n")
 
-          print(f"Successfully appended DataFrame to '{md_filepath}'")
+            print(f"Successfully appended DataFrame to '{md_filepath}'")
 
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")

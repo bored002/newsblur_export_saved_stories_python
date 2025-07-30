@@ -141,6 +141,8 @@ class Content_Parser(object):
         content = re.sub(r'(- Total Count of Stories: )\d+', r'\g<1>' + str(total_stories), content)
         content = re.sub(r'(- Duplicate Stories Count: )\d+', r'\g<1>' + str(duplicate_stories), content)
 
+        
+
         # Add or update a timestamp line
         # First, try to replace an existing timestamp line if it follows a similar pattern
         # This regex looks for a line starting with '- Last Updated: ' and then anything until the end of the line.
@@ -170,7 +172,7 @@ class Content_Parser(object):
                          # If 'TO COME' isn't there, append to the very end of the file
                          content += f"\n- Last Updated: {timestamp}\n"
 
-
+        print(f"Updated Content: {content}") #debug
         with open(md_filepath, 'w', encoding='utf-8') as f:
             f.write(content)
 

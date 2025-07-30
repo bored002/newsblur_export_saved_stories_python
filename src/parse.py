@@ -126,7 +126,7 @@ class Content_Parser(object):
     print(f"Parent directory: {parent_dir}")
     md_filepath = os.path.join(parent_dir, "index.md")
     print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
-    print(f"list dir: {os.listdir(parent_dir)}")
+    # print(f"list dir: {os.listdir(parent_dir)}")
   
     # md_filepath =(os.path.dirname(os.path.abspath(inspect.getabsfile(inspect.currentframe())))).replace('src','output')
     if not os.path.exists(md_filepath):
@@ -137,7 +137,7 @@ class Content_Parser(object):
             content = f.read()
 
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print(f"update_markdown_dashboard :: inputs: {'delta_stories': delta_stories, 'total_stories': total_stories, 'duplicate_stories': duplicate_stories, 'timestamp': timestamp}") #debug
+        print(f"update_markdown_dashboard :: inputs: 'delta_stories': {delta_stories}:: 'total_stories': {total_stories},:: 'duplicate_stories': {duplicate_stories},:: 'timestamp': {timestamp}") #debug
         content = re.sub(r'(- Delta of Stories: )\d+', r'\g<1>' + str(delta_stories), content)
         content = re.sub(r'(- Total Count of Stories: )\d+', r'\g<1>' + str(total_stories), content)
         content = re.sub(r'(- Duplicate Stories Count: )\d+', r'\g<1>' + str(duplicate_stories), content)

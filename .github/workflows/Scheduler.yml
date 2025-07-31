@@ -98,6 +98,16 @@ jobs:
         env:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
+          
+      - name: Upload updated index.md
+        uses: actions/upload-artifact@v4
+        with:
+          # This name is crucial, it's how the next job will find the file
+          name: updated-index-page
+          # The path to the file relative to the repo root
+          path: index.md
+          if-no-files-found: error
+          retention-days: 1
       
       # Upload execution results
       - name: Upload CSV artifact
@@ -120,27 +130,74 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
-        - name: Print a message
-          run: echo "Your message here"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # --- NEW STEP ---
+      # Download the updated index.md file from the previous job
+      - name: Download updated index.md
+        uses: actions/download-artifact@v4
+        with:
+          # The name must match the name used in the upload step above
+          name: updated-index-page
+          # The path where the artifact will be downloaded. This will
+          # overwrite the original index.md in the repo root.
+          path: .
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      # The jekyll-build-pages action will now use the newly downloaded index.md
+      - name: Build
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+      
+      # --- CORRECTED PATH ---
+      # This step should upload the _site folder, which is where Jekyll
+      # puts the generated HTML files.
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # deploy_jekyll_page:
+  #   needs: [Run_Python_Scrapper]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+    
+  #   steps:
+  #       - name: Print a message
+  #         run: echo "Your message here"
         
-        - name: Checkout
-          uses: actions/checkout@v4
+  #       - name: Checkout
+  #         uses: actions/checkout@v4
         
-        - name: Setup Pages
-          uses: actions/configure-pages@v5
+  #       - name: Setup Pages
+  #         uses: actions/configure-pages@v5
         
-        - name: Build
-          uses: actions/jekyll-build-pages@v1
-          with:
-              source: ./
-              #path: ./index.md
-              # source: ./your_specific_file.md --> path to the file you want Jekyll To Load
+  #       - name: Build
+  #         uses: actions/jekyll-build-pages@v1
+  #         with:
+  #             source: ./
+  #             #path: ./index.md
+  #             # source: ./your_specific_file.md --> path to the file you want Jekyll To Load
         
-        - name: Upload artifact
-          uses: actions/upload-pages-artifact@v3
-          with:
-              path: ./
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
+  #       - name: Upload artifact
+  #         uses: actions/upload-pages-artifact@v3
+  #         with:
+  #             path: ./
+  #       - name: Deploy to GitHub Pages
+  #         id: deployment
+  #         uses: actions/deploy-pages@v4
         

@@ -130,35 +130,46 @@ class Content_Parser(object):
     if not os.path.exists(md_filepath):
         print(f"Error: Markdown file not found at '{md_filepath}'")
         return
+        
     try:
-        with open(md_filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-
+        updated_lines = []
+        found_timestamp_line = False
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print("update_markdown_dashboard :: inputs:", {'delta_stories': delta_stories, 'total_stories': total_stories, 'duplicate_stories': duplicate_stories, 'timestamp': timestamp})
-        
-        # --- CORRECTED REGEX PATTERNS ---
-        # The '\d*' now matches zero or more digits, so it will work even if the numbers are missing.
-        content = re.sub(r'(- Delta of Stories:\s*)\d*', r'\g<1>' + str(delta_stories), content)
-        content = re.sub(r'(- Total Count of Stories:\s*)\d*', r'\g<1>' + str(total_stories), content)
-        content = re.sub(r'(- Duplicate Stories Count:\s*)\d*', r'\g<1>' + str(duplicate_stories), content)
 
-        # Update or add a timestamp line
-        timestamp_pattern = r'(- Last Updated: ).*'
-        if re.search(timestamp_pattern, content):
-            content = re.sub(timestamp_pattern, r'\g<1>' + timestamp, content)
-        else:
-            insert_point_pattern = r'(- Duplicate Stories Count:\s*\d*)'
-            if re.search(insert_point_pattern, content):
-                content = re.sub(insert_point_pattern, r'\g<1>\n- Last Updated: ' + timestamp, content)
+        # Read file line by line
+        with open(md_filepath, 'r', encoding='utf-8') as f:
+            for line in f.readlines():
+                # Perform direct string replacements
+                if line.strip().startswith('- Delta of Stories'):
+                    line = f"- Delta of Stories: {delta_stories}\n"
+                elif line.strip().startswith('- Total Count of Stories'):
+                    line = f"- Total Count of Stories: {total_stories}\n"
+                elif line.strip().startswith('- Duplicate Stories Count'):
+                    line = f"- Duplicate Stories Count: {duplicate_stories}\n"
+                elif line.strip().startswith('- Last Updated:'):
+                    line = f"- Last Updated: {timestamp}\n"
+                    found_timestamp_line = True
+                
+                updated_lines.append(line)
+
+        # If the timestamp line was not found, insert it
+        if not found_timestamp_line:
+            to_come_line_index = -1
+            # Find the index of the '- TO COME:' line
+            for i, line in enumerate(updated_lines):
+                if line.strip().startswith('- TO COME:'):
+                    to_come_line_index = i
+                    break
+            
+            # Insert the timestamp line before '- TO COME:'
+            if to_come_line_index != -1:
+                updated_lines.insert(to_come_line_index, f"- Last Updated: {timestamp}\n")
             else:
-                to_come_pattern = r'(- TO COME:)'
-                if re.search(to_come_pattern, content):
-                    content = re.sub(to_come_pattern, '- Last Updated: ' + timestamp + '\n\g<1>', content)
-                else:
-                    content += f"\n- Last Updated: {timestamp}\n"
-        
-        # --- NEW DEBUG PRINT STATEMENT ---
+                # As a last resort, just append it to the end
+                updated_lines.append(f"- Last Updated: {timestamp}\n")
+
+        content = "".join(updated_lines)
+
         print("\n--- Content to be written to file: ---")
         print(content)
         print("--------------------------------------\n")

@@ -10,6 +10,8 @@ import datetime
 import sys
 import os
 import inspect
+import networkx as nx       # New import for creating graphs
+import matplotlib.pyplot as plt  # New import for plotting graphs
 config_path = "config.yaml" 
 
 logger = getLogger(__name__)
@@ -138,13 +140,16 @@ class Content_Parser(object):
   
   @staticmethod
   def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
-
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    print(f"Script directory: {script_dir}")
     parent_dir = os.path.dirname(script_dir)
-    print(f"Parent directory: {parent_dir}")
     md_filepath = os.path.join(parent_dir, "index.md")
-    print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
+    
+    # Define the directory for saving the graph image
+    assets_dir = os.path.join(parent_dir, "assets")
+    if not os.path.exists(assets_dir):
+        os.makedirs(assets_dir)
+    graph_image_path = os.path.join(assets_dir, "origin_network_graph.png")
+    markdown_image_path = "assets/origin_network_graph.png"
  
     if not os.path.exists(md_filepath):
         print(f"Error: Markdown file not found at '{md_filepath}'")
@@ -158,7 +163,6 @@ class Content_Parser(object):
         # Read file line by line
         with open(md_filepath, 'r', encoding='utf-8') as f:
             for line in f.readlines():
-                # Perform direct string replacements
                 if line.strip().startswith('- Delta of Stories'):
                     line = f"- Delta of Stories: {delta_stories}\n"
                 elif line.strip().startswith('- Total Count of Stories'):
@@ -169,22 +173,58 @@ class Content_Parser(object):
                     line = f"- Last Updated: {timestamp}\n"
                     found_timestamp_line = True
                 
+                # --- NEW LOGIC FOR NETWORK GRAPH ---
+                elif origin_distribution_df is not None and line.strip() == '* Network Graph':
+                    # Create the network graph based on the DataFrame
+                    G = nx.Graph()
+                    G.add_node("Saved Stories", size=2000, color='red')
+                    
+                    # Count the occurrences of each origin
+                    origin_counts = origin_distribution_df['origin'].value_counts()
+                    total_count = origin_counts.sum()
+                    
+                    # Add nodes for each unique origin
+                    for origin, count in origin_counts.items():
+                        # Set node size proportional to its count
+                        node_size = 500 + (count / total_count) * 2000
+                        G.add_node(origin, size=node_size)
+                        G.add_edge("Saved Stories", origin)
+                    
+                    # Draw the graph using matplotlib
+                    plt.figure(figsize=(10, 10))
+                    pos = nx.spring_layout(G, k=0.5, iterations=50)
+                    
+                    # Separate node attributes for drawing
+                    node_sizes = [G.nodes[node]['size'] for node in G.nodes]
+                    node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
+                    
+                    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
+                    nx.draw_networkx_edges(G, pos, edge_color='gray')
+                    
+                    # Draw labels for the nodes
+                    labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
+                    labels["Saved Stories"] = "Saved Stories"
+                    nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
+                    
+                    plt.title("Saved Article Origin Network", size=16)
+                    plt.axis('off')
+                    plt.savefig(graph_image_path, bbox_inches='tight')
+                    plt.close() # Close the plot to free memory
+                    
+                    line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+                
                 updated_lines.append(line)
 
-        # If the timestamp line was not found, insert it
         if not found_timestamp_line:
             to_come_line_index = -1
-            # Find the index of the '- TO COME:' line
             for i, line in enumerate(updated_lines):
                 if line.strip().startswith('- TO COME:'):
                     to_come_line_index = i
                     break
             
-            # Insert the timestamp line before '- TO COME:'
             if to_come_line_index != -1:
                 updated_lines.insert(to_come_line_index, f"- Last Updated: {timestamp}\n")
             else:
-                # As a last resort, just append it to the end
                 updated_lines.append(f"- Last Updated: {timestamp}\n")
 
         content = "".join(updated_lines)
@@ -195,23 +235,100 @@ class Content_Parser(object):
         
         with open(md_filepath, 'w', encoding='utf-8') as f:
             f.write(content)
-        
-        print(f"Successfully updated numerical values in '{md_filepath}'")
-        print("-------------------validate_markdown_file-------------------\n")
-        Content_Parser.validate_markdown_file(md_filepath)
-        if origin_distribution_df is not None:
-           df_markdown = origin_distribution_df.to_markdown(index=False)
-           with open(md_filepath, 'a', encoding='utf-8') as f:
-               f.write("\n\n## Saved Article Origin Distribution\n")
-               f.write(df_markdown)
-               f.write("\n")
 
-           print(f"Successfully appended DataFrame to '{md_filepath}'")
-           Content_Parser.validate_markdown_file(md_filepath)
-        else:
-           print("No DataFrame data provided for appending to Markdown file.")
+        print(f"Successfully updated numerical values in '{md_filepath}'")
+
+        if origin_distribution_df is not None:
+            df_markdown = origin_distribution_df.to_markdown(index=False)
+            with open(md_filepath, 'a', encoding='utf-8') as f:
+                f.write("\n\n## Saved Article Origin Distribution\n")
+                f.write(df_markdown)
+                f.write("\n")
+            print(f"Successfully appended DataFrame to '{md_filepath}'")
+
+        print("\n--- Verifying content by reading the file from disk... ---")
+        with open(md_filepath, 'r', encoding='utf-8') as f_verify:
+            verified_content = f_verify.read()
+        print("\n" + verified_content)
+        print("----------------------------------------------------------\n")
+        
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")
+  # def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
+
+  #   script_dir = os.path.dirname(os.path.abspath(__file__))
+  #   print(f"Script directory: {script_dir}")
+  #   parent_dir = os.path.dirname(script_dir)
+  #   print(f"Parent directory: {parent_dir}")
+  #   md_filepath = os.path.join(parent_dir, "index.md")
+  #   print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
+ 
+  #   if not os.path.exists(md_filepath):
+  #       print(f"Error: Markdown file not found at '{md_filepath}'")
+  #       return
+        
+  #   try:
+  #       updated_lines = []
+  #       found_timestamp_line = False
+  #       timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+  #       # Read file line by line
+  #       with open(md_filepath, 'r', encoding='utf-8') as f:
+  #           for line in f.readlines():
+  #               # Perform direct string replacements
+  #               if line.strip().startswith('- Delta of Stories'):
+  #                   line = f"- Delta of Stories: {delta_stories}\n"
+  #               elif line.strip().startswith('- Total Count of Stories'):
+  #                   line = f"- Total Count of Stories: {total_stories}\n"
+  #               elif line.strip().startswith('- Duplicate Stories Count'):
+  #                   line = f"- Duplicate Stories Count: {duplicate_stories}\n"
+  #               elif line.strip().startswith('- Last Updated:'):
+  #                   line = f"- Last Updated: {timestamp}\n"
+  #                   found_timestamp_line = True
+                
+  #               updated_lines.append(line)
+
+  #       # If the timestamp line was not found, insert it
+  #       if not found_timestamp_line:
+  #           to_come_line_index = -1
+  #           # Find the index of the '- TO COME:' line
+  #           for i, line in enumerate(updated_lines):
+  #               if line.strip().startswith('- TO COME:'):
+  #                   to_come_line_index = i
+  #                   break
+            
+  #           # Insert the timestamp line before '- TO COME:'
+  #           if to_come_line_index != -1:
+  #               updated_lines.insert(to_come_line_index, f"- Last Updated: {timestamp}\n")
+  #           else:
+  #               # As a last resort, just append it to the end
+  #               updated_lines.append(f"- Last Updated: {timestamp}\n")
+
+  #       content = "".join(updated_lines)
+
+  #       print("\n--- Content to be written to file: ---")
+  #       print(content)
+  #       print("--------------------------------------\n")
+        
+  #       with open(md_filepath, 'w', encoding='utf-8') as f:
+  #           f.write(content)
+        
+  #       print(f"Successfully updated numerical values in '{md_filepath}'")
+  #       print("-------------------validate_markdown_file-------------------\n")
+  #       Content_Parser.validate_markdown_file(md_filepath)
+  #       if origin_distribution_df is not None:
+  #          df_markdown = origin_distribution_df.to_markdown(index=False)
+  #          with open(md_filepath, 'a', encoding='utf-8') as f:
+  #              f.write("\n\n## Saved Article Origin Distribution\n")
+  #              f.write(df_markdown)
+  #              f.write("\n")
+
+  #          print(f"Successfully appended DataFrame to '{md_filepath}'")
+  #          Content_Parser.validate_markdown_file(md_filepath)
+  #       else:
+  #          print("No DataFrame data provided for appending to Markdown file.")
+  #   except Exception as e:
+  #       print(f"An error occurred while updating the Markdown file: {e}")
 
 
   @staticmethod

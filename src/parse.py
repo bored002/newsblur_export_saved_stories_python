@@ -118,6 +118,25 @@ class Content_Parser(object):
     return self.stories_dataframe
   
   @staticmethod
+  def validate_markdown_file(md_filepath):
+    '''
+    Validates if the markdown file exists and is readable
+    '''
+    if not os.path.exists(md_filepath):
+        print(f"Error: Markdown file not found at '{md_filepath}'")
+        return False
+    try:
+        print("\n--- Verifying content by reading the file from disk... ---")
+        with open(md_filepath, 'r', encoding='utf-8') as f_verify:
+            verified_content = f_verify.read()
+        
+        print("\n" + verified_content)
+        print("----------------------------------------------------------\n")
+    except Exception as e:
+        print(f"Error reading markdown file: {e}")
+        return False
+  
+  @staticmethod
   def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -186,7 +205,7 @@ class Content_Parser(object):
                 f.write("\n")
 
             print(f"Successfully appended DataFrame to '{md_filepath}'")
-
+            Content_Parser.validate_markdown_file(md_filepath)
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")
 

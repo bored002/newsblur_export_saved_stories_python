@@ -132,7 +132,8 @@ jobs:
         - name: Build
           uses: actions/jekyll-build-pages@v1
           with:
-              path: ./index.md
+              source: ./
+              #path: ./index.md
               # source: ./your_specific_file.md --> path to the file you want Jekyll To Load
         
         - name: Upload artifact

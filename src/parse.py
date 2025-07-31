@@ -195,17 +195,21 @@ class Content_Parser(object):
         
         with open(md_filepath, 'w', encoding='utf-8') as f:
             f.write(content)
-
+        
         print(f"Successfully updated numerical values in '{md_filepath}'")
+        print("-------------------validate_markdown_file-------------------\n")
+        Content_Parser.validate_markdown_file(md_filepath)
         if origin_distribution_df is not None:
-            df_markdown = origin_distribution_df.to_markdown(index=False)
-            with open(md_filepath, 'a', encoding='utf-8') as f:
-                f.write("\n\n## Saved Article Origin Distribution\n")
-                f.write(df_markdown)
-                f.write("\n")
+           df_markdown = origin_distribution_df.to_markdown(index=False)
+           with open(md_filepath, 'a', encoding='utf-8') as f:
+               f.write("\n\n## Saved Article Origin Distribution\n")
+               f.write(df_markdown)
+               f.write("\n")
 
-            print(f"Successfully appended DataFrame to '{md_filepath}'")
-            Content_Parser.validate_markdown_file(md_filepath)
+           print(f"Successfully appended DataFrame to '{md_filepath}'")
+           Content_Parser.validate_markdown_file(md_filepath)
+        else:
+           print("No DataFrame data provided for appending to Markdown file.")
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")
 

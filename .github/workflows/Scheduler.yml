@@ -132,13 +132,13 @@ jobs:
         - name: Build
           uses: actions/jekyll-build-pages@v1
           with:
-              source: ./
+              path: ./index.md
               # source: ./your_specific_file.md --> path to the file you want Jekyll To Load
         
         - name: Upload artifact
           uses: actions/upload-pages-artifact@v3
           with:
-              source: ./
+              path: ./index.md
         - name: Deploy to GitHub Pages
           id: deployment
           uses: actions/deploy-pages@v4

@@ -175,43 +175,52 @@ class Content_Parser(object):
                 
                 # --- NEW LOGIC FOR NETWORK GRAPH ---
                 elif origin_distribution_df is not None and line.strip() == '* Network Graph':
-                    # Create the network graph based on the DataFrame
-                    G = nx.Graph()
-                    G.add_node("Saved Stories", size=2000, color='red')
-                    
-                    # Count the occurrences of each origin
-                    origin_counts = origin_distribution_df['origin'].value_counts()
-                    total_count = origin_counts.sum()
-                    
-                    # Add nodes for each unique origin
-                    for origin, count in origin_counts.items():
-                        # Set node size proportional to its count
-                        node_size = 500 + (count / total_count) * 2000
-                        G.add_node(origin, size=node_size)
-                        G.add_edge("Saved Stories", origin)
-                    
-                    # Draw the graph using matplotlib
-                    plt.figure(figsize=(10, 10))
-                    pos = nx.spring_layout(G, k=0.5, iterations=50)
-                    
-                    # Separate node attributes for drawing
-                    node_sizes = [G.nodes[node]['size'] for node in G.nodes]
-                    node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
-                    
-                    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
-                    nx.draw_networkx_edges(G, pos, edge_color='gray')
-                    
-                    # Draw labels for the nodes
-                    labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
-                    labels["Saved Stories"] = "Saved Stories"
-                    nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
-                    
-                    plt.title("Saved Article Origin Network", size=16)
-                    plt.axis('off')
-                    plt.savefig(graph_image_path, bbox_inches='tight')
-                    plt.close() # Close the plot to free memory
-                    
-                    line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+                    print("Attempting to create network graph for origin distribution...")  # Debug statement    
+                    # Wrap the graph generation in a try-except block
+                    try:
+                        # Create the network graph based on the DataFrame
+                        G = nx.Graph()
+                        G.add_node("Saved Stories", size=2000, color='red')
+                        
+                        # Count the occurrences of each origin
+                        origin_counts = origin_distribution_df['origin'].value_counts()
+                        total_count = origin_counts.sum()
+                        
+                        # Add nodes for each unique origin
+                        for origin, count in origin_counts.items():
+                            # Set node size proportional to its count
+                            node_size = 500 + (count / total_count) * 2000
+                            G.add_node(origin, size=node_size)
+                            G.add_edge("Saved Stories", origin)
+                        
+                        # Draw the graph using matplotlib
+                        plt.figure(figsize=(10, 10))
+                        pos = nx.spring_layout(G, k=0.5, iterations=50)
+                        
+                        # Separate node attributes for drawing
+                        node_sizes = [G.nodes[node]['size'] for node in G.nodes]
+                        node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
+                        
+                        nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
+                        nx.draw_networkx_edges(G, pos, edge_color='gray')
+                        
+                        # Draw labels for the nodes
+                        labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
+                        labels["Saved Stories"] = "Saved Stories"
+                        nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
+                        
+                        plt.title("Saved Article Origin Network", size=16)
+                        plt.axis('off')
+                        plt.savefig(graph_image_path, bbox_inches='tight')
+                        plt.close() # Close the plot to free memory
+                        
+                        # On success, update the line to the Markdown image tag
+                        line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+
+                    except Exception as e:
+                        # On failure, print an error message and insert a safe comment
+                        print(f"Error generating network graph: {e}")
+                        line = "\n"
                 
                 updated_lines.append(line)
 

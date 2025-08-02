@@ -176,7 +176,7 @@ class Content_Parser(object):
                     print("Attempting to create network graph for origin distribution...")
                     try:
                         # The input is a Series, so we use it directly
-                        if not isinstance(origin_distribution_df, pd.Series):
+                        if not isinstance(origin_distribution_df, pandas.Series):
                             raise TypeError("Expected pandas Series for origin distribution.")
                             
                         G = nx.Graph()

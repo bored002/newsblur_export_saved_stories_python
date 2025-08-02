@@ -160,6 +160,8 @@ class Content_Parser(object):
         found_timestamp_line = False
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+        print(f"origin_distribution_df: {origin_distribution_df}")  # Debug statement
+
         # Read file line by line
         with open(md_filepath, 'r', encoding='utf-8') as f:
             for line in f.readlines():
@@ -172,6 +174,7 @@ class Content_Parser(object):
                 elif line.strip().startswith('- Last Updated:'):
                     line = f"- Last Updated: {timestamp}\n"
                     found_timestamp_line = True
+                
                 
                 # --- NEW LOGIC FOR NETWORK GRAPH ---
                 elif origin_distribution_df is not None and line.strip() == '* Network Graph':

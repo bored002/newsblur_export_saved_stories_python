@@ -10,5 +10,6 @@ google-auth-httplib2
 google-auth-oauthlib
 oauth2client
 networkx
+tabulate
 # tensorflow==2.4.2
 # pycaret

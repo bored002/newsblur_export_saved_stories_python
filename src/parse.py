@@ -171,17 +171,18 @@ class Content_Parser(object):
                     line = f"- Last Updated: {timestamp}\n"
                     found_timestamp_line = True
                 
+                # The logic for graph generation is now updated for a Series
                 elif origin_distribution_df is not None and line.strip() == '* Network Graph':
                     print("Attempting to create network graph for origin distribution...")
                     try:
-                        # --- NEW: Check for 'origin' column before accessing it ---
-                        if 'origin' not in origin_distribution_df.columns:
-                            raise KeyError("DataFrame is missing the required 'origin' column.")
+                        # The input is a Series, so we use it directly
+                        if not isinstance(origin_distribution_df, pd.Series):
+                            raise TypeError("Expected pandas Series for origin distribution.")
                             
                         G = nx.Graph()
                         G.add_node("Saved Stories", size=2000, color='red')
                         
-                        origin_counts = origin_distribution_df['origin'].value_counts()
+                        origin_counts = origin_distribution_df
                         total_count = origin_counts.sum()
                         
                         for origin, count in origin_counts.items():
@@ -239,7 +240,11 @@ class Content_Parser(object):
         print(f"Successfully updated numerical values in '{md_filepath}'")
 
         if origin_distribution_df is not None:
-            df_markdown = origin_distribution_df.to_markdown(index=False)
+            # --- NEW: Convert the Series to a DataFrame before converting to Markdown ---
+            df_for_markdown = origin_distribution_df.reset_index()
+            df_for_markdown.columns = ['origin', 'count']
+            
+            df_markdown = df_for_markdown.to_markdown(index=False)
             with open(md_filepath, 'a', encoding='utf-8') as f:
                 f.write("\n\n## Saved Article Origin Distribution\n")
                 f.write(df_markdown)
@@ -254,7 +259,7 @@ class Content_Parser(object):
         
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")
-        
+
   # def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
 
   #   script_dir = os.path.dirname(os.path.abspath(__file__))

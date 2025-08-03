@@ -13,3 +13,4 @@ exclude:
   - README.txt
   - configs/
   - temp_ndex.html
+  - index.md

@@ -1,0 +1,15 @@
+# This file tells Jekyll which files to exclude from the build process.
+# We are only interested in the index.md and the assets folder.
+# The rest of the repository is project source code and should be ignored.
+
+exclude:
+  - src/
+  - .github/
+  - HugoPages/
+  - Dockerfile
+  - main.py
+  - requirements.txt
+  - test.py
+  - README.txt
+  - configs/
+  - temp_ndex.html

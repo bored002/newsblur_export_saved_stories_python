@@ -109,7 +109,7 @@ jobs:
           retention-days: 7
 
   deploy_jekyll_page:
-    needs: [Run_Python_Scrapper]
+    needs: Run_Python_Scrapper
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -118,35 +118,41 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
     steps:
-        - name: Print a message
-          run: echo "Your message here"
-        
-        - name: Checkout
-          uses: actions/checkout@v4
-        
-        - name: Setup Pages
-          uses: actions/configure-pages@v5
-        
-        - name: Build
-          uses: actions/jekyll-build-pages@v1
-          with:
-              source: ./
-              # source: ./your_specific_file.md --> path to the file you want Jekyll To Load
-          # --- NEW DEBUG STEP ---
-        - name: Debug - List _site contents
-          run: ls -laR _site
-        # ----------------------
-        # - name: Upload artifact
-        - name: Upload Pages artifact
-          uses: actions/upload-artifact@v4
-          with:
-            name: github-pages
-            path: _site
-            retention-days: 1
-      # -----------------------------------
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Download updated index.md
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-index-page
+          path: .
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Build
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: _site
+
+      # --- NEW FIX: Delete the source file after the build ---
+      - name: Clean up build output
+        run: rm _site/index.md
+      # --------------------------------------------------------
+
+      - name: Debug - List _site contents
+        run: ls -laR _site
+      
+      - name: Upload Pages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: _site
+          retention-days: 1
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
         

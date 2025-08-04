@@ -144,7 +144,9 @@ jobs:
           mkdir _jekyll_source
           cp index.md _jekyll_source/index.md
           cp _config.yml _jekyll_source/_config.yml
-          cp -r assets _jekyll_source/assets
+          if [ -d "assets" ]; then
+            cp -r assets _jekyll_source/assets
+          fi
       
       - name: Build
         uses: actions/jekyll-build-pages@v1

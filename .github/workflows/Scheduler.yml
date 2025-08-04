@@ -139,6 +139,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       
+      - name: Prepare Jekyll source
+        run: |
+          mkdir _jekyll_source
+          cp index.md _jekyll_source/index.md
+          cp _config.yml _jekyll_source/_config.yml
+          cp -r assets _jekyll_source/assets
+      
       - name: Build
         uses: actions/jekyll-build-pages@v1
         with:

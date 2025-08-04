@@ -147,7 +147,7 @@ jobs:
 
       # --- NEW FIX: Delete the source file after the build ---
       - name: Clean up build output
-        run: rm _site/index.md
+        run: sudo rm -f _site/index.md
       # --------------------------------------------------------
 
       - name: Debug - List _site contents

@@ -135,6 +135,17 @@ jobs:
         with:
           name: updated-index-page
           path: .
+      
+      # --- NEW DEBUG STEP: Show what's in the current directory ---
+      - name: List files after artifact download
+        run: ls -R
+      # -------------------------------------------------------------
+      
+      # --- NEW DEBUG STEP: Display content of a likely file ---
+      - name: Display contents of downloaded file
+        run: cat updated-index-page/index.md
+      # -----------------------------------------------------------
+
           
       - name: Setup Pages
         uses: actions/configure-pages@v5

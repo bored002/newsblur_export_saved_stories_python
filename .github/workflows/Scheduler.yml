@@ -99,6 +99,14 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
       
+      - name: Upload updated index.md as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-index-page
+          path: index.md
+          retention-days: 7
+          if-no-files-found: error
+      
       # Upload execution results
       - name: Upload CSV artifact
         uses: actions/upload-artifact@v4

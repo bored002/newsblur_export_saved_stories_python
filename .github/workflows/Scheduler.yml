@@ -135,6 +135,11 @@ jobs:
         with:
           name: updated-index-page
           path: .
+
+      # --- NEW DEBUG STEP: Display content of the index.md in the root ---
+      - name: Verify downloaded index.md content
+        run: cat index.md
+      # -------------------------------------------------------------------
       
       - name: List files after artifact download
         run: ls -R

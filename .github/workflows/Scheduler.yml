@@ -136,6 +136,8 @@ jobs:
           name: updated-index-page
           path: .
       
+      - name: List files after artifact download
+        run: ls -R
       
           
       - name: Setup Pages

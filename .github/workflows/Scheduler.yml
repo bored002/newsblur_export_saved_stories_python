@@ -151,7 +151,7 @@ jobs:
       - name: Prepare Jekyll source
         run: |
           mkdir _jekyll_source
-          cp updated-index-page/index.md _jekyll_source/index.md
+          cp index.md _jekyll_source/index.md
           cp _config.yml _jekyll_source/_config.yml
           if [ -d "assets" ]; then
             cp -r assets _jekyll_source/assets

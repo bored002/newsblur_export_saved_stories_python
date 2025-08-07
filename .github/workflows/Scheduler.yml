@@ -135,6 +135,9 @@ jobs:
         with:
           name: updated-index-page
           path: .
+      
+      - name: Verify downloaded index.md content
+        run: cat index.md
           
       - name: Setup Pages
         uses: actions/configure-pages@v5

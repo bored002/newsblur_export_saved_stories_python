@@ -135,47 +135,17 @@ jobs:
         with:
           name: updated-index-page
           path: .
-
-      # --- NEW DEBUG STEP: Display content of the index.md in the root ---
-      - name: Verify downloaded index.md content
-        run: cat index.md
-      # -------------------------------------------------------------------
-      
-      - name: List files after artifact download
-        run: ls -R
-      
           
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      
-      - name: Prepare Jekyll source
-        run: |
-          mkdir _jekyll_source
-          cp index.md _jekyll_source/index.md
-          cp _config.yml _jekyll_source/_config.yml
-          if [ -d "assets" ]; then
-            cp -r assets _jekyll_source/assets
-          fi
-      
+
+      # The jekyll-build-pages action will now use the updated index.md
+      # and other files directly from the root directory.
       - name: Build
         uses: actions/jekyll-build-pages@v1
         with:
           source: .
           destination: _site
-
-      - name: Build
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: .
-          destination: _site
-
-      # --- NEW FIX: Delete the source file after the build ---
-      # - name: Clean up build output
-      #   run: sudo rm -f _site/index.md
-      # --------------------------------------------------------
-
-      - name: Debug - List _site contents
-        run: ls -laR _site
       
       - name: Upload Pages artifact
         uses: actions/upload-artifact@v4
@@ -187,4 +157,76 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # deploy_jekyll_page:
+  #   needs: Run_Python_Scrapper
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: $ {{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Download updated index.md
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: updated-index-page
+  #         path: .
+
+  #     # --- NEW DEBUG STEP: Display content of the index.md in the root ---
+  #     - name: Verify downloaded index.md content
+  #       run: cat index.md
+  #     # -------------------------------------------------------------------
+      
+  #     - name: List files after artifact download
+  #       run: ls -R
+      
+          
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
+      
+  #     - name: Prepare Jekyll source
+  #       run: |
+  #         mkdir _jekyll_source
+  #         cp index.md _jekyll_source/index.md
+  #         cp _config.yml _jekyll_source/_config.yml
+  #         if [ -d "assets" ]; then
+  #           cp -r assets _jekyll_source/assets
+  #         fi
+      
+  #     - name: Build
+  #       uses: actions/jekyll-build-pages@v1
+  #       with:
+  #         source: .
+  #         destination: _site
+
+  #     # - name: Build
+  #     #   uses: actions/jekyll-build-pages@v1
+  #     #   with:
+  #     #     source: .
+  #     #     destination: _site
+
+  #     # --- NEW FIX: Delete the source file after the build ---
+  #     # - name: Clean up build output
+  #     #   run: sudo rm -f _site/index.md
+  #     # --------------------------------------------------------
+
+  #     - name: Debug - List _site contents
+  #       run: ls -laR _site
+      
+  #     - name: Upload Pages artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: github-pages
+  #         path: _site
+  #         retention-days: 1
+      
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
         

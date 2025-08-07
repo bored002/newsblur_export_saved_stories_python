@@ -163,9 +163,15 @@ jobs:
           source: .
           destination: _site
 
+      - name: Build
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: _site
+
       # --- NEW FIX: Delete the source file after the build ---
-      - name: Clean up build output
-        run: sudo rm -f _site/index.md
+      # - name: Clean up build output
+      #   run: sudo rm -f _site/index.md
       # --------------------------------------------------------
 
       - name: Debug - List _site contents

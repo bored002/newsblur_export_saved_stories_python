@@ -115,8 +115,8 @@ jobs:
           path: output/*.csv
           if-no-files-found: warn
           retention-days: 7
-
-  deploy_jekyll_page:
+  
+  deploy_static_page:
     needs: Run_Python_Scrapper
     runs-on: ubuntu-latest
     permissions:
@@ -127,29 +127,38 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
       - name: Download updated index.md
         uses: actions/download-artifact@v4
         with:
           name: updated-index-page
           path: .
-      
-      - name: Verify downloaded index.md content
-        run: cat index.md
+          
+      # 1. Print the contents of the downloaded index.md
+      - name: Verify downloaded Markdown content
+        run: |
+          echo "--- Contents of index.md after download ---"
+          cat index.md
+          echo "------------------------------------------"
+          
+      - name: Convert Markdown to HTML
+        run: |
+          # Use pandoc to convert the Markdown file to HTML
+          pandoc index.md -o index.html
+          # Create the _site directory for deployment
+          mkdir _site
+          # Move the newly created HTML file into the deployment directory
+          mv index.html _site/index.html
+          
+      # 2. Print the contents of the generated index.html
+      - name: Verify generated HTML content
+        run: |
+          echo "--- Contents of _site/index.html after conversion ---"
+          cat _site/index.html
+          echo "------------------------------------------------------"
           
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
-      # The jekyll-build-pages action will now use the updated index.md
-      # and other files directly from the root directory.
-      - name: Build
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: .
-          destination: _site
-      
+        
       - name: Upload Pages artifact
         uses: actions/upload-artifact@v4
         with:
@@ -160,6 +169,51 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # deploy_jekyll_page:
+  #   needs: Run_Python_Scrapper
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Download updated index.md
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: updated-index-page
+  #         path: .
+      
+  #     - name: Verify downloaded index.md content
+  #       run: cat index.md
+          
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
+
+  #     # The jekyll-build-pages action will now use the updated index.md
+  #     # and other files directly from the root directory.
+  #     - name: Build
+  #       uses: actions/jekyll-build-pages@v1
+  #       with:
+  #         source: .
+  #         destination: _site
+      
+  #     - name: Upload Pages artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: github-pages
+  #         path: _site
+  #         retention-days: 1
+      
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
 
   # deploy_jekyll_page:
   #   needs: Run_Python_Scrapper

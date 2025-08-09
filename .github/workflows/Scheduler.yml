@@ -127,32 +127,37 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Step 1: Checkout the repository to get all project files, including _config.yml.
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      # Step 2: Download the updated index.md artifact and overwrite the local file.
-      - name: Download and replace updated index.md
+      - name: Download updated index.md and other files
         uses: actions/download-artifact@v4
         with:
           name: updated-index-page
           path: .
           
-      - name: Verify downloaded Markdown content
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+          
+      - name: Convert Markdown to HTML and prepare for deployment
         run: |
-          echo "--- Contents of index.md after download ---"
-          cat index.md
-          echo "------------------------------------------"
+          # Use 'sed' to add a blank line after every line in the index.md file.
+          # This forces Pandoc to render each line as a new paragraph.
+          sed -i 's/$/\n/' index.md
+          # Use pandoc to convert the modified Markdown file to HTML.
+          # The --standalone flag adds a basic HTML header/body.
+          pandoc index.md -o index.html --standalone
+          # Create the _site directory, which is the required output for deploy-pages.
+          mkdir _site
+          # Move the newly created HTML file into the deployment directory.
+          mv index.html _site/index.html
           
-      # The Setup Pages step is removed as it's not needed for this Jekyll setup.
-      # GitHub Pages will automatically detect the Jekyll configuration.
-          
-      # Step 3: Upload the entire repository, which now includes the new index.md file.
-      # Jekyll will use the files in the repository to build the site.
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
       - name: Upload Pages artifact
+        # This action is specifically for deploying to GitHub Pages.
+        # It takes the _site folder as its input.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
           
       - name: Deploy to GitHub Pages
         id: deployment

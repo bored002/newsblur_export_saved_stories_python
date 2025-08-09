@@ -148,6 +148,8 @@ jobs:
           mkdir _site
           # Move the newly created HTML file into the deployment directory.
           mv index.html _site/index.html
+          # Move the network graph image into the deployment directory.
+          mv network-graph.png _site/network-graph.png
           
       - name: Setup Pages
         uses: actions/configure-pages@v5

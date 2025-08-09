@@ -115,8 +115,8 @@ jobs:
           path: output/*.csv
           if-no-files-found: warn
           retention-days: 7
-  
-  deploy_static_page:
+
+  deploy_static_Jekyll_page:
     needs: Run_Python_Scrapper
     runs-on: ubuntu-latest
     permissions:
@@ -133,15 +133,19 @@ jobs:
           name: updated-index-page
           path: .
           
-      # 1. Print the contents of the downloaded index.md
-      - name: Verify downloaded Markdown content
-        run: |
-          echo "--- Contents of index.md after download ---"
-          cat index.md
-          echo "------------------------------------------"
-
+      # This is the key change. We are no longer converting Markdown to HTML
+      # Instead, Jekyll will handle the conversion automatically.
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          # This configures GitHub Pages to use Jekyll for building the site.
+          # The path must be set to the location of the source files.
+          static_site_generator: 'jekyll'
+          
       - name: Upload Pages artifact
-        # This action will upload the index.md file from the current directory.
+        # This action will upload the entire repository, allowing Jekyll to find index.md.
+        # The path is set to the current directory.
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
@@ -149,6 +153,41 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  
+  # deploy_static_page:
+  #   needs: Run_Python_Scrapper
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   steps:
+  #     - name: Download updated index.md
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: updated-index-page
+  #         path: .
+          
+  #     # 1. Print the contents of the downloaded index.md
+  #     - name: Verify downloaded Markdown content
+  #       run: |
+  #         echo "--- Contents of index.md after download ---"
+  #         cat index.md
+  #         echo "------------------------------------------"
+
+  #     - name: Upload Pages artifact
+  #       # This action will upload the index.md file from the current directory.
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: '.'
+          
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
       
       # - name: Install Pandoc
       #   run: sudo apt-get update && sudo apt-get install -y pandoc

@@ -116,7 +116,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  deploy_static_Jekyll_page:
+  deploy_static_page:
     needs: Run_Python_Scrapper
     runs-on: ubuntu-latest
     permissions:
@@ -127,25 +127,32 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download updated index.md
+      # Step 1: Checkout the repository to get all project files, including _config.yml.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      # Step 2: Download the updated index.md artifact and overwrite the local file.
+      - name: Download and replace updated index.md
         uses: actions/download-artifact@v4
         with:
           name: updated-index-page
           path: .
           
-      # This is the key change. We are no longer converting Markdown to HTML
-      # Instead, Jekyll will handle the conversion automatically.
+      - name: Verify downloaded Markdown content
+        run: |
+          echo "--- Contents of index.md after download ---"
+          cat index.md
+          echo "------------------------------------------"
           
+      # Step 3: Setup Pages, explicitly enabling Jekyll. This is the missing step.
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
-          # This configures GitHub Pages to use Jekyll for building the site.
-          # The path must be set to the location of the source files.
           static_site_generator: 'jekyll'
           
+      # Step 4: Upload the entire repository, which now includes the new index.md file.
+      # Jekyll will use the files in the repository to build the site.
       - name: Upload Pages artifact
-        # This action will upload the entire repository, allowing Jekyll to find index.md.
-        # The path is set to the current directory.
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
@@ -153,6 +160,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
 
   
   # deploy_static_page:

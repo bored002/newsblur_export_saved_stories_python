@@ -103,7 +103,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: updated-index-page
-          path: index.md
+          path: |
+            index.md
+            network-graph.png
           retention-days: 7
           if-no-files-found: error
       

@@ -12,6 +12,7 @@ import os
 import inspect
 import networkx as nx       # New import for creating graphs
 import matplotlib.pyplot as plt  # New import for plotting graphs
+import plotly.graph_objects as go
 config_path = "config.yaml" 
 
 logger = getLogger(__name__)
@@ -148,7 +149,9 @@ class Content_Parser(object):
     if not os.path.exists(assets_dir):
         os.makedirs(assets_dir)
     graph_image_path = os.path.join(assets_dir, "origin_network_graph.png")
-    markdown_image_path = "assets/origin_network_graph.png"
+    sankey_image_path = os.path.join(assets_dir, "sankey_diagram.png")
+    markdown_graph_image_path = "assets/origin_network_graph.png"
+    markdown_sankey_image_path = "assets/sankey_diagram.png"
  
     if not os.path.exists(md_filepath):
         print(f"Error: Markdown file not found at '{md_filepath}'")
@@ -175,7 +178,6 @@ class Content_Parser(object):
                 elif origin_distribution_df is not None and line.strip() == '* Network Graph':
                     print("Attempting to create network graph for origin distribution...")
                     try:
-                        # The input is a Series, so we use it directly
                         if not isinstance(origin_distribution_df, pandas.Series):
                             raise TypeError("Expected pandas Series for origin distribution.")
                             
@@ -208,10 +210,17 @@ class Content_Parser(object):
                         plt.savefig(graph_image_path, bbox_inches='tight')
                         plt.close()
                         
-                        line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+                        line = f"![Saved Article Origin Distribution Network Graph]({markdown_graph_image_path})\n"
 
                     except Exception as e:
                         print(f"Error generating network graph: {e}")
+                        line = "\n"
+
+                # --- NEW LOGIC FOR SANKEY DIAGRAM ---
+                elif origin_distribution_df is not None and line.strip() == '* Sankey Diagram':
+                    if Content_Parser.generate_sankey_diagram(origin_distribution_df):
+                        line = f"![Saved Article Origin Distribution Sankey Diagram]({markdown_sankey_image_path})\n"
+                    else:
                         line = "\n"
                 
                 updated_lines.append(line)
@@ -260,14 +269,17 @@ class Content_Parser(object):
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")
 
+  # @staticmethod
   # def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
-
   #   script_dir = os.path.dirname(os.path.abspath(__file__))
-  #   print(f"Script directory: {script_dir}")
   #   parent_dir = os.path.dirname(script_dir)
-  #   print(f"Parent directory: {parent_dir}")
   #   md_filepath = os.path.join(parent_dir, "index.md")
-  #   print(f"Markdown file path: {md_filepath}:: is file exists? {os.path.isfile(md_filepath)}")
+    
+  #   assets_dir = os.path.join(parent_dir, "assets")
+  #   if not os.path.exists(assets_dir):
+  #       os.makedirs(assets_dir)
+  #   graph_image_path = os.path.join(assets_dir, "origin_network_graph.png")
+  #   markdown_image_path = "assets/origin_network_graph.png"
  
   #   if not os.path.exists(md_filepath):
   #       print(f"Error: Markdown file not found at '{md_filepath}'")
@@ -278,10 +290,8 @@ class Content_Parser(object):
   #       found_timestamp_line = False
   #       timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-  #       # Read file line by line
   #       with open(md_filepath, 'r', encoding='utf-8') as f:
   #           for line in f.readlines():
-  #               # Perform direct string replacements
   #               if line.strip().startswith('- Delta of Stories'):
   #                   line = f"- Delta of Stories: {delta_stories}\n"
   #               elif line.strip().startswith('- Total Count of Stories'):
@@ -292,22 +302,61 @@ class Content_Parser(object):
   #                   line = f"- Last Updated: {timestamp}\n"
   #                   found_timestamp_line = True
                 
+  #               # The logic for graph generation is now updated for a Series
+  #               elif origin_distribution_df is not None and line.strip() == '* Network Graph':
+  #                   print("Attempting to create network graph for origin distribution...")
+  #                   try:
+  #                       # The input is a Series, so we use it directly
+  #                       if not isinstance(origin_distribution_df, pandas.Series):
+  #                           raise TypeError("Expected pandas Series for origin distribution.")
+                            
+  #                       G = nx.Graph()
+  #                       G.add_node("Saved Stories", size=2000, color='red')
+                        
+  #                       origin_counts = origin_distribution_df
+  #                       total_count = origin_counts.sum()
+                        
+  #                       for origin, count in origin_counts.items():
+  #                           node_size = 500 + (count / total_count) * 2000
+  #                           G.add_node(origin, size=node_size)
+  #                           G.add_edge("Saved Stories", origin)
+                        
+  #                       plt.figure(figsize=(10, 10))
+  #                       pos = nx.spring_layout(G, k=0.5, iterations=50)
+                        
+  #                       node_sizes = [G.nodes[node]['size'] for node in G.nodes]
+  #                       node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
+                        
+  #                       nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
+  #                       nx.draw_networkx_edges(G, pos, edge_color='gray')
+                        
+  #                       labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
+  #                       labels["Saved Stories"] = "Saved Stories"
+  #                       nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
+                        
+  #                       plt.title("Saved Article Origin Network", size=16)
+  #                       plt.axis('off')
+  #                       plt.savefig(graph_image_path, bbox_inches='tight')
+  #                       plt.close()
+                        
+  #                       line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+
+  #                   except Exception as e:
+  #                       print(f"Error generating network graph: {e}")
+  #                       line = "\n"
+                
   #               updated_lines.append(line)
 
-  #       # If the timestamp line was not found, insert it
   #       if not found_timestamp_line:
   #           to_come_line_index = -1
-  #           # Find the index of the '- TO COME:' line
   #           for i, line in enumerate(updated_lines):
   #               if line.strip().startswith('- TO COME:'):
   #                   to_come_line_index = i
   #                   break
             
-  #           # Insert the timestamp line before '- TO COME:'
   #           if to_come_line_index != -1:
   #               updated_lines.insert(to_come_line_index, f"- Last Updated: {timestamp}\n")
   #           else:
-  #               # As a last resort, just append it to the end
   #               updated_lines.append(f"- Last Updated: {timestamp}\n")
 
   #       content = "".join(updated_lines)
@@ -318,24 +367,76 @@ class Content_Parser(object):
         
   #       with open(md_filepath, 'w', encoding='utf-8') as f:
   #           f.write(content)
-        
-  #       print(f"Successfully updated numerical values in '{md_filepath}'")
-  #       print("-------------------validate_markdown_file-------------------\n")
-  #       Content_Parser.validate_markdown_file(md_filepath)
-  #       if origin_distribution_df is not None:
-  #          df_markdown = origin_distribution_df.to_markdown(index=False)
-  #          with open(md_filepath, 'a', encoding='utf-8') as f:
-  #              f.write("\n\n## Saved Article Origin Distribution\n")
-  #              f.write(df_markdown)
-  #              f.write("\n")
 
-  #          print(f"Successfully appended DataFrame to '{md_filepath}'")
-  #          Content_Parser.validate_markdown_file(md_filepath)
-  #       else:
-  #          print("No DataFrame data provided for appending to Markdown file.")
+  #       print(f"Successfully updated numerical values in '{md_filepath}'")
+
+  #       if origin_distribution_df is not None:
+  #           # --- NEW: Convert the Series to a DataFrame before converting to Markdown ---
+  #           df_for_markdown = origin_distribution_df.reset_index()
+  #           df_for_markdown.columns = ['origin', 'count']
+            
+  #           df_markdown = df_for_markdown.to_markdown(index=False)
+  #           with open(md_filepath, 'a', encoding='utf-8') as f:
+  #               f.write("\n\n## Saved Article Origin Distribution\n")
+  #               f.write(df_markdown)
+  #               f.write("\n")
+  #           print(f"Successfully appended DataFrame to '{md_filepath}'")
+
+  #       print("\n--- Verifying content by reading the file from disk... ---")
+  #       with open(md_filepath, 'r', encoding='utf-8') as f_verify:
+  #           verified_content = f_verify.read()
+  #       print("\n" + verified_content)
+  #       print("----------------------------------------------------------\n")
+        
   #   except Exception as e:
   #       print(f"An error occurred while updating the Markdown file: {e}")
+  
+  @staticmethod
+  def generate_sankey_diagram(origin_distribution_df):
+    print("Attempting to create Sankey diagram for origin distribution...")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    assets_dir = os.path.join(parent_dir, "assets")
+    if not os.path.exists(assets_dir):
+        os.makedirs(assets_dir)
+    sankey_image_path = os.path.join(assets_dir, "sankey_diagram.png")
+    
+    try:
+        labels = ["Saved Stories"] + list(origin_distribution_df.index)
+        
+        # Create a mapping from label name to a unique index
+        label_to_index = {label: i for i, label in enumerate(labels)}
 
+        # Create source, target, and value lists for the Sankey diagram
+        source = [label_to_index[origin] for origin in origin_distribution_df.index]
+        target = [label_to_index["Saved Stories"]] * len(origin_distribution_df.index)
+        value = origin_distribution_df.tolist()
+
+        # Create the Sankey diagram using plotly
+        fig = go.Figure(data=[go.Sankey(
+            node=dict(
+                pad=15,
+                thickness=20,
+                line=dict(color="black", width=0.5),
+                label=labels,
+                # Make the target node a different color
+                color=["red"] + ["blue"] * (len(labels) - 1)
+            ),
+            link=dict(
+                source=source,
+                target=target,
+                value=value,
+            )
+        )])
+        
+        fig.update_layout(title_text="Saved Article Origin Distribution", font_size=10)
+        fig.write_image(sankey_image_path)
+        
+        print(f"Successfully generated Sankey diagram at: {sankey_image_path}")
+        return True
+    except Exception as e:
+        print(f"Error generating Sankey diagram: {e}")
+        return False
 
   @staticmethod
   def dataframe_to_csv(data_frame, filename_prefix, index_column=False):

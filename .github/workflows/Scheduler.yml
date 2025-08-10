@@ -158,10 +158,12 @@ jobs:
           mv index.html _site/index.html
           
           # Check if the image file exists before trying to move it.
-          # This prevents the workflow from failing if the file is not in the artifact.
-          if [ -f "network-graph.png" ]; then
-            mv network-graph.png _site/network-graph.png
-            echo "Moved network-graph.png to _site directory."
+          if [ -f "assets/origin_network_graph.png" ]; then
+            # Create the 'assets' subdirectory inside '_site'
+            mkdir -p _site/assets
+            # Move the downloaded image to the correct path that matches the Markdown link.
+            mv assets/origin_network_graph.png _site/assets/origin_network_graph.png
+            echo "Moved assets/origin_network_graph.png to _site/assets directory."
           else
             echo "network-graph.png not found. Skipping file move."
           fi

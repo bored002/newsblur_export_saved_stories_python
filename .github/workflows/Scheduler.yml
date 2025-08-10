@@ -99,13 +99,13 @@ jobs:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
       
-      - name: Upload updated index.md as artifact
+      - name: Upload updated index.md and graph as artifact
         uses: actions/upload-artifact@v4
         with:
           name: updated-index-page
           path: |
             index.md
-            network-graph.png
+            assets/origin_network_graph.png
           retention-days: 7
           if-no-files-found: error
       

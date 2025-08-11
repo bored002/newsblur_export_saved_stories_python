@@ -123,6 +123,49 @@ class Content_Parser(object):
     except Exception as e:
         print(f"Error reading markdown file: {e}")
         return False
+
+  @staticmethod
+  def generate_network_graph(origin_distribution_df, graph_image_path):
+    print("Attempting to create network graph for origin distribution...")
+    try:
+        if not isinstance(origin_distribution_df, pandas.Series):
+            raise TypeError("Expected pandas Series for origin distribution.")
+            
+        G = nx.Graph()
+        G.add_node("Saved Stories", size=2000, color='red')
+        
+        origin_counts = origin_distribution_df
+        total_count = origin_counts.sum()
+        
+        for origin, count in origin_counts.items():
+            node_size = 500 + (count / total_count) * 2000
+            G.add_node(origin, size=node_size)
+            G.add_edge("Saved Stories", origin)
+        
+        plt.figure(figsize=(10, 10))
+        pos = nx.spring_layout(G, k=0.5, iterations=50)
+        
+        node_sizes = [G.nodes[node]['size'] for node in G.nodes]
+        node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
+        
+        nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
+        nx.draw_networkx_edges(G, pos, edge_color='gray')
+        
+        labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
+        labels["Saved Stories"] = "Saved Stories"
+        nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
+        
+        plt.title("Saved Article Origin Network", size=16)
+        plt.axis('off')
+        plt.savefig(graph_image_path, bbox_inches='tight')
+        plt.close()
+        
+        print(f"Successfully generated network graph at: {graph_image_path}")
+        return True
+
+    except Exception as e:
+        print(f"Error generating network graph: {e}")
+        return False
   
   @staticmethod
   def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
@@ -141,83 +184,55 @@ class Content_Parser(object):
         return
         
     try:
-        updated_lines = []
-        found_timestamp_line = False
+        # Generate the graph first
+        network_graph_success = Content_Parser.generate_network_graph(origin_distribution_df, graph_image_path)
+        
+        # Start building the new content for the Markdown file from scratch
+        new_content = ""
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+        # Read the existing file to get the static content
         with open(md_filepath, 'r', encoding='utf-8') as f:
-            for line in f.readlines():
-                if line.strip().startswith('- Delta of Stories'):
-                    line = f"- Delta of Stories: {delta_stories}\n"
-                elif line.strip().startswith('- Total Count of Stories'):
-                    line = f"- Total Count of Stories: {total_stories}\n"
-                elif line.strip().startswith('- Duplicate Stories Count'):
-                    line = f"- Duplicate Stories Count: {duplicate_stories}\n"
-                elif line.strip().startswith('- Last Updated:'):
-                    line = f"- Last Updated: {timestamp}\n"
-                    found_timestamp_line = True
-                
-                # The logic for graph generation is now updated for a Series
-                elif origin_distribution_df is not None and line.strip() == '* Network Graph':
-                    print("Attempting to create network graph for origin distribution...")
-                    try:
-                        if not isinstance(origin_distribution_df, pandas.Series):
-                            raise TypeError("Expected pandas Series for origin distribution.")
-                            
-                        G = nx.Graph()
-                        G.add_node("Saved Stories", size=2000, color='red')
-                        
-                        origin_counts = origin_distribution_df
-                        total_count = origin_counts.sum()
-                        
-                        for origin, count in origin_counts.items():
-                            node_size = 500 + (count / total_count) * 2000
-                            G.add_node(origin, size=node_size)
-                            G.add_edge("Saved Stories", origin)
-                        
-                        plt.figure(figsize=(10, 10))
-                        pos = nx.spring_layout(G, k=0.5, iterations=50)
-                        
-                        node_sizes = [G.nodes[node]['size'] for node in G.nodes]
-                        node_colors = ['red' if node == "Saved Stories" else 'skyblue' for node in G.nodes]
-                        
-                        nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors)
-                        nx.draw_networkx_edges(G, pos, edge_color='gray')
-                        
-                        labels = {node: f"{node}\n({origin_counts.get(node, '')})" for node in G.nodes}
-                        labels["Saved Stories"] = "Saved Stories"
-                        nx.draw_networkx_labels(G, pos, labels, font_size=10, font_weight='bold')
-                        
-                        plt.title("Saved Article Origin Network", size=16)
-                        plt.axis('off')
-                        plt.savefig(graph_image_path, bbox_inches='tight')
-                        plt.close()
-                        
-                        line = f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
-
-                    except Exception as e:
-                        print(f"Error generating network graph: {e}")
-                        line = "\n"
-                else:
-                    updated_lines.append(line)
+            lines = f.readlines()
         
-        content = "".join(updated_lines)
+        # Build the new content by iterating through the original lines and replacing the dynamic parts
+        for line in lines:
+            if line.strip().startswith('- Delta of Stories'):
+                new_content += f"- Delta of Stories: {delta_stories}\n"
+            elif line.strip().startswith('- Total Count of Stories'):
+                new_content += f"- Total Count of Stories: {total_stories}\n"
+            elif line.strip().startswith('- Duplicate Stories Count'):
+                new_content += f"- Duplicate Stories Count: {duplicate_stories}\n"
+            elif line.strip().startswith('- Last Updated:'):
+                new_content += f"- Last Updated: {timestamp}\n"
+            elif line.strip() == 'Graphs':
+                # Insert the network graph image link and the "TO COME" Sankey Diagram
+                new_content += "Graphs\n"
+                new_content += "\n"
+                if network_graph_success:
+                    new_content += f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+                new_content += "\nSankey Diagram\n\n"
+                break # Stop processing the old file and build the rest from scratch
+            else:
+                new_content += line
 
-        with open(md_filepath, 'w', encoding='utf-8') as f:
-            f.write(content)
-        
+        # Append the data table at the end
         if origin_distribution_df is not None:
-            # --- NEW: Convert the Series to a DataFrame before converting to Markdown ---
             df_for_markdown = origin_distribution_df.reset_index()
             df_for_markdown.columns = ['origin', 'count']
-            
             df_markdown = df_for_markdown.to_markdown(index=False)
-            with open(md_filepath, 'a', encoding='utf-8') as f:
-                f.write("\n\n## Saved Article Origin Distribution\n")
-                f.write(df_markdown)
-                f.write("\n")
-            print(f"Successfully appended DataFrame to '{md_filepath}'")
+            
+            new_content += "\n\n## Saved Article Origin Distribution\n"
+            new_content += df_markdown
+            new_content += "\n"
 
+        # Write the complete, new content back to the file
+        with open(md_filepath, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        
+        print(f"Successfully updated '{md_filepath}' with all data and graphs.")
+        
+        # Verify the final content
         print("\n--- Verifying final content by reading the file from disk... ---")
         with open(md_filepath, 'r', encoding='utf-8') as f_verify:
             verified_content = f_verify.read()

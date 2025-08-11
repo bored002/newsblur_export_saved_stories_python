@@ -10,8 +10,9 @@ import datetime
 import sys
 import os
 import inspect
-import networkx as nx # New import for creating graphs
-import matplotlib.pyplot as plt # New import for plotting graphs
+import networkx as nx 
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go # New import for generating Sankey diagrams
 
 config_path = "config.yaml"
 
@@ -166,7 +167,48 @@ class Content_Parser(object):
     except Exception as e:
         print(f"Error generating network graph: {e}")
         return False
-  
+        
+  @staticmethod
+  def generate_sankey_graph(origin_distribution_df, sankey_image_path):
+    print("Attempting to create Sankey graph for origin distribution...")
+    try:
+        if not isinstance(origin_distribution_df, pandas.Series):
+            raise TypeError("Expected pandas Series for origin distribution.")
+
+        labels = ["Saved Stories"] + list(origin_distribution_df.index)
+        source_indices = [0] * len(origin_distribution_df)
+        target_indices = list(range(1, len(labels)))
+        values = list(origin_distribution_df.values)
+
+        fig = go.Figure(data=[go.Sankey(
+            node=dict(
+                pad=15,
+                thickness=20,
+                line=dict(color="black", width=0.5),
+                label=labels,
+                color="blue"
+            ),
+            link=dict(
+                source=source_indices,
+                target=target_indices,
+                value=values
+            )
+        )])
+        
+        fig.update_layout(title_text="Saved Article Origin Distribution", font_size=10)
+        fig.write_image(sankey_image_path, scale=2)
+        
+        if os.path.exists(sankey_image_path):
+            print(f"Successfully generated and saved Sankey graph at: {sankey_image_path}")
+            return True
+        else:
+            print(f"Failed to save Sankey graph at: {sankey_image_path}")
+            return False
+
+    except Exception as e:
+        print(f"Error generating Sankey graph: {e}")
+        return False
+
   @staticmethod
   def update_markdown_dashboard(delta_stories, total_stories, duplicate_stories, origin_distribution_df=None):
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -178,10 +220,13 @@ class Content_Parser(object):
         os.makedirs(assets_dir)
     graph_image_path = os.path.join(assets_dir, "origin_network_graph.png")
     markdown_image_path = "assets/origin_network_graph.png"
+    sankey_image_path = os.path.join(assets_dir, "origin_sankey_graph.png")
+    markdown_sankey_path = "assets/origin_sankey_graph.png"
  
     try:
-        # Generate the graph first
+        # Generate both graphs first
         network_graph_success = Content_Parser.generate_network_graph(origin_distribution_df, graph_image_path)
+        sankey_graph_success = Content_Parser.generate_sankey_graph(origin_distribution_df, sankey_image_path)
         
         # Build the complete new content string from scratch
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -194,14 +239,16 @@ class Content_Parser(object):
         new_content += f"- Total Count of Stories: {total_stories}\n"
         new_content += f"- Duplicate Stories Count: {duplicate_stories}\n"
         new_content += f"- Last Updated: {timestamp}\n"
-        new_content += "- TO COME:\n"
+        new_content += "\n"
         new_content += "  **Graphs**\n"
         
         if network_graph_success:
             new_content += f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
-        new_content += "\n"
         
-        # The Sankey Diagram section is removed as per your request
+        if sankey_graph_success:
+            new_content += f"![Saved Article Origin Distribution Sankey Graph]({markdown_sankey_path})\n"
+        
+        new_content += "\n"
         
         new_content += "## Installation\n"
         new_content += "```bash\n"

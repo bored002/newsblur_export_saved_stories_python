@@ -187,57 +187,47 @@ class Content_Parser(object):
         # Generate the graph first
         network_graph_success = Content_Parser.generate_network_graph(origin_distribution_df, graph_image_path)
         
-        # Start building the new content for the Markdown file from scratch
-        new_content = ""
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # Read the existing file to get the static content
+        # Read the entire template content from the markdown file
         with open(md_filepath, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-        
-        # Build the new content by iterating through the original lines and replacing the dynamic parts
-        for line in lines:
-            if line.strip().startswith('- Delta of Stories'):
-                new_content += f"- Delta of Stories: {delta_stories}\n"
-            elif line.strip().startswith('- Total Count of Stories'):
-                new_content += f"- Total Count of Stories: {total_stories}\n"
-            elif line.strip().startswith('- Duplicate Stories Count'):
-                new_content += f"- Duplicate Stories Count: {duplicate_stories}\n"
-            elif line.strip().startswith('- Last Updated:'):
-                new_content += f"- Last Updated: {timestamp}\n"
-            elif line.strip() == 'Graphs':
-                # Insert the network graph image link and the "TO COME" Sankey Diagram
-                new_content += "Graphs\n"
-                new_content += "\n"
-                if network_graph_success:
-                    new_content += f"![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
-                new_content += "\nSankey Diagram\n\n"
-                break # Stop processing the old file and build the rest from scratch
-            else:
-                new_content += line
+            template_content = f.read()
 
-        # Append the data table at the end
+        # Build the new content by replacing placeholders with a more robust method
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        new_content = template_content
+
+        # Update the statistics
+        new_content = re.sub(r'Delta of Stories: .*', f"Delta of Stories: {delta_stories}", new_content)
+        new_content = re.sub(r'Total Count of Stories: .*', f"Total Count of Stories: {total_stories}", new_content)
+        new_content = re.sub(r'Duplicate Stories Count: .*', f"Duplicate Stories Count: {duplicate_stories}", new_content)
+        new_content = re.sub(r'Last Updated: .*', f"Last Updated: {timestamp}", new_content)
+        
+        # Replace the network graph placeholder
+        if network_graph_success:
+            image_markdown = f"\n![Saved Article Origin Distribution Network Graph]({markdown_image_path})\n"
+            new_content = re.sub(r'Network Graph(\s*\n)?', f"Network Graph{image_markdown}", new_content)
+        
+        # Remove the Sankey Diagram section to match your request
+        new_content = re.sub(r'Sankey Diagram\n', '', new_content)
+
+        # Update the data table at the end
         if origin_distribution_df is not None:
             df_for_markdown = origin_distribution_df.reset_index()
             df_for_markdown.columns = ['origin', 'count']
             df_markdown = df_for_markdown.to_markdown(index=False)
+            table_markdown = f"## Saved Article Origin Distribution\n{df_markdown}\n"
             
-            new_content += "\n\n## Saved Article Origin Distribution\n"
-            new_content += df_markdown
-            new_content += "\n"
+            # Use a regex to find and replace the old table.
+            new_content = re.sub(r'Saved Article Origin Distribution\n\|.*', table_markdown, new_content, flags=re.DOTALL)
+            
+            # If the table doesn't exist yet, append it.
+            if "Saved Article Origin Distribution" not in new_content:
+                new_content += f"\n\n{table_markdown}"
 
         # Write the complete, new content back to the file
         with open(md_filepath, 'w', encoding='utf-8') as f:
             f.write(new_content)
         
         print(f"Successfully updated '{md_filepath}' with all data and graphs.")
-        
-        # Verify the final content
-        print("\n--- Verifying final content by reading the file from disk... ---")
-        with open(md_filepath, 'r', encoding='utf-8') as f_verify:
-            verified_content = f_verify.read()
-        print("\n" + verified_content)
-        print("----------------------------------------------------------\n")
         
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")

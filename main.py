@@ -61,6 +61,7 @@ if __name__ == "__main__":
             print(f"Pandas Exception Caught while reading previous saved stories: {e}")
             previous_number_of_stories = 0
     else:
+        previous_number_of_stories = 0
         print(f"No saved stories were retrieved from the folder")
         print(f'No previous saved stories found, setting previous_number_of_stories to 0')
     # TODO: read from saved stories csv convert to dataframe and get length of list

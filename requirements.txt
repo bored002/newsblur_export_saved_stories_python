@@ -11,5 +11,6 @@ google-auth-oauthlib
 oauth2client
 networkx
 tabulate
+kaleido
 # tensorflow==2.4.2
 # pycaret

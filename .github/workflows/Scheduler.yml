@@ -106,7 +106,7 @@ jobs:
           path: |
             index.md
             assets/origin_network_graph.png
-            assets/sankey_diagram.png
+            assets/origin_sankey_graph.png
           retention-days: 7
           if-no-files-found: error
       
@@ -168,7 +168,7 @@ jobs:
           
           if [ -f "assets/sankey_diagram.png" ]; then
             mkdir -p _site/assets
-            mv assets/sankey_diagram.png _site/assets/sankey_diagram.png
+            mv assets/origin_sankey_graph.png _site/assets/origin_sankey_graph.png
             echo "Moved assets/sankey_diagram.png to _site/assets directory."
           else
             echo "sankey_diagram.png not found. Skipping file move."

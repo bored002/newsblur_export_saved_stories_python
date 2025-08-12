@@ -106,6 +106,7 @@ jobs:
           path: |
             index.md
             assets/origin_network_graph.png
+            assets/sankey_diagram.png
           retention-days: 7
           if-no-files-found: error
       

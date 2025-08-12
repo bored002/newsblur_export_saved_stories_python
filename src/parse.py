@@ -271,6 +271,12 @@ class Content_Parser(object):
             f.write(new_content)
         
         print(f"Successfully updated '{md_filepath}' with all data, graphs, and timestamp.")
+
+        with open(md_filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        print("\n--- Updated Markdown Content Validation ---\n") 
+        print(content)
+        print("\n--- End of Updated Markdown Content ---\n")
         
     except Exception as e:
         print(f"An error occurred while updating the Markdown file: {e}")

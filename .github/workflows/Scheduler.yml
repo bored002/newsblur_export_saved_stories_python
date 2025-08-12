@@ -166,12 +166,12 @@ jobs:
             echo "Moved assets/origin_network_graph.png to _site/assets directory."
           fi
           
-          if [ -f "assets/sankey_diagram.png" ]; then
+          if [ -f "assets/origin_sankey_graph.png" ]; then
             mkdir -p _site/assets
             mv assets/origin_sankey_graph.png _site/assets/origin_sankey_graph.png
-            echo "Moved assets/sankey_diagram.png to _site/assets directory."
+            echo "Moved assets/origin_sankey_graph.png to _site/assets directory."
           else
-            echo "sankey_diagram.png not found. Skipping file move."
+            echo "origin_sankey_graph.png not found. Skipping file move."
           fi
           
           

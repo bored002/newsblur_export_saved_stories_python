@@ -103,9 +103,8 @@ if __name__ == "__main__":
         print(f"Exception Caught: {general_e}")
     print()
     #TODO:
-    # Add plot for : network graph --> stories saved by feed
+    
     # Add plot/widget for Delta of stories saved, total stories, stories by feed
-    # Add plot/widget for Sankey Diagram
     
     #   emailer = email_client.Emailer()
     #   mail_sender = emailer.email_csv(stories_csv)

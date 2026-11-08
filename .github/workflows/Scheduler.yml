@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 640
     strategy:
       matrix:
-        python-version: [3.9] #[3.6, 3.7, 3.8, 3.9]
+        python-version: [3.15.2] #[3.6, 3.7, 3.8, 3.9]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
